@@ -1,4 +1,4 @@
-# Welcome to EOSFactory v3.4.0
+# Welcome to EOS Helper v3.4.0
 
 [EOS Helper](http://eosfactory.io/) is a Python-based [EOS](https://eos.io) smart-contract development & testing framework, created by [Genereos](https://genereos.io).
 
