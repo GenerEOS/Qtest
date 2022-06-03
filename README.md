@@ -41,7 +41,6 @@ We make sure everything we do is fully compatible with Windows - our toolset ena
 * [Using EOS Helper to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
 * [Building and Deploying EOS Smart-Contracts in EOSFactory](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
 * [Interacting with EOS Helper in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
-* [Interacting with Public Testnets](docs/tutorials/05.InteractingWithPublicTestnet.md)
 * [Inegrating with CI/CD pipeline] ()
 
 ## EOS Helper API
