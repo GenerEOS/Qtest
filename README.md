@@ -38,7 +38,7 @@ We make sure everything we do is fully compatible with Windows - our toolset ena
 
 * [Introduction to EOSFactory](docs/tutorials/00.IntroductionToEOSFactory.md)
 * [Installing EOSFactory](docs/tutorials/01.InstallingEOSFactory.md)
-* [IUsing EOS Helper to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
+* [Using EOS Helper to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
 * [Building and Deploying EOS Smart-Contracts in EOSFactory](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
 * [Interacting with EOS Helper in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
 * [Interacting with Public Testnets](docs/tutorials/05.InteractingWithPublicTestnet.md)
