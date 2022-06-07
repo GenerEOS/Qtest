@@ -6,12 +6,12 @@ EOS Helper gives you the ability to dockerize an EOSIO node that can run on any 
 
 ## Main features
 
-- #### Ability to init/reset table data
-- #### Ability to test accounts and permissions
-- #### Built with Javascript
-- #### Dockerize an EOSIO node that can be run on the users system automatically
-- #### Ability to test multiple EOSIO(EOS/WAX/TELOS) networks with links to public snapshots.
-- #### Simplified method to setup CI/CD
+- **Ability to init/reset table data**
+- **Ability to test accounts and permissions**
+- **Built with Javascript**
+- **Dockerize an EOSIO node that can be run on the users system automatically**
+- **Ability to test multiple EOSIO(EOS/WAX/TELOS) networks with links to public snapshot**
+- **Simplified method to setup CI/CD**
 
 ## User documentation
 
