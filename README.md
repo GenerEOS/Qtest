@@ -6,7 +6,6 @@ EOS Helper gives you the ability to dockerize an EOSIO node that can run on any 
 
 ## Main features
 
-- #### Open-source MIT license
 - #### Ability to init/reset table data
 - #### Ability to test accounts and permissions
 - #### Built with Javascript
@@ -30,37 +29,13 @@ EOS Helper gives you the ability to dockerize an EOSIO node that can run on any 
 * [Account Class](docs/cases/account.md)
 * [Master Account](docs/cases/master_account.md)
 
-## Complete documentation
-
-Please refer to the [table of contents](https://eosfactory.io/build/html/index.html).
-
-
-## Release notes
-
-Please refer to [this document](docs/ReleaseNotes.md).
-
-## Roadmap
-
-Our long-term goal is to turn *EOS Helper* into a comprehensive IDE (Integrated Development Environment) for EOS smart-contracts.
-
-- [Plan for Subsequent EOS Helper Releases](docs/roadmap/PlanForSubsequentEOSFactoryReleases.md)
-- [Long-term EOS Helper Roadmap](docs/roadmap/LongTermEOSFactoryRoadmap.md)
 
 ## Support
 
-For issues not covered in the documentation there is a dedicated [EOS Factory Support](https://t.me/EOSFactorySupport) channel on Telegram.
+For issues not covered in the documentation there is a dedicated [EOS Helper Support](https://t.me/generEOS) channel on Telegram.
 
 ## Licence
 
 This code is provided as is, under [MIT Licence](LICENCE).
 
-
-Your question is not clear to me.
-If you refer to the statement from the tutorial *InstallingEOS Helper*:
-
-*EOSIO* deployed in Docker is NOT supported.*.
-
-Here we communicate that *EOSIO* executable has to be installed in the system directly, and not as a Docker image.
-
-We do not like Docker because WSL (Windows System Linux) does not support it. However, we can consider meeting demand from Linux System users, if we see such.
 
