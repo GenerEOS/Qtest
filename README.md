@@ -4,19 +4,15 @@ EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract t
 
 EOS Helper gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, PROTON, FIO and UX. It also allows for each project to simply set up CI/CD and seed table data without modifying contracts. 
 
-## Why it’s needed?
-
-To get the most out of testing, its important that the testing framework supports the deveopers in two ways:
-
-**Simplicity** - The testing framework should make writing and running tests simple. A testing framework should simplify many of the onerous and repetitive procedures experienced when testing EOSIO smart contracts, specifically:
-1. Having to set up and maintain an EOSIO network
-2. Preparing the blockchain for the tests: Creating test accounts, managing private keys, setting up account permissions, setting the smart contract code, and bringing the blockchain into a testing state, e.g., by creating and issuing tokens.
-
-**Repeatability** - 
-
 ## Main features
 
-#### INSERT FEATURES HERE
+- #### Open-source MIT license
+- #### Ability to init/reset table data
+- #### Ability to test accounts and permissions
+- #### Built with Javascript
+- #### Dockerize an EOSIO node that can be run on the users system automatically
+- #### Ability to test multiple EOSIO(EOS/WAX/TELOS) networks with links to public snapshots.
+- #### Simplified method to setup CI/CD
 
 ## User documentation
 
