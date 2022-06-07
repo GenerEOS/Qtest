@@ -1,45 +1,29 @@
 # Welcome to EOS Helper v3.4.0
 
-[EOS Helper](http://eosfactory.io/) is a Python-based [EOS](https://eos.io) smart-contract development & testing framework, created by [Genereos](https://genereos.io).
+EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [Genereos](https://genereos.io).
 
-With a single command-line interface you can create a private testnet and then compile, test and deploy EOS smart-contracts.
-
-All of this using simple yet powerful [Python3](https://www.python.org/) syntax.
+EOS Helper gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, PROTON, FIO and UX. It also allows for each project to simply set up CI/CD and seed table data without modifying contracts. 
 
 ## Why it’s needed?
 
-Code development and testing involve tasks that need to be executed hundreds of times, and each time in exactly the same way and exactly the same context. Therefore those tasks need to be fully automated, as otherwise a lot of time is being wasted and, what’s even worse, a lot of additional uncertainty is introduced. Manually performed actions are prone to errors.
+To get the most out of testing, its important that the testing framework supports the deveopers in two ways:
 
-And this is what *EOS Helper* actually brings to the table: an easy & intuitive way to automate the process of dealing with smart-contracts. Write down, in the form of a Python script, what needs to be done multiple times in exactly the same way and exactly the same context, and then just run the script. *EOS Helper* will take care of everything else: it will compile your smart-contract, create a new local testnet, deploy the contract, invoke its methods and verify the response, then tear down the testnet, and finally report the results. And all of this done in a couple of seconds.
+**Simplicity** - The testing framework should make writing and running tests simple. A testing framework should simplify many of the onerous and repetitive procedures experienced when testing EOSIO smart contracts, specifically:
+1. Having to set up and maintain an EOSIO network
+2. Preparing the blockchain for the tests: Creating test accounts, managing private keys, setting up account permissions, setting the smart contract code, and bringing the blockchain into a testing state, e.g., by creating and issuing tokens.
+
+**Repeatability** - 
 
 ## Main features
 
-#### 1. Object-oriented
-
-When you use tools like `cleos` all you have at your disposal is issuing separate, one-off commands, as `cleos` is not able to keep your state. Thus each time you interact with a contract, you need to tell `cleos` which contract and which account you mean. Contrary to that, in *EOS Helper* everything is an object. You create a contract (or an account), keep reference to it and then invoke its various methods.
-
-#### 2. Simple syntax
-
-The front-end of *EOS Helper* is simply a Python3 *Command Line Interface*. This way you can interact with EOS smart-contract, and prove it works as expected, instead having to deal with the raw primitives of the EOSIO `cleos`. In most cases Python syntax is immediately clear for everyone.
-
-#### 3. Support for both local and remote testnet
-
-Running tests on a public testnet is much more complex than using a local one where you have full control. The whole infrastructure of *EOSFactory* is designed in such a way that the same test is able to work in both environments, and switching between them is just a matter of changing one parameter.
-
-#### 4. Aliases for account names
-
-*EOSIO* accounts are indexed by their names, thus those names have to be unique within the blockchain namespace and have to follow specific restrictions. As a result, most of the human readable combinations are already taken, even in a testnet environment. *EOS Helper* hides the actual names of an *EOSIO* accounts behind a system of human-friendly aliases.
-
-#### 5. Truly cross-platform
-
-We make sure everything we do is fully compatible with Windows - our toolset enables you to run an EOS node and interact with it on any operating system, including Windows, MacOS and Linux.
+#### INSERT FEATURES HERE
 
 ## User documentation
 
-* [Introduction to EOSFactory](docs/tutorials/00.IntroductionToEOSFactory.md)
-* [Installing EOSFactory](docs/tutorials/01.InstallingEOSFactory.md)
+* [Introduction to EOS Helper](docs/tutorials/00.IntroductionToEOSFactory.md)
+* [Installing EOS Helper](docs/tutorials/01.InstallingEOSFactory.md)
 * [Using EOS Helper to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
-* [Building and Deploying EOS Smart-Contracts in EOSFactory](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
+* [Building and Deploying EOS Smart-Contracts in EOS Helper](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
 * [Interacting with EOS Helper in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
 * [Inegrating with CI/CD pipeline] ()
 
