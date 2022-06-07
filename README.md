@@ -1,4 +1,4 @@
-# Welcome to EOS Helper v3.4.0
+# Welcome to EOS Helper 
 
 EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [Genereos](https://genereos.io).
 
