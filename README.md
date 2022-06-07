@@ -1,6 +1,6 @@
 # Welcome to EOS Helper 
 
-EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [Genereos](https://genereos.io).
+EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
 
 EOS Helper gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, PROTON, FIO and UX. It also allows for each project to simply set up CI/CD and seed table data without modifying contracts. 
 
@@ -32,7 +32,7 @@ EOS Helper gives you the ability to dockerize an EOSIO node that can run on any 
 
 ## Support
 
-For issues not covered in the documentation there is a dedicated [EOS Helper Support](https://t.me/generEOS) channel on Telegram.
+For issues not covered in the documentation, please jump into our channel and we will do our best to help you out [GenerEOS](https://t.me/generEOS) channel on Telegram.
 
 ## Licence
 
