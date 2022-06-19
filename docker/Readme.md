@@ -37,8 +37,18 @@ docker run --name qtest  --env EOSIO_PUB_KEY=EOS6aP916AQaTsxFmQiLyoex2jMuyewJHtK
 ## Time manipulation:
 
 ```
-docker exec -it mandel date
-Sun Jun 19 10:59:13 UTC 2022
+$ docker exec qtest cleos get info
+{
+  "head_block_time": "2022-06-19T13:51:59.500",
+...
+}
 
-docker exec -it mandel ./scripts/manipulate_time.sh "-15d"
+# manipulate time
+docker exec qtest /app/scripts/manipulate_time.sh "+15d"
+
+$ docker exec qtest cleos get info
+{
+  "head_block_time": "2022-07-04T13:53:26.500",
+...
+}
 ```
