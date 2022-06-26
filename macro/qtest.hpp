@@ -71,7 +71,7 @@ struct eos_payload
       switch (row.table_name.value)                                                                                             \
       {                                                                                                                         \
         EOS_DEFER(BOOST_PP_SEQ_FOR_EACH_ID)                                                                                         \
-        ()(EOS_POPULATE_TABLE, EOS_INTERNAL_FUNC(func), TABLES) default : eosio::check(false, "Unknown table to load fixture"); \
+        ()(EOS_POPULATE_TABLE, EOS_INTERNAL_FUNC(func), TABLES) default : eosio::check(false, "Unknown table"); \
       }                                                                                                                         \
     }                                                                                                                           \
   }
@@ -79,7 +79,7 @@ struct eos_payload
 #ifdef EOS_SKIP_HELPERS
   #define EOS_LOAD_TABLE_ACTION(TABLES)
 #else
-  #define SEQFUNC (eosinsert)(eosmodify)(eoserase)
+  #define EOS_SEQFUNC (eosinsert)(eosmodify)(eoserase)
   #define EOS_LOAD_TABLE_ACTION(TABLES) \
-    EOS_EXPAND(BOOST_PP_SEQ_FOR_EACH(EOS_POPULATE_FUNCTION, TABLES, SEQFUNC))
+    EOS_EXPAND(BOOST_PP_SEQ_FOR_EACH(EOS_POPULATE_FUNCTION, TABLES, EOS_SEQFUNC))
 #endif
