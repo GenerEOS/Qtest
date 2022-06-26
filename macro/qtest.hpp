@@ -19,11 +19,8 @@ void eosmodify_row(const eosio::name &_self, const eosio::name &table_name,
                    const std::vector<char> &row_data)
 {
   MultiIndexType table(_self, scope.value);
-  eosio::datastream packed_params_datastream(&row_data, row_data.size());
-  uint64_t primary_key;
-  packed_params_datastream >> primary_key;
   const RowType unpacked = eosio::unpack<RowType>(row_data);
-  auto itr = table.require_find(primary_key, "primary_key doesn't exist");
+  auto itr = table.require_find(unpacked.primary_key(), "primary_key doesn't exist");
   table.modify(itr, _self, [&](auto &obj)
                { obj = unpacked; });
 }
@@ -34,10 +31,8 @@ void eoserase_row(const eosio::name &_self, const eosio::name &table_name,
                   const std::vector<char> &row_data)
 {
   MultiIndexType table(_self, scope.value);
-  eosio::datastream packed_params_datastream(&row_data, row_data.size());
-  uint64_t primary_key;
-  packed_params_datastream >> primary_key;
-  auto itr = table.require_find(primary_key, "primary_key doesn't exist");
+  const RowType unpacked = eosio::unpack<RowType>(row_data);
+  auto itr = table.require_find(unpacked.primary_key(), "primary_key doesn't exist");
   table.erase(itr);
 }
 
@@ -62,9 +57,9 @@ struct eos_payload
   std::vector<char> row_data;
 };
 
-#define EXPAND(...) __VA_ARGS__
-#define EMPTY()
-#define DEFER(x) x EMPTY()
+#define EOS_EXPAND(...) __VA_ARGS__
+#define EOS_EMPTY()
+#define EOS_DEFER(x) x EOS_EMPTY()
 #define BOOST_PP_SEQ_FOR_EACH_ID() BOOST_PP_SEQ_FOR_EACH
 #define EOS_INTERNAL_FUNC(x) x##_row
 #define EOS_POPULATE_FUNCTION(r, TABLES, func)                                                                                  \
@@ -75,7 +70,7 @@ struct eos_payload
     {                                                                                                                           \
       switch (row.table_name.value)                                                                                             \
       {                                                                                                                         \
-        DEFER(BOOST_PP_SEQ_FOR_EACH_ID)                                                                                         \
+        EOS_DEFER(BOOST_PP_SEQ_FOR_EACH_ID)                                                                                         \
         ()(EOS_POPULATE_TABLE, EOS_INTERNAL_FUNC(func), TABLES) default : eosio::check(false, "Unknown table to load fixture"); \
       }                                                                                                                         \
     }                                                                                                                           \
@@ -84,7 +79,7 @@ struct eos_payload
 #ifdef EOS_SKIP_HELPERS
   #define EOS_LOAD_TABLE_ACTION(TABLES)
 #else
-  #define SEQFUNCS (eosinsert)(eosmodify)(eoserase)
+  #define SEQFUNC (eosinsert)(eosmodify)(eoserase)
   #define EOS_LOAD_TABLE_ACTION(TABLES) \
-    EXPAND(BOOST_PP_SEQ_FOR_EACH(EOS_POPULATE_FUNCTION, TABLES, SEQFUNCS))
+    EOS_EXPAND(BOOST_PP_SEQ_FOR_EACH(EOS_POPULATE_FUNCTION, TABLES, SEQFUNC))
 #endif
