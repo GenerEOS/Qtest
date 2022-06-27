@@ -6,9 +6,7 @@ curl -f --request POST \
 
 if [[ $? -eq 0 ]]
 then
-    echo "quopcle"
     exit 0
 else
-    echo "quopcle1"
     exit 1
 fi
