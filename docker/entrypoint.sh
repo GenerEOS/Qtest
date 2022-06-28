@@ -38,6 +38,7 @@ cd ${HOME_DIR}
 if [ $ENABLE_SYSTEM_CONTRACT -eq 1 ]; then
   if [ "$SYSTEM_TOKEN_SYMBOL" = "EOS" ]; then
     echo "Deploy EOS System Contracts..."
+    ./scripts/deploy_eos_system_contract.sh
   elif [ "$SYSTEM_TOKEN_SYMBOL" = "WAX" ]; then
     echo "Deploy WAX System Contracts..."
     ./scripts/deploy_wax_system_contract.sh
