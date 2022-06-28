@@ -52,3 +52,14 @@ $ docker exec qtest cleos get info
 ...
 }
 ```
+
+"2022-07-26T05:15:44.500"
+
+FAKETIME="2023-12-24 20:30:00"
+LD_PRELOAD=/usr/local/lib/faketime/libfaketime.so.1 FAKETIME="2023-12-24 20:30:00"
+
+export LD_PRELOAD=/usr/local/lib/faketime/libfaketime.so.1 FAKETIME_NO_CACHE=1
+export FAKETIME="2022-07-24 20:30:00"
+cleos
+
+"2022-07-24 20:30:00"

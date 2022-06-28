@@ -2,15 +2,13 @@
 DATADIR="./logs"
 
 BPACCOUNT=eosio
-PUBKEY=EOS6aP916AQaTsxFmQiLyoex2jMuyewJHtK7PhF5o6LyTXeuaTFnb
-PRIKEY=5JLPcFr2KWnHMaXRnEc1JyRcRj8KegqsnXwRw24VYdLGhjwEQuN
 
 if [ ! -d $DATADIR ]; then
   mkdir -p $DATADIR;
 fi
 
 nodeos \
---signature-provider $PUBKEY=KEY:$PRIKEY \
+--signature-provider $EOSIO_PUB_KEY=KEY:$EOSIO_PRV_KEY \
 --plugin eosio::net_plugin \
 --plugin eosio::net_api_plugin \
 --plugin eosio::producer_plugin \
@@ -33,7 +31,7 @@ nodeos \
 --enable-stale-production \
 --trace-history \
 --chain-state-history \
---max-transaction-time=1000 \
+--max-transaction-time=500 \
 --chain-state-db-size-mb 8192 \
 --chain-state-db-guard-size-mb 1024 \
 >> $DATADIR"/nodeos.log" 2>&1 & \

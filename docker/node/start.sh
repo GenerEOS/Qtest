@@ -2,8 +2,6 @@
 DATADIR="./logs"
 
 BPACCOUNT=eosio
-PUBKEY=EOS6aP916AQaTsxFmQiLyoex2jMuyewJHtK7PhF5o6LyTXeuaTFnb
-PRIKEY=5JLPcFr2KWnHMaXRnEc1JyRcRj8KegqsnXwRw24VYdLGhjwEQuN
 
 if [ ! -d $DATADIR ]; then
   mkdir -p $DATADIR;
@@ -11,7 +9,7 @@ fi
 
 nodeos \
 --genesis-json $DATADIR"/../genesis.json" \
---signature-provider $PUBKEY=KEY:$PRIKEY \
+--signature-provider $EOSIO_PUB_KEY=KEY:$EOSIO_PRV_KEY \
 --plugin eosio::net_plugin \
 --plugin eosio::net_api_plugin \
 --plugin eosio::producer_plugin \

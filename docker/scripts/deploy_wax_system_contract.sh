@@ -2,33 +2,22 @@
 
 cd ${HOME_DIR}/
 
-# Create accounts
-cleos create account eosio eosio.bpay ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.msig ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.names ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.ram ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.ramfee ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.saving ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.stake ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.token ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.vpay ${EOSIO_PUB_KEY}
-cleos create account eosio eosio.rex ${EOSIO_PUB_KEY}
-
-# Deploy token contract
-cleos set contract eosio.token contracts eosio.token.wasm eosio.token.abi
-
-# Create and issue the WAX currency
-cleos push action eosio.token create '[ "eosio", "20000000000.00000000 WAX" ]' -p eosio.token@active
-cleos push action eosio.token issue '[ "eosio", "10000000000.00000000 WAX", "initial" ]' -p eosio@active
+systemAccounts=("eosio.bpay" "eosio.msig" "eosio.names" "eosio.ram" "eosio.ramfee" "eosio.saving" "eosio.stake" "eosio.vpay" "eosio.rex")
+# Create system accounts
+for account in ${systemAccounts[@]} ; do
+  echo $account
+	cleos create account eosio $account ${EOSIO_PUB_KEY};
+done
 
 # Deploy token contract msig contract
-cleos set contract eosio.msig contracts eosio.msig.wasm eosio.msig.abi
+cleos set contract eosio.msig contracts/wax eosio.msig.wasm eosio.msig.abi
 
-curl -X POST http://127.0.0.1:8888/v1/producer/get_supported_protocol_features -d '{}' | jq
-curl -X POST http://127.0.0.1:8888/v1/producer/schedule_protocol_feature_activations -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}' | jq
+# Activate PREACTIVATE_FEATURE
+curl -X POST http://127.0.0.1:8888/v1/producer/get_supported_protocol_features -d '{}'
+curl -X POST http://127.0.0.1:8888/v1/producer/schedule_protocol_feature_activations -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}'
 
 # Try deploy system contracts
-until cleos set contract eosio contracts eosio.system.wasm eosio.system.abi
+until cleos set contract eosio contracts/wax eosio.system.wasm eosio.system.abi
 do
   sleep 1s
 done
@@ -58,7 +47,7 @@ sleep 3
 # Designate eosio.msig as privileged account
 cleos push action eosio setpriv '["eosio.msig", 1]' -p eosio@active
 
-# init system contract
+# Init system contract
 cleos push action eosio init '[0, "8,WAX"]' -p eosio@active
 
 
