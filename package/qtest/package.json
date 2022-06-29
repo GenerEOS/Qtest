@@ -1,0 +1,24 @@
+{
+  "name": "qtest",
+  "version": "1.0.0",
+  "description": "eosio testing library",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "eosjs": "^22.1.0",
+    "eosjs-account-name": "^2.2.1",
+    "node-fetch": "2",
+    "tslint": "^6.1.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "jest": "^28.1.1",
+    "ts-jest": "^28.0.4",
+    "ts-node": "^10.8.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.3"
+  }
+}
