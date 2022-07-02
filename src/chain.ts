@@ -5,8 +5,8 @@ import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
 import { ReadOnlyTransactResult, PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Account } from './account';
 import { killExistingContainer, startChainContainer, getChainIp } from './dockerClient';
-import { generateTapos, toAssetQuantity } from './utils';
-import { signatureProvider, initializedChain } from './wallet';
+import { generateTapos, toAssetQuantity, sleep } from './utils';
+import { signatureProvider } from './wallet';
 
 export class Chain {
   public coreToken = {
@@ -21,6 +21,7 @@ export class Chain {
   async setupChain(systemSetup: boolean) {
     await killExistingContainer();
     await startChainContainer();
+
     // const chainIp = await getChainIp();
     // this.rpc = new JsonRpc(`http://${chainIp}:8888`, { fetch });
     this.rpc = new JsonRpc(`http://127.0.0.1:8888`, { fetch });
@@ -31,7 +32,35 @@ export class Chain {
       textEncoder: new TextEncoder(),
     });
     this.accounts = await this.createTestAccounts(10);
-    initializedChain.push(this);
+
+    let retryCount = 0;
+    while (!this.isProducingBlock()) {
+      await sleep(1000);
+      if (retryCount === 10) {
+        throw new Error('can not get chain status');
+      }
+      retryCount++;
+    }
+
+    await sleep(20000);
+  }
+
+  async getInfo() {
+    return await this.rpc.get_info();
+  }
+
+  async headBlockNum(): Promise<Number> {
+    return +((await this.getInfo()).head_block_num);
+  }
+
+  async isProducingBlock(): Promise<boolean> {
+    try {
+      const currentHeadBlock = await this.headBlockNum();
+      await sleep(600);
+      return Number(await this.headBlockNum()) - Number(currentHeadBlock) > 0;
+    } catch (e) {
+      return false;
+    }
   }
 
   async createTestAccounts(length: number) {
