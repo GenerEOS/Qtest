@@ -14,7 +14,7 @@ export function toAssetQuantity(quantity: number, symbol) {
   return `${quantity.toFixed(symbol.decimal)} ${symbol.symbol}`;
 }
 
-export function generateAccountName(length: number): string {
+export function generateAccountName(): string {
   const randomUint = Math.floor(Math.random() * Number.MAX_VALUE);
   return uint64ToName(randomUint);
 }

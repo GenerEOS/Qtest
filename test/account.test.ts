@@ -1,3 +1,4 @@
+import { expectBalance } from '../src/assertion';
 import { Chain } from '../src/chain';
 import { generateTapos } from '../src/utils';
 
@@ -6,7 +7,7 @@ describe('account test', () => {
   let account;
 
   beforeAll(async () => {
-    await chain.setupChain(false);
+    await chain.setupChain(true);
     account = await chain.createAccount('testaccount1');
   }, 60000);
 
@@ -94,7 +95,7 @@ describe('account test', () => {
           data: {
             from: account.name,
             to: 'acc11.test',
-            quantity: '0.10000000 WAX',
+            quantity: '0.1000 WAX',
             memo: 'test'
           },
         }
@@ -109,15 +110,14 @@ describe('account test', () => {
 
   it ('test transfer core token', async () => {
     const senderBalanceBefore = await account.getBalance();
-    const transaction = await account.transfer('acc11.test', '1.00000000 WAX', 'abc test');
-    const senderBalanceAfter = await account.getBalance();
+    const transaction = await account.transfer('acc11.test', '1.0000 WAX', 'abc test');
     expect(transaction.processed.block_num).toBeGreaterThan(0);
-    expect(senderBalanceBefore - 1).toBe(senderBalanceAfter);
+    expectBalance(account, senderBalanceBefore - 1);
   }, 100000);
 
   it ('set contract', async () => {
     const contractAccount = chain.accounts[1];
-    const contract = await contractAccount.setContract('./testContract/build/testcontract.wasm', './testContract/build/testcontract.abi');
+    const contract = await contractAccount.setContract('./contracts/build/testcontract.wasm', './contracts/build/testcontract.abi');
     let transaction = await chain.pushAction({
       account: contractAccount.name,
       name: 'hello',
@@ -126,13 +126,13 @@ describe('account test', () => {
         permission: 'active'
       }],
       data: {
-        name: contractAccount.name
+        user: contractAccount.name
       }
-    });
+    }, true, true, 366);
     // @ts-ignore
     expect(transaction.processed.action_traces[0].console).toBe(' hello ' + contractAccount.name);
 
-    transaction = await contract.action.hello({ name: contractAccount.name }); // push action with contract instance
+    transaction = await contract.action.hello({ user: contractAccount.name }); // push action with contract instance
     expect(transaction.processed.action_traces[0].console).toBe(' hello ' + contractAccount.name);
   }, 100000);
 });

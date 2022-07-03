@@ -7,7 +7,7 @@ describe('test wallet', () => {
   let account;
 
   beforeAll(async () => {
-    await chain.setupChain(false);
+    await chain.setupChain(true);
     account = await chain.createAccount('testaccount1');
   }, 60000);
 
@@ -40,7 +40,7 @@ describe('test wallet', () => {
           data: {
             from: account.name,
             to: 'acc11.test',
-            quantity: '0.10000000 WAX',
+            quantity: '0.1000 WAX',
             memo: 'test'
           },
         }

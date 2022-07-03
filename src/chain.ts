@@ -4,52 +4,49 @@ import { Action } from 'eosjs/dist/eosjs-serialize';
 import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
 import { ReadOnlyTransactResult, PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Account } from './account';
-import { killExistingContainer, startChainContainer, getChainIp } from './dockerClient';
+import { killExistingContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
 import { generateTapos, toAssetQuantity, sleep } from './utils';
 import { signatureProvider } from './wallet';
 
 export class Chain {
   public coreToken = {
     symbol: 'WAX',
-    decimal: 8
+    decimal: 4
   };
   public api;
   public rpc;
   public accounts: Account[];
+  public timeAdded: number;
   constructor() { }
 
-  async setupChain(systemSetup: boolean) {
+  async setupChain(systemSetup: boolean = true) {
     await killExistingContainer();
     await startChainContainer();
 
-    // const chainIp = await getChainIp();
-    // this.rpc = new JsonRpc(`http://${chainIp}:8888`, { fetch });
-    this.rpc = new JsonRpc(`http://127.0.0.1:8888`, { fetch });
+    const chainIp = await getChainIp();
+    this.rpc = new JsonRpc(`http://${chainIp}:8888`, { fetch });
+    // this.rpc = new JsonRpc(`http://127.0.0.1:8888`, { fetch });
     this.api = new Api({
       rpc: this.rpc,
       signatureProvider,
       textDecoder: new TextDecoder(),
       textEncoder: new TextEncoder(),
     });
-    this.accounts = await this.createTestAccounts(10);
 
-    let retryCount = 0;
-    while (!this.isProducingBlock()) {
-      await sleep(1000);
-      if (retryCount === 10) {
-        throw new Error('can not get chain status');
-      }
-      retryCount++;
+    await this.waitForChainStart();
+    if (systemSetup) {
+      await this.waitForSystemContractInitialized();
     }
 
-    await sleep(20000);
+    this.accounts = await this.createTestAccounts(10);
+    this.timeAdded = 0;
   }
 
   async getInfo() {
     return await this.rpc.get_info();
   }
 
-  async headBlockNum(): Promise<Number> {
+  async headBlockNum(): Promise<number> {
     return +((await this.getInfo()).head_block_num);
   }
 
@@ -58,6 +55,23 @@ export class Chain {
       const currentHeadBlock = await this.headBlockNum();
       await sleep(600);
       return Number(await this.headBlockNum()) - Number(currentHeadBlock) > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async isSystemContractInitialized(): Promise<boolean> {
+    try {
+      const rammarketTables = await this.rpc.get_table_rows({
+        json: true,
+        code: 'eosio',
+        table: 'rammarket',
+        scope: 'eosio'
+      });
+      if (rammarketTables.rows && rammarketTables.rows.length) {
+        return true;
+      }
+      return false;
     } catch (e) {
       return false;
     }
@@ -180,5 +194,113 @@ export class Chain {
 
   async pushActions(actions: Action[], broadcast: boolean = true, sign: boolean = true, expireSeconds: number = 120): Promise<TransactResult|ReadOnlyTransactResult|PushTransactionArgs> {
     return this.api.transact({ actions }, { broadcast, sign, expireSeconds, blocksBehind: 3 });
+  }
+
+  /**
+   * Increase time of chain. This function only adds time to the current block time (never reduces). Realize that it is not super accurate.You will definitely increase time by at least the number of seconds you indicate, but likely a few seconds more. So you should not be trying to do super precision tests with this function. Give your tests a few seconds leeway when checking behaviour that does NOT exceed some time span. It will work well for exceeding timeouts, or making large leaps in time, etc.
+   *
+   * @param {Number} time Number of seconds to increase the chain time by
+   * @param {String=} fromBlockTime Optional blocktime string. The `time` parameter will add to this absolute value as the target to increase. If this is missing, the `time` value just adds to the current blockchain time time to.
+   * @return {Promise<Number>} The approximate number of milliseconds that the chain time has been increased by (not super reliable - it is usually more)
+   * @api public
+   */
+  async addTime(time: number, fromBlockTime: string = ''): Promise<number> {
+    if (time < 0 ) {
+      throw new Error('adding time much be greater than zero');
+    }
+    const { elapsedBlocks, startingBlock } = await this.waitTillNextBlock(2); // This helps resolve any pending transactions
+    let startTime = this.blockTimeToMs(startingBlock.head_block_time);
+    let addingTime;
+    let fromBlockTimeMs = startTime;
+    if (fromBlockTime) {
+      fromBlockTimeMs = this.blockTimeToMs(fromBlockTime);
+      addingTime = Math.floor(
+        Math.max(0, time - (startTime - fromBlockTimeMs) / 1000 - elapsedBlocks * 0.5)
+      );
+    } else {
+      addingTime = Math.floor(
+        Math.max(0, time - elapsedBlocks * 0.5)
+      );
+    };
+
+    if (addingTime === 0) {
+      return 0;
+    }
+    let tries = 0;
+    const maxTries = 10;
+    do {
+      if (tries >= maxTries) {
+        throw new Error(
+          `Exceeded ${maxTries} tries to change the blockchain time. Test cannot proceed.`
+        );
+      }
+      await manipulateChainTime(this.timeAdded + addingTime);
+      tries++;
+      await sleep(1000);
+    } while (!(await this.isProducingBlock()));
+    this.timeAdded += addingTime;
+    await this.waitTillNextBlock(2);
+    const endTime = this.blockTimeToMs((await this.getInfo()).head_block_time);
+    return endTime - fromBlockTimeMs;
+  }
+
+  private async waitForChainStart() {
+    let retryCount = 0;
+    while (!(await this.isProducingBlock())) {
+      await sleep(1000);
+      if (retryCount === 10) {
+        throw new Error('can not get chain status');
+      }
+      retryCount++;
+    }
+  }
+
+  async waitTillNextBlock(numBlocks: number = 1) {
+    const startingBlock = await this.getInfo();
+    const currentBlockHeight = await this.waitTillBlock(
+      startingBlock.head_block_num + numBlocks
+    );
+    return {
+      startingBlock,
+      elapsedBlocks: currentBlockHeight - Number(startingBlock.head_block_num),
+    };
+  }
+
+  async waitTillBlock(target) {
+    let currentBlockHeight = await this.headBlockNum();
+    while (currentBlockHeight < target) {
+      await sleep(500);
+      currentBlockHeight = await this.headBlockNum();
+    }
+    return currentBlockHeight;
+  }
+
+  blockTimeToMs(blockTime: string): number {
+    const blockTimeDate = new Date(blockTime);
+    return blockTimeDate.getTime();
+  }
+
+  private async waitForSystemContractInitialized() {
+    // let retryCount = 0;
+    // while (!(await this.isSystemContractInitialized())) {
+    //   await sleep(1000);
+    //   if (retryCount === 15) {
+    //     throw new Error('can not initilize system contract');
+    //   }
+    //   retryCount++;
+    // }
+    await sleep(15000);
+    await this.pushAction({
+      account: 'eosio',
+      name: 'init',
+      authorization: [{
+        actor: 'eosio',
+        permission: 'active'
+      }],
+      data: {
+        version: 0,
+        core: '4,WAX'
+      }
+    });
   }
 }

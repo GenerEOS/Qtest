@@ -13,10 +13,14 @@ function execute(command, ignoreFail = false) {
   }
 }
 
-export const startChainContainer = async (name: string = 'qtest', tokenSupply = "12345678.00000000 WAX") => {
+export const startChainContainer = async (name: string = 'qtest', tokenSupply = "12345678.0000 WAX") => {
   const coreSymbol = tokenSupply.split(' ')[1];
   execute(`docker pull songmai108/qtest:v0.0.1`);
   execute(`docker run --name ${name} --env EOSIO_PUB_KEY=EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV --env EOSIO_PRV_KEY=5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3 --env SYSTEM_TOKEN_SUPPLY="${tokenSupply}" --env SYSTEM_TOKEN_SYMBOL=${coreSymbol} --env ENABLE_SYSTEM_CONTRACT=1 -d -p 8888:8888 songmai108/qtest:v0.0.1`);
+}
+
+export const manipulateChainTime = async (time: number) => {
+  execute(`docker exec qtest /app/scripts/manipulate_time.sh +${time}`);
 }
 
 export const getContainers = (): { name: string, id: string }[] => {
