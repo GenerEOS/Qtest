@@ -43,7 +43,7 @@ if [ $ENABLE_SYSTEM_CONTRACT -eq 1 ]; then
     ./scripts/deploy_system_contract_eos.sh
   elif [ "$SYSTEM_TOKEN_SYMBOL" = "WAX" ]; then
     echo "Deploy WAX System Contracts..."
-    ./scripts/wax_deploy_system_contract_wax.sh
+    ./scripts/deploy_system_contract_wax.sh
   elif [ "$SYSTEM_TOKEN_SYMBOL" = "TLOS" ]; then
     echo "Deploy TELOS System Contracts..."
     ./scripts/deploy_system_contract_tlos.sh
