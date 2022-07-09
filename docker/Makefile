@@ -24,14 +24,14 @@ get_telos:
 	$(TELOS_CLEOS) get code eosio.msig -c ./contracts/telos/eosio.msig.wasm --wasm
 
 get_artifacts: get_wax get_eos get_telos
-	$(EOS_CLEOS) get code eosio.token -a ./contracts/eosio.token.abi
-	$(EOS_CLEOS) get code eosio.token -c ./contracts/eosio.token.wasm --wasm
+	$(EOS_CLEOS) get code eosio.token -a ./contracts/eosio.token/eosio.token.abi
+	$(EOS_CLEOS) get code eosio.token -c ./contracts/eosio.token/eosio.token.wasm --wasm
 
 build:
 	docker build -t qtest .
 
 start: stop
-	docker run --name qtest  --env ENABLE_SYSTEM_CONTRACT=1 --env EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH --env EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS --env SYSTEM_TOKEN_AMOUNT="12345678.00000000" --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qtest:latest
+	docker run --name qtest  --env ENABLE_SYSTEM_CONTRACT=0 --env EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH --env EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS --env SYSTEM_TOKEN_AMOUNT="12345678.0000" --env SYSTEM_TOKEN_SYMBOL="TLOS" -d -p 8888:8888 qtest:latest
 
 stop:
 	docker container rm qtest -f
