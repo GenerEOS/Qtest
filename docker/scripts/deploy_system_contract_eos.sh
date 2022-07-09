@@ -20,7 +20,7 @@ curl -X POST http://127.0.0.1:8888/v1/producer/schedule_protocol_feature_activat
 # action that allows activating desired protocol features prior to 
 # deploying a system contract with more features such as eosio.bios 
 # or eosio.system
-cleos set contract eosio contracts/eos eosio.bios.wasm eosio.bios.abi
+cleos set contract eosio contracts/eos eosio.system_1.7.x.wasm eosio.system_1.7.x.abi
 
 # ACTION_RETURN_VALUE
 cleos push action eosio activate '["c3a6138c5061cf291310887c0b5c71fcaffeab90d5deb50d3b9e687cead45071"]' -p eosio@active
@@ -54,14 +54,14 @@ cleos push action eosio activate '["4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb8
 cleos push action eosio activate '["299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707"]' -p eosio@active
 sleep 3
 
-# Designate eosio.msig as privileged account
-cleos push action eosio setpriv '["eosio.msig", 1]' -p eosio@active
-
-# Try deploy system contracts
+# Deploy system contracts
 until cleos set contract eosio contracts/eos eosio.system.wasm eosio.system.abi
 do
   sleep 1s
 done
+
+# Designate eosio.msig as privileged account
+cleos push action eosio setpriv '["eosio.msig", 1]' -p eosio@active
 
 # Init system contract
 cleos push action eosio init '[0, "4,EOS"]' -p eosio@active

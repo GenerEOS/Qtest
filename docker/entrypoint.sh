@@ -38,14 +38,15 @@ cd ${HOME_DIR}
 if [ $ENABLE_SYSTEM_CONTRACT -eq 1 ]; then
   if [ "$SYSTEM_TOKEN_SYMBOL" = "EOS" ]; then
     echo "Deploy EOS System Contracts..."
-    ./scripts/deploy_eos_system_contract.sh
+    ./scripts/deploy_system_contract_eos.sh
   elif [ "$SYSTEM_TOKEN_SYMBOL" = "WAX" ]; then
     echo "Deploy WAX System Contracts..."
-    ./scripts/deploy_wax_system_contract.sh
-  elif [ "$SYSTEM_TOKEN_SYMBOL" = "TELOS" ]; then
+    ./scripts/wax_deploy_system_contract_wax.sh
+  elif [ "$SYSTEM_TOKEN_SYMBOL" = "TLOS" ]; then
     echo "Deploy TELOS System Contracts..."
+    ./scripts/deploy_system_contract_tlos.sh
   else
-    echo "No available for system contracts: " + $SYSTEM_TOKEN_SYMBOL
+    echo "No available system contracts for token symbol: " + $SYSTEM_TOKEN_SYMBOL
   fi
 fi
 
