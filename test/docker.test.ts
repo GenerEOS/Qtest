@@ -2,6 +2,7 @@ import { startChainContainer, getContainers, killExistingContainer, getChainIp }
 
 describe('app test', () => {
   it ('start chain container', async () => {
+    await killExistingContainer();
     await startChainContainer();
 
     const containers = getContainers();
