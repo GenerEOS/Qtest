@@ -1,7 +1,7 @@
 {
   "options": {
     "enableSystemContract": false,
-    "tokenSupply": "123456789.00000000 WAX"
+    "tokenSupply": "123456789.0000 TLOS"
   },
   "contracts": {
     "testcontract": {

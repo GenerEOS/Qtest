@@ -44,7 +44,7 @@ describe('test wallet', () => {
           data: {
             from: account.name,
             to: 'acc11.test',
-            quantity: '0.10000000 WAX',
+            quantity: chain.coreSymbol.convertAssetString(0.1),
             memo: 'test'
           },
         }

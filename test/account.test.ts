@@ -99,7 +99,7 @@ describe('account test', () => {
           data: {
             from: account.name,
             to: 'acc11.test',
-            quantity: '0.10000000 WAX',
+            quantity: chain.coreSymbol.convertAssetString(0.1),
             memo: 'test'
           },
         }
@@ -114,7 +114,7 @@ describe('account test', () => {
 
   it ('test transfer core token', async () => {
     const senderBalanceBefore = await account.getBalance();
-    const transaction = await account.transfer('acc11.test', '1.00000000 WAX', 'abc test');
+    const transaction = await account.transfer('acc11.test', chain.coreSymbol.convertAssetString(1), 'abc test');
     expect(transaction.processed.block_num).toBeGreaterThan(0);
     await expectBalance(account, senderBalanceBefore.sub(1));
   }, 100000);

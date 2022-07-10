@@ -18,23 +18,23 @@ describe('chain test', () => {
     const testAccount1 = await chain.rpc.get_account('acc11.test');
     const testAccount10 = await chain.rpc.get_account('acc25.test');
     if (Chain.config.options.enableSystemContract) {
-      expect(testAccount1.total_resources.net_weight).toBe('10.00000000 WAX');
-      expect(testAccount10.total_resources.net_weight).toBe('10.00000000 WAX');
+      expect(testAccount1.total_resources.net_weight).toBe(chain.coreSymbol.convertAssetString(10));
+      expect(testAccount10.total_resources.net_weight).toBe(chain.coreSymbol.convertAssetString(10));
     }
   }, 100000);
 
   it ('create account', async () => {
     const newAccountName = 'newaccount11';
-    await chain.createAccount(newAccountName, '11.11000000 WAX', 99998);
+    await chain.createAccount(newAccountName, chain.coreSymbol.convertAssetString(11.11), 99998);
     const newAccountInfo = await chain.rpc.get_account(newAccountName);
 
     if (Chain.config.options.enableSystemContract) {
-      expect(newAccountInfo.total_resources.net_weight).toBe('10.00000000 WAX');
-      expect(newAccountInfo.total_resources.cpu_weight).toBe('10.00000000 WAX');
+      expect(newAccountInfo.total_resources.net_weight).toBe(chain.coreSymbol.convertAssetString(10));
+      expect(newAccountInfo.total_resources.cpu_weight).toBe(chain.coreSymbol.convertAssetString(10));
     }
 
-    const newAccountBalance = await chain.rpc.get_currency_balance('eosio.token', newAccountName, 'WAX');
-    expect(newAccountBalance[0]).toBe('11.11000000 WAX');
+    const newAccountBalance = await chain.rpc.get_currency_balance('eosio.token', newAccountName, chain.coreSymbol.symbol);
+    expect(newAccountBalance[0]).toBe(chain.coreSymbol.convertAssetString(11.11));
   });
 
   it ('push action', async () => {
@@ -50,7 +50,7 @@ describe('chain test', () => {
       data: {
         from: testingAccountName,
         to: chain.accounts[0].name,
-        quantity: '1.00000000 WAX',
+        quantity: chain.coreSymbol.convertAssetString(1),
         memo: 'test'
       }
     });
@@ -72,7 +72,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[0].name,
-          quantity: '1.00000000 WAX',
+          quantity: chain.coreSymbol.convertAssetString(1),
           memo: 'test'
         }
       },
@@ -86,7 +86,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[1].name,
-          quantity: '1.00000000 WAX',
+          quantity: chain.coreSymbol.convertAssetString(1),
           memo: 'test'
         }
       }
@@ -109,7 +109,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[0].name,
-          quantity: '1.00000000 WAX',
+          quantity: chain.coreSymbol.convertAssetString(1),
           memo: 'test'
         }
       },
@@ -123,7 +123,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[1].name,
-          quantity: '1.00000000 WAX',
+          quantity: chain.coreSymbol.convertAssetString(1),
           memo: 'test'
         }
       }
