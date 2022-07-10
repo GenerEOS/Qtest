@@ -3,30 +3,34 @@ import { PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Chain } from '../src/chain';
 
 describe('chain test', () => { 
-  const chain = new Chain();
+  let chain;
+
+  afterAll(async () => {
+    await chain.clear();
+  }, 10000);
 
   it ('test setup chain', async () => {
-    await chain.setupChain(true);
+    chain = await Chain.setupChain({ systemSetup: true });
     const chainInfo = await chain.rpc.get_info();
     expect(chainInfo.head_block_num).toBeGreaterThan(0);
     expect(chainInfo.last_irreversible_block_num).toBeGreaterThan(0);
 
     const testAccount1 = await chain.rpc.get_account('acc11.test');
     const testAccount10 = await chain.rpc.get_account('acc25.test');
-    expect(testAccount1.total_resources.net_weight).toBe('10.0000 WAX');
-    expect(testAccount10.total_resources.net_weight).toBe('10.0000 WAX');
+    expect(testAccount1.total_resources.net_weight).toBe('10.00000000 WAX');
+    expect(testAccount10.total_resources.net_weight).toBe('10.00000000 WAX');
   }, 100000);
 
   it ('create account', async () => {
     const newAccountName = 'newaccount11';
-    await chain.createAccount(newAccountName, '11.1100 WAX', 99998);
+    await chain.createAccount(newAccountName, '11.11000000 WAX', 99998);
     const newAccountInfo = await chain.rpc.get_account(newAccountName);
 
-    expect(newAccountInfo.total_resources.net_weight).toBe('10.0000 WAX');
-    expect(newAccountInfo.total_resources.cpu_weight).toBe('10.0000 WAX');
+    expect(newAccountInfo.total_resources.net_weight).toBe('10.00000000 WAX');
+    expect(newAccountInfo.total_resources.cpu_weight).toBe('10.00000000 WAX');
 
     const newAccountBalance = await chain.rpc.get_currency_balance('eosio.token', newAccountName, 'WAX');
-    expect(newAccountBalance[0]).toBe('11.1100 WAX');
+    expect(newAccountBalance[0]).toBe('11.11000000 WAX');
   });
 
   it ('push action', async () => {
@@ -42,7 +46,7 @@ describe('chain test', () => {
       data: {
         from: testingAccountName,
         to: chain.accounts[0].name,
-        quantity: '1.0000 WAX',
+        quantity: '1.00000000 WAX',
         memo: 'test'
       }
     });
@@ -64,7 +68,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[0].name,
-          quantity: '1.0000 WAX',
+          quantity: '1.00000000 WAX',
           memo: 'test'
         }
       },
@@ -78,7 +82,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[1].name,
-          quantity: '1.0000 WAX',
+          quantity: '1.00000000 WAX',
           memo: 'test'
         }
       }
@@ -101,7 +105,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[0].name,
-          quantity: '1.0000 WAX',
+          quantity: '1.00000000 WAX',
           memo: 'test'
         }
       },
@@ -115,7 +119,7 @@ describe('chain test', () => {
         data: {
           from: testingAccountName,
           to: chain.accounts[1].name,
-          quantity: '1.0000 WAX',
+          quantity: '1.00000000 WAX',
           memo: 'test'
         }
       }

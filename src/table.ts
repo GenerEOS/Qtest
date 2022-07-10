@@ -1,7 +1,6 @@
-const fs = require('fs');
 import { SerialBuffer } from 'eosjs/dist/eosjs-serialize';
-import { Account } from './account';
 import { GetTableRowsResult } from 'eosjs/dist/eosjs-rpc-interfaces';
+import { Account } from './account';
 
 export class Table {
   public name: String;

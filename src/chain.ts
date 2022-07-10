@@ -4,42 +4,60 @@ import { Action } from 'eosjs/dist/eosjs-serialize';
 import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
 import { ReadOnlyTransactResult, PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Account } from './account';
-import { killExistingContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
+import { killExistingChainContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
 import { generateTapos, toAssetQuantity, sleep } from './utils';
 import { signatureProvider } from './wallet';
 
 export class Chain {
   public coreToken = {
     symbol: 'WAX',
-    decimal: 4
+    decimal: 8
   };
   public api;
   public rpc;
   public accounts: Account[];
   public timeAdded: number;
-  constructor() { }
+  public config: any;
+  public port: number;
 
-  async setupChain(systemSetup: boolean = true) {
-    await killExistingContainer();
-    await startChainContainer();
+  constructor(rpc: JsonRpc, api: Api, port: number, config: { systemSetup: boolean }) {
+    this.port = port;
+    this.rpc = rpc;
+    this.api = api;
+    this.config = config;
+    this.timeAdded = 0;
+  }
 
-    const chainIp = await getChainIp();
-    this.rpc = new JsonRpc(`http://${chainIp}:8888`, { fetch });
-    // this.rpc = new JsonRpc(`http://127.0.0.1:8888`, { fetch });
-    this.api = new Api({
-      rpc: this.rpc,
+  static chainInstance: number = 0;
+
+  static async setupChain(config: { systemSetup: boolean }) {
+    const port = Math.floor(Math.random()*9900 + 100);
+    await startChainContainer(port);
+
+    const chainIp = await getChainIp(port);
+    // const rpc = new JsonRpc(`http://${chainIp}:${port}`, { fetch });
+    const rpc = new JsonRpc(`http://127.0.0.1:${port}`, { fetch });
+    const api = new Api({
+      rpc,
       signatureProvider,
       textDecoder: new TextDecoder(),
       textEncoder: new TextEncoder(),
     });
 
-    await this.waitForChainStart();
-    if (systemSetup) {
-      await this.waitForSystemContractInitialized();
+    const newChain = new Chain(rpc, api, port, config);
+
+    await newChain.waitForChainStart();
+    if (config.systemSetup) {
+      await newChain.waitForSystemContractInitialized();
     }
 
-    this.accounts = await this.createTestAccounts(10);
-    this.timeAdded = 0;
+    await newChain.initializeTestAccounts();
+
+    return newChain;
+  }
+
+  async clear() {
+    await killExistingChainContainer(this.port);
   }
 
   async getInfo() {
@@ -75,6 +93,10 @@ export class Chain {
     } catch (e) {
       return false;
     }
+  }
+
+  async initializeTestAccounts() {
+    this.accounts = await this.createTestAccounts(10);
   }
 
   async createTestAccounts(length: number) {
@@ -234,7 +256,7 @@ export class Chain {
           `Exceeded ${maxTries} tries to change the blockchain time. Test cannot proceed.`
         );
       }
-      await manipulateChainTime(this.timeAdded + addingTime);
+      await manipulateChainTime(this.port, this.timeAdded + addingTime);
       tries++;
       await sleep(1000);
     } while (!(await this.isProducingBlock()));
@@ -281,26 +303,14 @@ export class Chain {
   }
 
   private async waitForSystemContractInitialized() {
-    // let retryCount = 0;
-    // while (!(await this.isSystemContractInitialized())) {
-    //   await sleep(1000);
-    //   if (retryCount === 15) {
-    //     throw new Error('can not initilize system contract');
-    //   }
-    //   retryCount++;
-    // }
-    await sleep(15000);
-    await this.pushAction({
-      account: 'eosio',
-      name: 'init',
-      authorization: [{
-        actor: 'eosio',
-        permission: 'active'
-      }],
-      data: {
-        version: 0,
-        core: '4,WAX'
+    let retryCount = 0;
+    while (!(await this.isSystemContractInitialized())) {
+      await sleep(2000);
+      if (retryCount === 15) {
+        throw new Error('can not initilize system contract');
       }
-    });
+      retryCount++;
+    }
+    await sleep(1000);
   }
 }

@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import { Asset } from './asset';
 
 function execute(command, ignoreFail = false) {
   try {
@@ -13,21 +14,23 @@ function execute(command, ignoreFail = false) {
   }
 }
 
-export const startChainContainer = async (name: string = 'qtest', tokenSupply = "12345678.0000 WAX") => {
-  const coreSymbol = tokenSupply.split(' ')[1];
+export const startChainContainer = async (rpcPort: number = 8880, tokenSupply = "12345678.00000000 WAX") => {
+  const asset = Asset.fromString(tokenSupply);
+  const name = 'qtest' + rpcPort;
   execute(`docker pull songmai108/qtest:v0.0.1`);
-  execute(`docker run --name ${name} --env EOSIO_PUB_KEY=EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV --env EOSIO_PRV_KEY=5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3 --env SYSTEM_TOKEN_SUPPLY="${tokenSupply}" --env SYSTEM_TOKEN_SYMBOL=${coreSymbol} --env ENABLE_SYSTEM_CONTRACT=1 -d -p 8888:8888 songmai108/qtest:v0.0.1`);
+  execute(`docker run --name ${name} --env EOSIO_PUB_KEY=EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV --env EOSIO_PRV_KEY=5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3 --env SYSTEM_TOKEN_AMOUNT="${asset.amountFixed()}" --env SYSTEM_TOKEN_SYMBOL=${asset.symbol.symbol} --env ENABLE_SYSTEM_CONTRACT=1 -d -p ${rpcPort}:8888 songmai108/qtest:v1.0.2`);
 }
 
-export const manipulateChainTime = async (time: number) => {
-  execute(`docker exec qtest /app/scripts/manipulate_time.sh +${time}`);
+export const manipulateChainTime = async (rpcPort: number, time: number) => {
+  const name = 'qtest' + rpcPort;
+  execute(`docker exec ${name} /app/scripts/manipulate_time.sh +${time}`);
 }
 
 export const getContainers = (): { name: string, id: string }[] => {
   const rawResult = execute('docker ps -a --format "{{.Names}}:{{.ID}}"');
   const rawResultSplit = rawResult.split('\n');
   rawResultSplit.pop();
-  return rawResultSplit.map(line => { 
+  return rawResultSplit.map(line => {
     const lineSplit = line.split(':');
     return {
       name: lineSplit[0],
@@ -36,15 +39,21 @@ export const getContainers = (): { name: string, id: string }[] => {
   })
 }
 
-export const killExistingContainer = async (): Promise<void> => {
+export const killExistingChainContainer = async (rpcPort: number): Promise<void> => {
+  const name = 'qtest' + rpcPort;
+  execute(`docker rm -f ${name}`);
+}
+
+export const killAllExistingChainContainer = async (): Promise<void> => {
   const containers = getContainers();
-  const qTestContainer = containers.find(c => c.name === 'qtest');
+  const qTestContainer = containers.find(c => c.name.startsWith('qtest'));
   if (qTestContainer) {
     execute(`docker rm -f ${qTestContainer.id}`);
   }
 }
 
-export const getChainIp = async (name: string = 'qtest'): Promise<string> => {
+export const getChainIp = async (rpcPort: number): Promise<string> => {
+  const name = 'qtest' + rpcPort;
   return execute(`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${name}`);
 }
 
