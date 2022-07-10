@@ -3,13 +3,17 @@ import { Chain } from '../src/chain';
 import { generateTapos } from '../src/utils';
 
 describe('account test', () => { 
-  const chain = new Chain();
+  let chain;
   let account;
 
   beforeAll(async () => {
-    await chain.setupChain(true);
+    chain = await Chain.setupChain();
     account = await chain.createAccount('testaccount1');
   }, 60000);
+
+  afterAll(async () => {
+    await chain.clear();
+  }, 10000);
 
   it ('test update auth', async () => {
     await account.updateAuth('testauth', 'active', 2, 
@@ -95,7 +99,7 @@ describe('account test', () => {
           data: {
             from: account.name,
             to: 'acc11.test',
-            quantity: '0.1000 WAX',
+            quantity: '0.10000000 WAX',
             memo: 'test'
           },
         }
@@ -110,14 +114,14 @@ describe('account test', () => {
 
   it ('test transfer core token', async () => {
     const senderBalanceBefore = await account.getBalance();
-    const transaction = await account.transfer('acc11.test', '1.0000 WAX', 'abc test');
+    const transaction = await account.transfer('acc11.test', '1.00000000 WAX', 'abc test');
     expect(transaction.processed.block_num).toBeGreaterThan(0);
-    expectBalance(account, senderBalanceBefore - 1);
+    await expectBalance(account, senderBalanceBefore.sub(1));
   }, 100000);
 
   it ('set contract', async () => {
     const contractAccount = chain.accounts[1];
-    const contract = await contractAccount.setContract('./contracts/build/testcontract.wasm', './contracts/build/testcontract.abi');
+    const contract = await contractAccount.setContract('testcontract');
     let transaction = await chain.pushAction({
       account: contractAccount.name,
       name: 'hello',

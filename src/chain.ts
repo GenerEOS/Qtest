@@ -1,45 +1,73 @@
 import fetch from 'node-fetch';
+import fs from 'fs';
 import { Api, JsonRpc } from 'eosjs';
 import { Action } from 'eosjs/dist/eosjs-serialize';
 import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
 import { ReadOnlyTransactResult, PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Account } from './account';
-import { killExistingContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
+import { killExistingChainContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
 import { generateTapos, toAssetQuantity, sleep } from './utils';
 import { signatureProvider } from './wallet';
+import { Asset, Symbol } from './asset';
 
 export class Chain {
-  public coreToken = {
-    symbol: 'WAX',
-    decimal: 4
-  };
+  public coreSymbol: Symbol;
+  public tokenSupply: Asset;
   public api;
   public rpc;
   public accounts: Account[];
   public timeAdded: number;
-  constructor() { }
+  public port: number;
 
-  async setupChain(systemSetup: boolean = true) {
-    await killExistingContainer();
-    await startChainContainer();
+  constructor(rpc: JsonRpc, api: Api, port: number, tokenSupply: Asset) {
+    this.port = port;
+    this.rpc = rpc;
+    this.api = api;
+    this.timeAdded = 0;
+    this.tokenSupply = tokenSupply;
+    this.coreSymbol = this.tokenSupply.symbol;
+  }
 
-    const chainIp = await getChainIp();
-    this.rpc = new JsonRpc(`http://${chainIp}:8888`, { fetch });
-    // this.rpc = new JsonRpc(`http://127.0.0.1:8888`, { fetch });
-    this.api = new Api({
-      rpc: this.rpc,
+  static chainInstance: number = 0;
+  static configFilePath: string = './qtest.json';
+  static config: any;
+
+  static async setupChain() {
+    if (!fs.existsSync(Chain.configFilePath)) {
+      throw new Error('chain configuration file does not exist, please create it first!.')
+    }
+    if (!Chain.config) {
+      Chain.config = JSON.parse(fs.readFileSync(Chain.configFilePath, 'utf8'));
+    }
+
+    const port = Math.floor(Math.random()*9900 + 100);
+    const tokenSupply = Asset.fromString(Chain.config.options.tokenSupply)
+    await startChainContainer(Chain.config.options.enableSystemContract, port, tokenSupply);
+
+    // const chainIp = await getChainIp(port);
+    // const rpc = new JsonRpc(`http://${chainIp}:${port}`, { fetch });
+    const rpc = new JsonRpc(`http://127.0.0.1:${port}`, { fetch });
+    const api = new Api({
+      rpc,
       signatureProvider,
       textDecoder: new TextDecoder(),
       textEncoder: new TextEncoder(),
     });
 
-    await this.waitForChainStart();
-    if (systemSetup) {
-      await this.waitForSystemContractInitialized();
+    const newChain = new Chain(rpc, api, port, tokenSupply);
+
+    await newChain.waitForChainStart();
+    if (Chain.config.options.enableSystemContract) {
+      await newChain.waitForSystemContractInitialized();
     }
 
-    this.accounts = await this.createTestAccounts(10);
-    this.timeAdded = 0;
+    await newChain.initializeTestAccounts();
+
+    return newChain;
+  }
+
+  async clear() {
+    await killExistingChainContainer(this.port);
   }
 
   async getInfo() {
@@ -77,6 +105,10 @@ export class Chain {
     }
   }
 
+  async initializeTestAccounts() {
+    this.accounts = await this.createTestAccounts(10);
+  }
+
   async createTestAccounts(length: number) {
     let testAccountNames: string[] = [];
     for (let i = 0; i < length; i++) {
@@ -85,7 +117,7 @@ export class Chain {
     return this.createAccounts(testAccountNames);
   }
 
-  async createAccounts(accounts, supplyAmount = toAssetQuantity(100, this.coreToken)): Promise<Account[]> {
+  async createAccounts(accounts, supplyAmount = this.coreSymbol.convertAssetString(100)): Promise<Account[]> {
     let accountInstances: Account[] = [];
     for (const account of accounts) {
       accountInstances.push(await this.createAccount(account, supplyAmount));
@@ -94,45 +126,49 @@ export class Chain {
     return accountInstances;
   }
 
-  async createAccount(account: string, supplyAmount = toAssetQuantity(100, this.coreToken), bytes: number = 1024 * 1024): Promise<Account> {
-    await this.api.transact({
-      actions: [
-        {
-          account: 'eosio',
-          name: 'newaccount',
-          authorization: [
-            {
-              actor: 'eosio',
-              permission: 'active',
-            },
-          ],
-          data: {
-            creator: 'eosio',
-            name: account,
-            owner: {
-              threshold: 1,
-              keys: [
-                {
-                  key: signatureProvider.availableKeys[0],
-                  weight: 1,
-                },
-              ],
-              accounts: [],
-              waits: [],
-            },
-            active: {
-              threshold: 1,
-              keys: [
-                {
-                  key: signatureProvider.availableKeys[0],
-                  weight: 1,
-                },
-              ],
-              accounts: [],
-              waits: [],
-            },
+  async createAccount(account: string, supplyAmount = this.coreSymbol.convertAssetString(100), bytes: number = 1024 * 1024): Promise<Account> {
+    let createAccountActions = [
+      {
+        account: 'eosio',
+        name: 'newaccount',
+        authorization: [
+          {
+            actor: 'eosio',
+            permission: 'active',
+          },
+        ],
+        data: {
+          creator: 'eosio',
+          name: account,
+          owner: {
+            threshold: 1,
+            keys: [
+              {
+                key: signatureProvider.availableKeys[0],
+                weight: 1,
+              },
+            ],
+            accounts: [],
+            waits: [],
+          },
+          active: {
+            threshold: 1,
+            keys: [
+              {
+                key: signatureProvider.availableKeys[0],
+                weight: 1,
+              },
+            ],
+            accounts: [],
+            waits: [],
           },
         },
+      }
+    ];
+
+    if (Chain.config.options.enableSystemContract) {
+      // @ts-ignore
+      createAccountActions = createAccountActions.concat([
         {
           account: 'eosio',
           name: 'buyrambytes',
@@ -160,29 +196,34 @@ export class Chain {
           data: {
             from: 'eosio',
             receiver: account,
-            stake_net_quantity: toAssetQuantity(10, this.coreToken),
-            stake_cpu_quantity: toAssetQuantity(10, this.coreToken),
+            stake_net_quantity: this.coreSymbol.convertAssetString(10),
+            stake_cpu_quantity: this.coreSymbol.convertAssetString(10),
             transfer: 1,
           },
         },
+      ]);
+    }
+
+    createAccountActions.push({
+      account: 'eosio.token',
+      name: 'transfer',
+      authorization: [
         {
-          account: 'eosio.token',
-          name: 'transfer',
-          authorization: [
-            {
-              actor: 'eosio',
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: 'eosio',
-            to: account,
-            quantity: supplyAmount,
-            memo: 'supply to test account',
-          },
+          actor: 'eosio',
+          permission: 'active',
         },
       ],
-    },
+      data: {
+        // @ts-ignore
+        from: 'eosio',
+        to: account,
+        quantity: supplyAmount,
+        memo: 'supply to test account',
+      },
+    },)
+    await this.api.transact({
+      actions: createAccountActions,
+      },
       generateTapos()
     )
     return new Account(this, account);
@@ -234,7 +275,7 @@ export class Chain {
           `Exceeded ${maxTries} tries to change the blockchain time. Test cannot proceed.`
         );
       }
-      await manipulateChainTime(this.timeAdded + addingTime);
+      await manipulateChainTime(this.port, this.timeAdded + addingTime);
       tries++;
       await sleep(1000);
     } while (!(await this.isProducingBlock()));
@@ -253,6 +294,7 @@ export class Chain {
       }
       retryCount++;
     }
+    await sleep(1000);
   }
 
   async waitTillNextBlock(numBlocks: number = 1) {
@@ -281,26 +323,13 @@ export class Chain {
   }
 
   private async waitForSystemContractInitialized() {
-    // let retryCount = 0;
-    // while (!(await this.isSystemContractInitialized())) {
-    //   await sleep(1000);
-    //   if (retryCount === 15) {
-    //     throw new Error('can not initilize system contract');
-    //   }
-    //   retryCount++;
-    // }
-    await sleep(15000);
-    await this.pushAction({
-      account: 'eosio',
-      name: 'init',
-      authorization: [{
-        actor: 'eosio',
-        permission: 'active'
-      }],
-      data: {
-        version: 0,
-        core: '4,WAX'
+    let retryCount = 0;
+    while (!(await this.isSystemContractInitialized())) {
+      await sleep(2000);
+      if (retryCount === 15) {
+        throw new Error('can not initilize system contract');
       }
-    });
+      retryCount++;
+    }
   }
 }

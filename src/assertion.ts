@@ -1,6 +1,7 @@
 import { ActionTrace, TransactResult } from "eosjs/dist/eosjs-api-interfaces";
 import { Authorization } from "eosjs/dist/eosjs-serialize";
 import { Account } from "./account";
+import { Asset } from "./asset";
 
 export async function expectThrow(promise: Promise<any>, message: string): Promise<boolean> {
   try {
@@ -51,9 +52,9 @@ export function expectAction(transaction: TransactResult, expectedAction: { acco
   throw new Error(`Action ${expectedAction.account}:${expectedAction.name} not found`);
 }
 
-export async function expectBalance(account: Account, expectedBalance: Number) {
+export async function expectBalance(account: Account, expectedBalance: Asset) {
   const accountBalance = await account.getBalance();
-  if (accountBalance !== expectedBalance) {
+  if (accountBalance.toString() !== expectedBalance.toString()) {
     throw new Error(`Account ${account.name} balance expected ${expectedBalance} to be ${accountBalance}`);
   }
 }

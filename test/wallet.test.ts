@@ -3,13 +3,17 @@ import { generateTapos } from '../src/utils';
 import { importKey, signatureProvider, createKey } from '../src/wallet';
 
 describe('test wallet', () => {
-  const chain = new Chain();
+  let chain;
   let account;
 
   beforeAll(async () => {
-    await chain.setupChain(true);
+    chain = await Chain.setupChain();
     account = await chain.createAccount('testaccount1');
   }, 60000);
+
+  afterAll(async () => {
+    await chain.clear();
+  }, 10000);
 
   it ('import key', async () => {
     importKey('5JLA28jodzEmhdgGsdC6s8zkWNBTKmNtxB9RywHoKUQ6FpAmRMG');
@@ -40,7 +44,7 @@ describe('test wallet', () => {
           data: {
             from: account.name,
             to: 'acc11.test',
-            quantity: '0.1000 WAX',
+            quantity: '0.10000000 WAX',
             memo: 'test'
           },
         }

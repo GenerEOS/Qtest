@@ -1,0 +1,12 @@
+{
+  "options": {
+    "enableSystemContract": false,
+    "tokenSupply": "123456789.00000000 WAX"
+  },
+  "contracts": {
+    "testcontract": {
+      "abi": "./contracts/build/testcontract.abi",
+      "wasm": "./contracts/build/testcontract.wasm"
+    }
+  }
+}
