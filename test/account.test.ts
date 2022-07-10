@@ -7,7 +7,7 @@ describe('account test', () => {
   let account;
 
   beforeAll(async () => {
-    chain = await Chain.setupChain({ systemSetup: true });
+    chain = await Chain.setupChain();
     account = await chain.createAccount('testaccount1');
   }, 60000);
 
@@ -116,12 +116,12 @@ describe('account test', () => {
     const senderBalanceBefore = await account.getBalance();
     const transaction = await account.transfer('acc11.test', '1.00000000 WAX', 'abc test');
     expect(transaction.processed.block_num).toBeGreaterThan(0);
-    expectBalance(account, senderBalanceBefore - 1);
+    await expectBalance(account, senderBalanceBefore.sub(1));
   }, 100000);
 
   it ('set contract', async () => {
     const contractAccount = chain.accounts[1];
-    const contract = await contractAccount.setContract('./contracts/build/testcontract.wasm', './contracts/build/testcontract.abi');
+    const contract = await contractAccount.setContract('testcontract');
     let transaction = await chain.pushAction({
       account: contractAccount.name,
       name: 'hello',

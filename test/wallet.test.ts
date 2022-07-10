@@ -7,7 +7,7 @@ describe('test wallet', () => {
   let account;
 
   beforeAll(async () => {
-    chain = await Chain.setupChain({ systemSetup: true });
+    chain = await Chain.setupChain();
     account = await chain.createAccount('testaccount1');
   }, 60000);
 

@@ -10,15 +10,17 @@ describe('chain test', () => {
   }, 10000);
 
   it ('test setup chain', async () => {
-    chain = await Chain.setupChain({ systemSetup: true });
+    chain = await Chain.setupChain();
     const chainInfo = await chain.rpc.get_info();
     expect(chainInfo.head_block_num).toBeGreaterThan(0);
     expect(chainInfo.last_irreversible_block_num).toBeGreaterThan(0);
 
     const testAccount1 = await chain.rpc.get_account('acc11.test');
     const testAccount10 = await chain.rpc.get_account('acc25.test');
-    expect(testAccount1.total_resources.net_weight).toBe('10.00000000 WAX');
-    expect(testAccount10.total_resources.net_weight).toBe('10.00000000 WAX');
+    if (Chain.config.options.enableSystemContract) {
+      expect(testAccount1.total_resources.net_weight).toBe('10.00000000 WAX');
+      expect(testAccount10.total_resources.net_weight).toBe('10.00000000 WAX');
+    }
   }, 100000);
 
   it ('create account', async () => {
@@ -26,8 +28,10 @@ describe('chain test', () => {
     await chain.createAccount(newAccountName, '11.11000000 WAX', 99998);
     const newAccountInfo = await chain.rpc.get_account(newAccountName);
 
-    expect(newAccountInfo.total_resources.net_weight).toBe('10.00000000 WAX');
-    expect(newAccountInfo.total_resources.cpu_weight).toBe('10.00000000 WAX');
+    if (Chain.config.options.enableSystemContract) {
+      expect(newAccountInfo.total_resources.net_weight).toBe('10.00000000 WAX');
+      expect(newAccountInfo.total_resources.cpu_weight).toBe('10.00000000 WAX');
+    }
 
     const newAccountBalance = await chain.rpc.get_currency_balance('eosio.token', newAccountName, 'WAX');
     expect(newAccountBalance[0]).toBe('11.11000000 WAX');

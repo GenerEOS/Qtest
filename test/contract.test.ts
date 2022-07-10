@@ -6,10 +6,10 @@ describe('account test', () => {
   let contract;
 
   beforeAll(async () => {
-    chain = await Chain.setupChain({ systemSetup: true });
+    chain = await Chain.setupChain();
     const contractAccount = chain.accounts[1];
     await contractAccount.addCode('active');
-    contract = await contractAccount.setContract('./contracts/build/testcontract.wasm', './contracts/build/testcontract.abi');
+    contract = await contractAccount.setContract('testcontract');
   }, 60000);
 
   afterAll(async () => {
@@ -141,7 +141,7 @@ describe('account test', () => {
       {
         seller: seller.name,
         item_name: 'testitem1111',
-        price: '12.34560000 WAX',
+        price: chain.coreSymbol.convertAssetString(12.34560000),
         selling_time: expectedSellingTime
       },
       [{ actor: chain.accounts[2].name, permission: 'active' }]
@@ -153,25 +153,25 @@ describe('account test', () => {
       data: {
         seller: chain.accounts[2].name,
         item_name: 'testitem1111',
-        price: '12.34560000 WAX',
+        price: chain.coreSymbol.convertAssetString(12.34560000),
         selling_time: expectedSellingTime
       },
       authorization: [{ actor: contract.account.name, permission: 'active' }]
     });
 
-    expect(buyer.transfer(contract.account.name, '12.34560000 WAX', `${seller.name}-testitem1111`))
+    expect(buyer.transfer(contract.account.name, chain.coreSymbol.convertAssetString(12.34560000), `${seller.name}-testitem1111`))
       .rejects
       .toThrowError('Item has not been available yet');
 
     await chain.addTime(2*3600); // add 2 hours, item still not available yet
 
-    expect(buyer.transfer(contract.account.name, '12.34560000 WAX', `${seller.name}-testitem1111`))
+    expect(buyer.transfer(contract.account.name, chain.coreSymbol.convertAssetString(12.34560000), `${seller.name}-testitem1111`))
       .rejects
       .toThrowError('Item has not been available yet');
 
     await chain.addTime(3600);
 
-    const buyItemTransaction = await buyer.transfer(contract.account.name, '12.34560000 WAX', `${seller.name}-testitem1111`);
+    const buyItemTransaction = await buyer.transfer(contract.account.name, chain.coreSymbol.convertAssetString(12.34560000), `${seller.name}-testitem1111`);
     expectAction(buyItemTransaction, {
       account: contract.account.name,
       name: 'logbuyitem',

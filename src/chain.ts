@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import fs from 'fs';
 import { Api, JsonRpc } from 'eosjs';
 import { Action } from 'eosjs/dist/eosjs-serialize';
 import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
@@ -7,34 +8,43 @@ import { Account } from './account';
 import { killExistingChainContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
 import { generateTapos, toAssetQuantity, sleep } from './utils';
 import { signatureProvider } from './wallet';
+import { Asset, Symbol } from './asset';
 
 export class Chain {
-  public coreToken = {
-    symbol: 'WAX',
-    decimal: 8
-  };
+  public coreSymbol: Symbol;
+  public tokenSupply: Asset;
   public api;
   public rpc;
   public accounts: Account[];
   public timeAdded: number;
-  public config: any;
   public port: number;
 
-  constructor(rpc: JsonRpc, api: Api, port: number, config: { systemSetup: boolean }) {
+  constructor(rpc: JsonRpc, api: Api, port: number, tokenSupply: Asset) {
     this.port = port;
     this.rpc = rpc;
     this.api = api;
-    this.config = config;
     this.timeAdded = 0;
+    this.tokenSupply = tokenSupply;
+    this.coreSymbol = this.tokenSupply.symbol;
   }
 
   static chainInstance: number = 0;
+  static configFilePath: string = './qtest.json';
+  static config: any;
 
-  static async setupChain(config: { systemSetup: boolean }) {
+  static async setupChain() {
+    if (!fs.existsSync(Chain.configFilePath)) {
+      throw new Error('chain configuration file does not exist, please create it first!.')
+    }
+    if (!Chain.config) {
+      Chain.config = JSON.parse(fs.readFileSync(Chain.configFilePath, 'utf8'));
+    }
+
     const port = Math.floor(Math.random()*9900 + 100);
-    await startChainContainer(port);
+    const tokenSupply = Asset.fromString(Chain.config.options.tokenSupply)
+    await startChainContainer(Chain.config.options.enableSystemContract, port, tokenSupply);
 
-    const chainIp = await getChainIp(port);
+    // const chainIp = await getChainIp(port);
     // const rpc = new JsonRpc(`http://${chainIp}:${port}`, { fetch });
     const rpc = new JsonRpc(`http://127.0.0.1:${port}`, { fetch });
     const api = new Api({
@@ -44,10 +54,10 @@ export class Chain {
       textEncoder: new TextEncoder(),
     });
 
-    const newChain = new Chain(rpc, api, port, config);
+    const newChain = new Chain(rpc, api, port, tokenSupply);
 
     await newChain.waitForChainStart();
-    if (config.systemSetup) {
+    if (Chain.config.options.enableSystemContract) {
       await newChain.waitForSystemContractInitialized();
     }
 
@@ -107,7 +117,7 @@ export class Chain {
     return this.createAccounts(testAccountNames);
   }
 
-  async createAccounts(accounts, supplyAmount = toAssetQuantity(100, this.coreToken)): Promise<Account[]> {
+  async createAccounts(accounts, supplyAmount = this.coreSymbol.convertAssetString(100)): Promise<Account[]> {
     let accountInstances: Account[] = [];
     for (const account of accounts) {
       accountInstances.push(await this.createAccount(account, supplyAmount));
@@ -116,45 +126,49 @@ export class Chain {
     return accountInstances;
   }
 
-  async createAccount(account: string, supplyAmount = toAssetQuantity(100, this.coreToken), bytes: number = 1024 * 1024): Promise<Account> {
-    await this.api.transact({
-      actions: [
-        {
-          account: 'eosio',
-          name: 'newaccount',
-          authorization: [
-            {
-              actor: 'eosio',
-              permission: 'active',
-            },
-          ],
-          data: {
-            creator: 'eosio',
-            name: account,
-            owner: {
-              threshold: 1,
-              keys: [
-                {
-                  key: signatureProvider.availableKeys[0],
-                  weight: 1,
-                },
-              ],
-              accounts: [],
-              waits: [],
-            },
-            active: {
-              threshold: 1,
-              keys: [
-                {
-                  key: signatureProvider.availableKeys[0],
-                  weight: 1,
-                },
-              ],
-              accounts: [],
-              waits: [],
-            },
+  async createAccount(account: string, supplyAmount = this.coreSymbol.convertAssetString(100), bytes: number = 1024 * 1024): Promise<Account> {
+    let createAccountActions = [
+      {
+        account: 'eosio',
+        name: 'newaccount',
+        authorization: [
+          {
+            actor: 'eosio',
+            permission: 'active',
+          },
+        ],
+        data: {
+          creator: 'eosio',
+          name: account,
+          owner: {
+            threshold: 1,
+            keys: [
+              {
+                key: signatureProvider.availableKeys[0],
+                weight: 1,
+              },
+            ],
+            accounts: [],
+            waits: [],
+          },
+          active: {
+            threshold: 1,
+            keys: [
+              {
+                key: signatureProvider.availableKeys[0],
+                weight: 1,
+              },
+            ],
+            accounts: [],
+            waits: [],
           },
         },
+      }
+    ];
+
+    if (Chain.config.options.enableSystemContract) {
+      // @ts-ignore
+      createAccountActions = createAccountActions.concat([
         {
           account: 'eosio',
           name: 'buyrambytes',
@@ -182,29 +196,34 @@ export class Chain {
           data: {
             from: 'eosio',
             receiver: account,
-            stake_net_quantity: toAssetQuantity(10, this.coreToken),
-            stake_cpu_quantity: toAssetQuantity(10, this.coreToken),
+            stake_net_quantity: this.coreSymbol.convertAssetString(10),
+            stake_cpu_quantity: this.coreSymbol.convertAssetString(10),
             transfer: 1,
           },
         },
+      ]);
+    }
+
+    createAccountActions.push({
+      account: 'eosio.token',
+      name: 'transfer',
+      authorization: [
         {
-          account: 'eosio.token',
-          name: 'transfer',
-          authorization: [
-            {
-              actor: 'eosio',
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: 'eosio',
-            to: account,
-            quantity: supplyAmount,
-            memo: 'supply to test account',
-          },
+          actor: 'eosio',
+          permission: 'active',
         },
       ],
-    },
+      data: {
+        // @ts-ignore
+        from: 'eosio',
+        to: account,
+        quantity: supplyAmount,
+        memo: 'supply to test account',
+      },
+    },)
+    await this.api.transact({
+      actions: createAccountActions,
+      },
       generateTapos()
     )
     return new Account(this, account);
@@ -275,6 +294,7 @@ export class Chain {
       }
       retryCount++;
     }
+    await sleep(1000);
   }
 
   async waitTillNextBlock(numBlocks: number = 1) {
@@ -311,6 +331,5 @@ export class Chain {
       }
       retryCount++;
     }
-    await sleep(1000);
   }
 }

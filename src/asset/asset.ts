@@ -29,4 +29,24 @@ export class Asset {
   amountFixed(): string {
     return this.symbol.convertQuantity(this.amount);
   }
+
+  sub(quantity: Asset | number) {
+    let subtractor = quantity;
+    if (quantity instanceof Asset) {
+      subtractor = quantity.amount;
+    }
+    // @ts-ignore
+    this.amount = this.amount - subtractor;
+    return this;
+  }
+
+  add(quantity: Asset | number) {
+    let adder = quantity;
+    if (quantity instanceof Asset) {
+      adder = quantity.amount;
+    }
+    // @ts-ignore
+    this.amount = this.amount + adder;
+    return this;
+  }
 }
