@@ -1,5 +1,5 @@
 #!/bin/sh
-DATADIR="./logs"
+DATADIR="./logs/"$SYSTEM_TOKEN_SYMBOL
 
 BPACCOUNT=eosio
 

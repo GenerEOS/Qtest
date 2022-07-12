@@ -8,6 +8,7 @@ if [ ! -d $DATADIR ]; then
 fi
 
 nodeos \
+--snapshot $DATADIR"/data/snapshots/snapshot.bin" \
 --signature-provider $EOSIO_PUB_KEY=KEY:$EOSIO_PRV_KEY \
 --plugin eosio::net_plugin \
 --plugin eosio::net_api_plugin \

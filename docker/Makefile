@@ -26,12 +26,20 @@ get_telos:
 get_artifacts: get_wax get_eos get_telos
 	$(EOS_CLEOS) get code eosio.token -a ./contracts/eosio.token/eosio.token.abi
 	$(EOS_CLEOS) get code eosio.token -c ./contracts/eosio.token/eosio.token.wasm --wasm
+	
+build_snapshots:
+	docker build -f Dockerfile.snapshot -t qsnapshot .
+
+create_snapshots: stop
+	docker run --name qsnapshot --env EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH --env EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qsnapshot:latest
+	# docker cp qsnapshot:/app/snapshot-node/./logs/ ./node/
 
 build:
-	docker build -t qtest .
+	docker build -f Dockerfile -t qtest .
 
 start: stop
-	docker run --name qtest  --env ENABLE_SYSTEM_CONTRACT=1 --env EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH --env EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS --env SYSTEM_TOKEN_AMOUNT="12345678.00000000" --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qtest:latest
+	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qtest:latest
 
 stop:
 	docker container rm qtest -f
+	docker container rm qsnapshot -f
