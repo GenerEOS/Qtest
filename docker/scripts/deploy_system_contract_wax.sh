@@ -2,18 +2,22 @@
 
 cd /app/
 
-systemAccounts=("eosio.bpay" "eosio.msig" "eosio.names" "eosio.ram" "eosio.ramfee" "eosio.saving" "eosio.stake" "eosio.vpay" "eosio.rex")
+systemAccounts=("eosio.token" "eosio.bpay" "eosio.msig" "eosio.names" "eosio.ram" "eosio.ramfee" "eosio.saving" "eosio.stake" "eosio.vpay" "eosio.rex")
 # Create system accounts
 for account in ${systemAccounts[@]} ; do
   echo $account
 	cleos create account eosio $account ${EOSIO_PUB_KEY};
 done
 
+# Deploy token contract
+cleos set contract eosio.token contracts/eosio.token eosio.token.wasm eosio.token.abi
+cleos push action eosio.token create '["eosio", "46116860184.27387903 WAX"]' -p eosio.token@active
+cleos push action eosio.token issue '[ "eosio", "46116860184.27387903 WAX", "initial supply" ]' -p eosio@active
+
 # Deploy msig contract
-cleos set contract eosio.msig contracts/wax eosio.msig.wasm eosio.msig.abi
+cleos set contract eosio.msig contracts/eosio.msig eosio.msig.wasm eosio.msig.abi
 
 # Activate PREACTIVATE_FEATURE
-curl -X POST http://127.0.0.1:8888/v1/producer/get_supported_protocol_features -d '{}'
 curl -X POST http://127.0.0.1:8888/v1/producer/schedule_protocol_feature_activations -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}'
 
 # Try deploy system contracts
@@ -51,3 +55,5 @@ cleos push action eosio init '[0, "8,WAX"]' -p eosio@active
 
 # Complete setup
 cleos system newaccount eosio qtest ${EOSIO_PUB_KEY} ${EOSIO_PUB_KEY}  --buy-ram-kbytes 8 --stake-net "0.00000000 WAX"  --stake-cpu "0.00000000 WAX"
+
+sleep 5s
