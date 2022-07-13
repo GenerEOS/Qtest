@@ -23,6 +23,9 @@ COPY ./env.sh /app/
 RUN cd /app  && chmod +x *.sh
 RUN cd /app  && chmod +x *.sh
 
+ENV EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
+ENV EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS
+
 EXPOSE 8888
 
 HEALTHCHECK --start-period=10s --interval=10s --timeout=10s --retries=5\
