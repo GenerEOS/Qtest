@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# Load default env
-./env.sh
+if test -f "./snapshot-node/genesis.json"; then
+    sed -i "s/EOSIO_PUB_KEY/$EOSIO_PUB_KEY/g" ./snapshot-node/genesis.json
+fi
 
 # Build EOS snapshot
 export SYSTEM_TOKEN_SYMBOL="EOS"
