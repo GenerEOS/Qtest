@@ -72,5 +72,3 @@ cleos push action eosio init '[0, "4,EOS"]' -p eosio@active
 
 # Complete setup
 cleos system newaccount eosio qtest ${EOSIO_PUB_KEY} ${EOSIO_PUB_KEY}  --buy-ram-kbytes 8 --stake-net "0.0000 EOS"  --stake-cpu "0.0000 EOS"
-
-sleep 5s

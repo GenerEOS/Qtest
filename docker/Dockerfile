@@ -14,11 +14,11 @@ RUN rm -rf mandel_3.0.5_amd64.deb
 
 # Install libfaketime for time manipulation
 RUN git clone https://github.com/wolfcw/libfaketime.git && cd libfaketime && make install
+RUN rm -rf libfaketime
 
 COPY ./node /app/node
 COPY ./scripts /app/scripts
 COPY ./entrypoint.sh /app/
-COPY ./env.sh /app/
 
 RUN cd /app  && chmod +x *.sh
 RUN cd /app  && chmod +x *.sh

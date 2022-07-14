@@ -32,7 +32,9 @@ build_snapshots:
 
 create_snapshots: stop
 	docker run --name qsnapshot --env EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH --env EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qsnapshot:latest
-	# docker cp qsnapshot:/app/snapshot-node/./logs/ ./node/
+
+copy_snapshots:
+	./copy_snapshot.sh
 
 build:
 	docker build -f Dockerfile -t qtest .

@@ -16,5 +16,6 @@ elif [ "$SYSTEM_TOKEN_SYMBOL" = "TLOS" ]; then
 else
   echo "No available system contracts for token symbol: " + $SYSTEM_TOKEN_SYMBOL
 fi
+sleep 2s
 curl http://127.0.0.1:8888/v1/producer/create_snapshot | json_pp
 cd /app/snapshot-node/ && ./stop.sh && ./clear.sh

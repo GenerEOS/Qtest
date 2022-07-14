@@ -55,5 +55,3 @@ cleos push action eosio init '[0, "8,WAX"]' -p eosio@active
 
 # Complete setup
 cleos system newaccount eosio qtest ${EOSIO_PUB_KEY} ${EOSIO_PUB_KEY}  --buy-ram-kbytes 8 --stake-net "0.00000000 WAX"  --stake-cpu "0.00000000 WAX"
-
-sleep 5s
