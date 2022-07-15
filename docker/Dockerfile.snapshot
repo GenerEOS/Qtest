@@ -14,11 +14,8 @@ RUN rm -rf mandel_3.0.5_amd64.deb
 
 # Install libfaketime for time manipulation
 RUN git clone https://github.com/wolfcw/libfaketime.git && cd libfaketime && make install
-RUN rm -rf libfaketime
 
-COPY ./node /app/node
-COPY ./scripts /app/scripts
-COPY ./entrypoint.sh /app/
+COPY . /app/
 
 RUN cd /app  && chmod +x *.sh
 RUN cd /app  && chmod +x *.sh
@@ -28,7 +25,4 @@ ENV EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS
 
 EXPOSE 8888
 
-HEALTHCHECK --start-period=10s --interval=10s --timeout=10s --retries=5\
-  CMD ./scripts/health_check.sh || exit 1
-
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint_snapshot.sh"]

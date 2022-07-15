@@ -1,5 +1,6 @@
 const fs = require('fs');
 import { SerialBuffer } from 'eosjs/dist/eosjs-serialize';
+import { Asset } from './asset';
 import { Chain } from './chain';
 import { Contract } from './contract';
 import { generateTapos } from './utils';
@@ -48,8 +49,8 @@ export class Account {
   }
 
   async getBalance() {
-    const currencyBalance = await this.chain.rpc.get_currency_balance('eosio.token', this.name, 'WAX');
-    return Number(currencyBalance[0].split(' ')[0]);
+    const currencyBalance = await this.chain.rpc.get_currency_balance('eosio.token', this.name, this.chain.coreSymbol.symbol);
+    return Asset.fromString(currencyBalance[0]);
   }
 
   async addAuth(permission: string, parent: string) {
@@ -189,13 +190,22 @@ export class Account {
     )
   };
 
-  async setContract(wasmFile, abiFile) {
+  async setContract(contractName: string) {
+    if (!Chain.config.contracts[contractName]) {
+      throw new Error('Config for contract ')
+    }
+
+    const contractConfig = Chain.config.contracts[contractName];
+
+    if (!fs.existsSync(contractConfig.abi) || !fs.existsSync(contractConfig.wasm)) {
+      throw new Error('can not find abi or wasm file of contract ' + contractName);
+    }
     const buffer = new SerialBuffer({
       textEncoder: this.chain.api.textEncoder,
       textDecoder: this.chain.api.textDecoder,
     });
   
-    let abiJSON = JSON.parse(fs.readFileSync(abiFile, 'utf8'));
+    let abiJSON = JSON.parse(fs.readFileSync(contractConfig.abi, 'utf8'));
     const abiDefinitions = this.chain.api.abiTypes.get('abi_def');
   
     abiJSON = abiDefinitions.fields.reduce(
@@ -206,7 +216,7 @@ export class Account {
     abiDefinitions.serialize(buffer, abiJSON);
     const serializedAbiHexString = Buffer.from(buffer.asUint8Array()).toString('hex');
   
-    const wasmHexString = fs.readFileSync(wasmFile).toString('hex');
+    const wasmHexString = fs.readFileSync(contractConfig.wasm).toString('hex');
   
     const tx = await this.chain.api.transact(
       {
@@ -246,7 +256,7 @@ export class Account {
       generateTapos()
     );
   
-    this.contract = new Contract(this, wasmFile, abiJSON);
+    this.contract = new Contract(this, contractConfig.wasm, abiJSON);
     return this.contract;
   }
 }
