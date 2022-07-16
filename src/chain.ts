@@ -6,7 +6,7 @@ import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
 import { ReadOnlyTransactResult, PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Account } from './account';
 import { killExistingChainContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
-import { generateTapos, toAssetQuantity, sleep } from './utils';
+import { generateTapos, sleep } from './utils';
 import { signatureProvider } from './wallet';
 import { Asset, Symbol } from './asset';
 
@@ -39,6 +39,7 @@ export class Chain {
     if (!Chain.config) {
       Chain.config = JSON.parse(fs.readFileSync(Chain.configFilePath, 'utf8'));
     }
+    Chain.config.options.enableSystemContract = true;
 
     const port = Math.floor(Math.random()*9900 + 100);
     const tokenSupply = Asset.fromString(Chain.config.options.tokenSupply)
@@ -268,7 +269,7 @@ export class Chain {
       return 0;
     }
     let tries = 0;
-    const maxTries = 10;
+    const maxTries = 15;
     do {
       if (tries >= maxTries) {
         throw new Error(

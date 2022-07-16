@@ -186,5 +186,5 @@ describe('account test', () => {
       account: buyer.name,
       name: 'transfer',
     });
-  }, 30000);
+  }, 50000);
 });

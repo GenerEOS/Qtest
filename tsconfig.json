@@ -16,8 +16,7 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "types": [
-      "node",
-      "@types/jest"
+      "node"
     ],
     "typeRoots": [
       "node_modules/@types",
@@ -29,7 +28,7 @@
     "compilerOptions": {
       "module": "commonjs",
       "allowJs": true,
-      "types": ["node", "@types/jest"]
+      "types": ["node"]
     }
   },
   "include": [

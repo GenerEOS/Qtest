@@ -145,5 +145,5 @@ describe('chain test', () => {
 
     const blockTimeAfterAdd2 = await chain.blockTimeToMs((await chain.getInfo()).head_block_time);
     expect(blockTimeAfterAdd2 - blockTimeAfterAdd1).toBeGreaterThan(34567);
-  }, 20000);
+  }, 40000);
 });
