@@ -16,8 +16,8 @@ function execute(command, ignoreFail = false) {
 
 export const startChainContainer = async (enableSystemContract: boolean, rpcPort: number = 8880, tokenSupply = Asset.fromString('12345678.00000000 WAX')) => {
   const name = 'qtest' + rpcPort;
-  execute(`docker pull songmai108/qtest:v0.0.1`);
-  execute(`docker run --name ${name} --env EOSIO_PUB_KEY=EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV --env EOSIO_PRV_KEY=5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3 --env SYSTEM_TOKEN_AMOUNT="${tokenSupply.amountFixed()}" --env SYSTEM_TOKEN_SYMBOL=${tokenSupply.symbol.symbol} --env ENABLE_SYSTEM_CONTRACT=${Number(enableSystemContract)} -d -p ${rpcPort}:8888 songmai108/qtest:v1.0.2`);
+  execute(`docker pull genereos/qtest:v1.0.0`);
+  execute(`docker run --name ${name} --env SYSTEM_TOKEN_SYMBOL="${tokenSupply.symbol.symbol}" -d -p ${rpcPort}:8888 genereos/qtest:v1.0.0`);
 }
 
 export const manipulateChainTime = async (rpcPort: number, time: number) => {

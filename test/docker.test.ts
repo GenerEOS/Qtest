@@ -13,7 +13,6 @@ describe('docker client test', () => {
 
   it ('get chain ip', async () => {
     const ip = await getChainIp(port);
-    console.log('-------- ip: ', ip);
 
     const ipFragment = ip.split('.');
     expect(ipFragment.length).toBe(4);

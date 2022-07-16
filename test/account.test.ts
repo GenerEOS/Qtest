@@ -1,6 +1,7 @@
 import { expectBalance } from '../src/assertion';
 import { Chain } from '../src/chain';
 import { generateTapos } from '../src/utils';
+import { TESTING_PUBLIC_KEY } from '../src/wallet';
 
 describe('account test', () => { 
   let chain;
@@ -49,7 +50,7 @@ describe('account test', () => {
     const activePermission = accountInfo.permissions.find(p => p.perm_name === 'addauth11111');
     expect(activePermission.perm_name).toBe('addauth11111');
     expect(activePermission.required_auth.threshold).toBe(1);
-    expect(activePermission.required_auth.keys[0].key).toBe('EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV');
+    expect(activePermission.required_auth.keys[0].key).toBe(TESTING_PUBLIC_KEY);
     expect(activePermission.required_auth.keys[0].weight).toBe(1);
     expect(activePermission.required_auth.accounts).toEqual([]);
   }, 100000);
@@ -70,7 +71,7 @@ describe('account test', () => {
     const activePermission = accountInfo.permissions.find(p => p.perm_name === 'active');
     expect(activePermission.perm_name).toBe('active');
     expect(activePermission.required_auth.threshold).toBe(1);
-    expect(activePermission.required_auth.keys[0].key).toBe('EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV');
+    expect(activePermission.required_auth.keys[0].key).toBe(TESTING_PUBLIC_KEY);
     expect(activePermission.required_auth.keys[0].weight).toBe(1);
     expect(activePermission.required_auth.accounts[0].permission.actor).toBe(chain.accounts[0].name);
     expect(activePermission.required_auth.accounts[0].permission.permission).toBe('eosio.code');

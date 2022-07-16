@@ -2,8 +2,8 @@ import { JsSignatureProvider, PrivateKey } from 'eosjs/dist/eosjs-jssig';
 import { generateKeyPair } from 'eosjs/dist/eosjs-key-conversions';
 import { Chain } from './chain';
 
-export const TESTING_PUBLIC_KEY = 'EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV';
-export const TESTING_KEY = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3';
+export const TESTING_PUBLIC_KEY = 'EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH';
+export const TESTING_KEY = '5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS';
 
 export const initializedChain: Chain[] = [];
 
