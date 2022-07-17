@@ -1,10 +1,11 @@
 {
-  "name": "@genereos/qtest",
+  "name": "qtest",
   "version": "1.0.0",
   "description": "eosio testing library",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "build": "tsc",
     "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest"
