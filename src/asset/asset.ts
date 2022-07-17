@@ -1,10 +1,10 @@
-import { Symbol } from './symbol';
+import { Symbol as TokenSymbol } from './Symbol';
 
 export class Asset {
   public amount: number;
-  public symbol: Symbol;
+  public symbol: TokenSymbol;
 
-  constructor(amount: number, symbol: Symbol) {
+  constructor(amount: number, symbol: TokenSymbol) {
     this.amount = amount;
     this.symbol = symbol;
   }
@@ -18,7 +18,7 @@ export class Asset {
     const quantitySplit = assetStringSplit[0].split('.');
     const decimal = quantitySplit[1].length;
 
-    const symbol = new Symbol(decimal, assetStringSplit[1]);
+    const symbol = new TokenSymbol(decimal, assetStringSplit[1]);
     return new Asset(quantity, symbol);
   }
 

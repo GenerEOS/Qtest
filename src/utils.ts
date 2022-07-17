@@ -23,7 +23,6 @@ export function generateTapos() {
   return {
     blocksBehind: 3,
     // prevent duplicate transaction
-    expireSeconds:
-      300 + Math.floor(Math.random() * 3300),
+    expireSeconds: 300 + Math.floor(Math.random() * 3300),
   };
 }

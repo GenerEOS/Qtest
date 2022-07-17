@@ -3,15 +3,23 @@ import fs from 'fs';
 import { Api, JsonRpc } from 'eosjs';
 import { Action } from 'eosjs/dist/eosjs-serialize';
 import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
-import { ReadOnlyTransactResult, PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
+import {
+  ReadOnlyTransactResult,
+  PushTransactionArgs,
+} from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Account } from './account';
-import { killExistingChainContainer, startChainContainer, getChainIp, manipulateChainTime } from './dockerClient';
+import {
+  killExistingChainContainer,
+  startChainContainer,
+  getChainIp,
+  manipulateChainTime,
+} from './dockerClient';
 import { generateTapos, sleep } from './utils';
 import { signatureProvider } from './wallet';
-import { Asset, Symbol } from './asset';
+import { Asset, Symbol as TokenSymbol } from './asset';
 
 export class Chain {
-  public coreSymbol: Symbol;
+  public coreSymbol: TokenSymbol;
   public tokenSupply: Asset;
   public api;
   public rpc;
@@ -34,16 +42,22 @@ export class Chain {
 
   static async setupChain() {
     if (!fs.existsSync(Chain.configFilePath)) {
-      throw new Error('chain configuration file does not exist, please create it first!.')
+      throw new Error(
+        'chain configuration file does not exist, please create it first!.'
+      );
     }
     if (!Chain.config) {
       Chain.config = JSON.parse(fs.readFileSync(Chain.configFilePath, 'utf8'));
     }
     Chain.config.options.enableSystemContract = true;
 
-    const port = Math.floor(Math.random()*9900 + 100);
-    const tokenSupply = Asset.fromString(Chain.config.options.tokenSupply)
-    await startChainContainer(Chain.config.options.enableSystemContract, port, tokenSupply);
+    const port = Math.floor(Math.random() * 9900 + 100);
+    const tokenSupply = Asset.fromString(Chain.config.options.tokenSupply);
+    await startChainContainer(
+      Chain.config.options.enableSystemContract,
+      port,
+      tokenSupply
+    );
 
     // const chainIp = await getChainIp(port);
     // const rpc = new JsonRpc(`http://${chainIp}:${port}`, { fetch });
@@ -76,7 +90,7 @@ export class Chain {
   }
 
   async headBlockNum(): Promise<number> {
-    return +((await this.getInfo()).head_block_num);
+    return +(await this.getInfo()).head_block_num;
   }
 
   async isProducingBlock(): Promise<boolean> {
@@ -95,7 +109,7 @@ export class Chain {
         json: true,
         code: 'eosio',
         table: 'rammarket',
-        scope: 'eosio'
+        scope: 'eosio',
       });
       if (rammarketTables.rows && rammarketTables.rows.length) {
         return true;
@@ -111,15 +125,20 @@ export class Chain {
   }
 
   async createTestAccounts(length: number) {
-    let testAccountNames: string[] = [];
+    const testAccountNames: string[] = [];
     for (let i = 0; i < length; i++) {
-      testAccountNames.push(`acc${Math.floor(i/5) + 1}${Math.floor(i%5) + 1}.test`);
+      testAccountNames.push(
+        `acc${Math.floor(i / 5) + 1}${Math.floor(i % 5) + 1}.test`
+      );
     }
     return this.createAccounts(testAccountNames);
   }
 
-  async createAccounts(accounts, supplyAmount = this.coreSymbol.convertAssetString(100)): Promise<Account[]> {
-    let accountInstances: Account[] = [];
+  async createAccounts(
+    accounts,
+    supplyAmount = this.coreSymbol.convertAssetString(100)
+  ): Promise<Account[]> {
+    const accountInstances: Account[] = [];
     for (const account of accounts) {
       accountInstances.push(await this.createAccount(account, supplyAmount));
     }
@@ -127,7 +146,11 @@ export class Chain {
     return accountInstances;
   }
 
-  async createAccount(account: string, supplyAmount = this.coreSymbol.convertAssetString(100), bytes: number = 1024 * 1024): Promise<Account> {
+  async createAccount(
+    account: string,
+    supplyAmount = this.coreSymbol.convertAssetString(100),
+    bytes: number = 1024 * 1024
+  ): Promise<Account> {
     let createAccountActions = [
       {
         account: 'eosio',
@@ -164,7 +187,7 @@ export class Chain {
             waits: [],
           },
         },
-      }
+      },
     ];
 
     if (Chain.config.options.enableSystemContract) {
@@ -221,21 +244,38 @@ export class Chain {
         quantity: supplyAmount,
         memo: 'supply to test account',
       },
-    },)
-    await this.api.transact({
-      actions: createAccountActions,
+    });
+    await this.api.transact(
+      {
+        actions: createAccountActions,
       },
       generateTapos()
-    )
+    );
     return new Account(this, account);
   }
 
-  async pushAction(action: Action, broadcast: boolean = true, sign: boolean = true, expireSeconds: number = 120): Promise<TransactResult|ReadOnlyTransactResult|PushTransactionArgs> {
-    return this.api.transact({ actions: [action] }, { broadcast, sign, expireSeconds, blocksBehind: 3 });
+  async pushAction(
+    action: Action,
+    broadcast: boolean = true,
+    sign: boolean = true,
+    expireSeconds: number = 120
+  ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
+    return this.api.transact(
+      { actions: [action] },
+      { broadcast, sign, expireSeconds, blocksBehind: 3 }
+    );
   }
 
-  async pushActions(actions: Action[], broadcast: boolean = true, sign: boolean = true, expireSeconds: number = 120): Promise<TransactResult|ReadOnlyTransactResult|PushTransactionArgs> {
-    return this.api.transact({ actions }, { broadcast, sign, expireSeconds, blocksBehind: 3 });
+  async pushActions(
+    actions: Action[],
+    broadcast: boolean = true,
+    sign: boolean = true,
+    expireSeconds: number = 120
+  ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
+    return this.api.transact(
+      { actions },
+      { broadcast, sign, expireSeconds, blocksBehind: 3 }
+    );
   }
 
   /**
@@ -247,23 +287,24 @@ export class Chain {
    * @api public
    */
   async addTime(time: number, fromBlockTime: string = ''): Promise<number> {
-    if (time < 0 ) {
+    if (time < 0) {
       throw new Error('adding time much be greater than zero');
     }
     const { elapsedBlocks, startingBlock } = await this.waitTillNextBlock(2); // This helps resolve any pending transactions
-    let startTime = this.blockTimeToMs(startingBlock.head_block_time);
+    const startTime = this.blockTimeToMs(startingBlock.head_block_time);
     let addingTime;
     let fromBlockTimeMs = startTime;
     if (fromBlockTime) {
       fromBlockTimeMs = this.blockTimeToMs(fromBlockTime);
       addingTime = Math.floor(
-        Math.max(0, time - (startTime - fromBlockTimeMs) / 1000 - elapsedBlocks * 0.5)
+        Math.max(
+          0,
+          time - (startTime - fromBlockTimeMs) / 1000 - elapsedBlocks * 0.5
+        )
       );
     } else {
-      addingTime = Math.floor(
-        Math.max(0, time - elapsedBlocks * 0.5)
-      );
-    };
+      addingTime = Math.floor(Math.max(0, time - elapsedBlocks * 0.5));
+    }
 
     if (addingTime === 0) {
       return 0;

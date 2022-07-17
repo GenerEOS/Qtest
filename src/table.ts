@@ -3,7 +3,7 @@ import { GetTableRowsResult } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Account } from './account';
 
 export class Table {
-  public name: String;
+  public name: string;
   public account: Account;
   public serializer: any;
 
@@ -13,23 +13,22 @@ export class Table {
     this.serializer = serializer;
   }
 
-  async get(option: { 
-      scope: string,
-      lower_bound?: any,
-      upper_bound?: any,
-      index_position?: number,
-      key_type?: string,
-      limit?: number,
-      reverse?: boolean,
-      show_payer?: boolean
-    }
-  ): Promise<GetTableRowsResult> {
+  async get(option: {
+    scope: string;
+    lower_bound?: any;
+    upper_bound?: any;
+    index_position?: number;
+    key_type?: string;
+    limit?: number;
+    reverse?: boolean;
+    show_payer?: boolean;
+  }): Promise<GetTableRowsResult> {
     return this.account.chain.rpc.get_table_rows({
       json: true,
       code: this.account.name,
       table: this.name,
-      ...option
-    })
+      ...option,
+    });
   }
 
   /**
@@ -40,17 +39,17 @@ export class Table {
    * {
    *   scope: [{
    *      id: 1,
-   *      name: "daniel111111"
+   *      name: 'daniel111111'
    *   }]
    * }
    */
-  async load(scopeRowsData: { [ key: string] : object[] }) {
+  async load(scopeRowsData: { [key: string]: object[] }) {
     if (!this.account.contract.action.eosinsert) {
       throw new Error('Contract does not allow to insert data');
     }
 
     const actionData = [];
-    for (const scope in scopeRowsData) {
+    for (const scope of Object.keys(scopeRowsData)) {
       for (const rows of scopeRowsData[scope]) {
         const buffer = new SerialBuffer({
           textEncoder: new TextEncoder(),
@@ -86,17 +85,17 @@ export class Table {
    * {
    *   scope: [{
    *      id: 1,
-   *      name: "daniel111111"
+   *      name: 'daniel111111'
    *   }]
    * }
    */
-   async modify(scopeRowsData: { [ key: string] : object[] }) {
+  async modify(scopeRowsData: { [key: string]: object[] }) {
     if (!this.account.contract.action.eosmodify) {
       throw new Error('Contract does not allow to insert data');
     }
 
     const actionData = [];
-    for (const scope in scopeRowsData) {
+    for (const scope of Object.keys(scopeRowsData)) {
       for (const rows of scopeRowsData[scope]) {
         const buffer = new SerialBuffer({
           textEncoder: new TextEncoder(),
@@ -132,17 +131,17 @@ export class Table {
    * {
    *   scope: [{
    *      id: 1,
-   *      name: "daniel111111"
+   *      name: 'daniel111111'
    *   }]
    * }
    */
-   async erase(scopeRowsData: { [ key: string] : object[] }) {
+  async erase(scopeRowsData: { [key: string]: object[] }) {
     if (!this.account.contract.action.eoserase) {
       throw new Error('Contract does not allow to insert data');
     }
 
     const actionData = [];
-    for (const scope in scopeRowsData) {
+    for (const scope of Object.keys(scopeRowsData)) {
       for (const rows of scopeRowsData[scope]) {
         const buffer = new SerialBuffer({
           textEncoder: new TextEncoder(),
