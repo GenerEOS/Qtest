@@ -36,5 +36,6 @@ nodeos \
 --http-max-response-time-ms=8000 \
 --chain-state-db-size-mb 8192 \
 --chain-state-db-guard-size-mb 1024 \
+--wasm-runtime=eos-vm \
 >> $DATADIR"/nodeos.log" 2>&1 & \
 echo $! > $DATADIR"/eosd.pid"
