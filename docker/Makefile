@@ -4,7 +4,6 @@ TELOS_CLEOS=cleos -u https://mainnet.telos.net
 
 ARCH=`uname -m`
 
-x86_64
 get_wax: 
 	mkdir -p contracts/wax && \
 	$(WAX_CLEOS) get code eosio -a ./contracts/wax/eosio.system.abi
@@ -42,7 +41,8 @@ copy_snapshots:
 build:
 	# docker build -f Dockerfile -t genereos/qtest:amd64-v1.1.0 . --platform linux/amd64
 	# docker build -f Dockerfile -t genereos/qtest:arm64-v1.1.0 . --platform linux/arm64
-	docker buildx build -f Dockerfile -t genereos/qtest:v1.1.0 --platform linux/amd64,linux/arm64 --push .
+	# docker buildx create --use
+	docker buildx build -f Dockerfile -t genereos/qtest:v1.1.0 --platform linux/amd64,linux/arm64 .
 	
 
 start: stop
