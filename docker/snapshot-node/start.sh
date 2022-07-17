@@ -30,12 +30,14 @@ nodeos \
 --http-validate-host=false \
 --verbose-http-errors \
 --enable-stale-production \
+--cpu-effort-percent 100 \
 --trace-history \
 --chain-state-history \
 --max-transaction-time=2000 \
---abi-serializer-max-time-ms=60000 \
---http-max-response-time-ms=8000 \
+--abi-serializer-max-time-ms=100000 \
+--http-max-response-time-ms=500 \
 --chain-state-db-size-mb 8192 \
 --chain-state-db-guard-size-mb 1024 \
+--wasm-runtime=eos-vm \
 >> $DATADIR"/nodeos.log" 2>&1 & \
 echo $! > $DATADIR"/eosd.pid"
