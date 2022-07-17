@@ -19,6 +19,7 @@ cleos set contract eosio.msig contracts/eosio.msig eosio.msig.wasm eosio.msig.ab
 
 # Activate PREACTIVATE_FEATURE
 curl -X POST http://127.0.0.1:8888/v1/producer/schedule_protocol_feature_activations -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}'
+sleep 2
 
 # Try deploy system contracts
 until cleos set contract eosio contracts/wax eosio.system.wasm eosio.system.abi

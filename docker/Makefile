@@ -2,6 +2,8 @@ WAX_CLEOS=cleos -u https://wax.greymass.com
 EOS_CLEOS=cleos -u https://eos.greymass.com
 TELOS_CLEOS=cleos -u https://mainnet.telos.net
 
+ARCH=`uname -m`
+
 get_wax: 
 	mkdir -p contracts/wax && \
 	$(WAX_CLEOS) get code eosio -a ./contracts/wax/eosio.system.abi
@@ -28,19 +30,23 @@ get_artifacts: get_wax get_eos get_telos
 	$(EOS_CLEOS) get code eosio.token -c ./contracts/eosio.token/eosio.token.wasm --wasm
 	
 build_snapshots:
-	docker build -f Dockerfile.snapshot -t qsnapshot .
+	docker build -f Dockerfile.snapshot -t qsnapshot . --platform linux/${ARCH}
 
 create_snapshots: stop
-	docker run --name qsnapshot --env EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH --env EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qsnapshot:latest
+	docker run --name qsnapshot --env EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH --env EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qsnapshot:latest --platform linux/${ARCH}
 
 copy_snapshots:
 	./copy_snapshot.sh
 
 build:
-	docker build -f Dockerfile -t qtest .
+	# docker build -f Dockerfile -t genereos/qtest:amd64-v1.1.0 . --platform linux/amd64
+	# docker build -f Dockerfile -t genereos/qtest:arm64-v1.1.0 . --platform linux/arm64
+	# docker buildx create --use
+	docker buildx build -f Dockerfile -t genereos/qtest:v1.1.0 --platform linux/amd64,linux/arm64 .
+	
 
 start: stop
-	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qtest:latest
+	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 genereos/qtest:v1.1.0
 
 stop:
 	docker container rm qtest -f
