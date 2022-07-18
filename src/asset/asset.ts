@@ -1,4 +1,4 @@
-import { Symbol as TokenSymbol } from './Symbol';
+import { Symbol as TokenSymbol } from './symbol';
 
 export class Asset {
   public amount: number;
