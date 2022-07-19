@@ -1,0 +1,59 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "epoch",
+            "base": "",
+            "fields": [
+                {
+                    "name": "epoch_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "start_at",
+                    "type": "time_point"
+                },
+                {
+                    "name": "period",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "newepoch",
+            "base": "",
+            "fields": [
+                {
+                    "name": "epoch_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "period",
+                    "type": "uint32"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "newepoch",
+            "type": "newepoch",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "epochs",
+            "type": "epoch",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}
