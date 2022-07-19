@@ -1,0 +1,163 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "eos_payload",
+            "base": "",
+            "fields": [
+                {
+                    "name": "table_name",
+                    "type": "name"
+                },
+                {
+                    "name": "scope",
+                    "type": "name"
+                },
+                {
+                    "name": "row_data",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "eoserase",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payload",
+                    "type": "eos_payload[]"
+                }
+            ]
+        },
+        {
+            "name": "eosinsert",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payload",
+                    "type": "eos_payload[]"
+                }
+            ]
+        },
+        {
+            "name": "eosmodify",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payload",
+                    "type": "eos_payload[]"
+                }
+            ]
+        },
+        {
+            "name": "table1",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "name"
+                },
+                {
+                    "name": "value1",
+                    "type": "uint32"
+                },
+                {
+                    "name": "value2",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "table2",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "name"
+                },
+                {
+                    "name": "value1",
+                    "type": "uint32"
+                },
+                {
+                    "name": "value2",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "table3",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "name"
+                },
+                {
+                    "name": "value1",
+                    "type": "uint32"
+                },
+                {
+                    "name": "value2",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "test",
+            "base": "",
+            "fields": []
+        }
+    ],
+    "actions": [
+        {
+            "name": "eoserase",
+            "type": "eoserase",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "eosinsert",
+            "type": "eosinsert",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "eosmodify",
+            "type": "eosmodify",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "test",
+            "type": "test",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "tablename1",
+            "type": "table1",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "tablename2",
+            "type": "table2",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "tablename3",
+            "type": "table3",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}
