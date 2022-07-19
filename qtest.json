@@ -6,6 +6,14 @@
     "testcontract": {
       "abi": "./contracts/build/testcontract.abi",
       "wasm": "./contracts/build/testcontract.wasm"
+    },
+    "inittable": {
+      "abi": "./contracts/build/inittable.abi",
+      "wasm": "./contracts/build/inittable.wasm"
+    },
+    "passingtime": {
+      "abi": "./contracts/build/passingtime.abi",
+      "wasm": "./contracts/build/passingtime.wasm"
     }
   }
 }

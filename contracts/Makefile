@@ -1,14 +1,11 @@
-SHELL:= /bin/bash
-
-APP_NAME=testcontract
-
-CONTRACT_NAME=testcontract
+CONTRACT_NAMES=testcontract inittable passingtime
 
 clean:
 	-rm -rf build
 
-make-build-dir:
-	-mkdir -p ./build
 
-build: clean make-build-dir
-	eosio-cpp ./src/${APP_NAME}.cpp -o build/${APP_NAME}.wasm  -I ./include/ -abigen_output build/${APP_NAME}.abi
+build: clean
+	-mkdir -p ./build
+	for contract in ${CONTRACT_NAMES} ; do \
+		eosio-cpp ./$$contract/src/$$contract.cpp -o build/$$contract.wasm  -I ./$$contract/include/ -abigen_output build/$$contract.abi ; \
+	done
