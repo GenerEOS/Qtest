@@ -26,7 +26,7 @@ EOS Helper gives you the ability to dockerize an EOSIO node that can run on any 
 
 * [Assertion](docs/api/assertion.md)
 * [Asset - Class](docs/api/asset.md)
-* [Account- Class](docs/api/account.md)
+* [Account - Class](docs/api/account.md)
 * [Chain - Class](docs/api/chain.md)
 * [Contract - Class](docs/api/contract.md)
 * [dockerClient](docs/api/dockerclient.md)
