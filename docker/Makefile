@@ -42,11 +42,11 @@ build:
 	# docker build -f Dockerfile -t genereos/qtest:amd64-v1.1.0 . --platform linux/amd64
 	# docker build -f Dockerfile -t genereos/qtest:arm64-v1.1.0 . --platform linux/arm64
 	# docker buildx create --use
-	docker buildx build -f Dockerfile -t genereos/qtest:v1.1.0 --platform linux/amd64,linux/arm64 .
+	docker buildx build -f Dockerfile -t genereos/qtest:v1.1.1 --platform linux/amd64,linux/arm64 . --push
 	
 
 start: stop
-	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 genereos/qtest:v1.1.0
+	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 genereos/qtest:v1.1.1
 
 stop:
 	docker container rm qtest -f

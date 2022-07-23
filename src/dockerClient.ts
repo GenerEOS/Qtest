@@ -20,9 +20,9 @@ export const startChainContainer = async (
   tokenSupply = Asset.fromString('12345678.00000000 WAX')
 ) => {
   const name = 'qtest' + rpcPort;
-  execute(`docker pull genereos/qtest:v1.1.0`);
+  execute(`docker pull genereos/qtest:v1.1.1`);
   execute(
-    `docker run --name ${name} --env SYSTEM_TOKEN_SYMBOL='${tokenSupply.symbol.symbol}' -d -p ${rpcPort}:8888 genereos/qtest:v1.1.0`
+    `docker run --name ${name} --env SYSTEM_TOKEN_SYMBOL='${tokenSupply.symbol.symbol}' -d -p ${rpcPort}:8888 genereos/qtest:v1.1.1`
   );
 };
 

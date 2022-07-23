@@ -25,7 +25,7 @@ ENV EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS
 
 EXPOSE 8888
 
-HEALTHCHECK --start-period=10s --interval=10s --timeout=10s --retries=5\
+HEALTHCHECK --start-period=2s --interval=2s --timeout=2s --retries=5\
   CMD ./scripts/health_check.sh || exit 1
 
 ENTRYPOINT ["./entrypoint.sh"]
