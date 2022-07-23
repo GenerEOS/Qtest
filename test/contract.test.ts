@@ -4,12 +4,16 @@ import { expectAction } from '../src/assertion';
 describe('account test', () => {
   let chain;
   let contract;
+  let chainName = process.env.CHAIN_NAME || 'WAX';
 
   beforeAll(async () => {
-    chain = await Chain.setupChain();
+    chain = await Chain.setupChain(chainName);
     const contractAccount = chain.accounts[1];
     await contractAccount.addCode('active');
-    contract = await contractAccount.setContract('testcontract');
+    contract = await contractAccount.setContract({
+      abi: './contracts/build/testcontract.abi',
+      wasm: './contracts/build/testcontract.wasm'
+    });
   }, 60000);
 
   afterAll(async () => {

@@ -4,12 +4,16 @@ import { expectAction, expectThrow } from '../src/assertion';
 describe('account test', () => {
     let chain;
     let passingtimeContract;
+    let chainName = process.env.CHAIN_NAME || 'WAX';
 
     beforeAll(async () => {
-        chain = await Chain.setupChain();
+        chain = await Chain.setupChain(chainName);
         const contractAccount = chain.accounts[2];
         await contractAccount.addCode('active');
-        passingtimeContract = await contractAccount.setContract('passingtime');
+        passingtimeContract = await contractAccount.setContract({
+            abi: './contracts/build/passingtime.abi',
+            wasm: './contracts/build/passingtime.wasm'
+          });
     }, 60000);
 
     afterAll(async () => {
@@ -34,7 +38,6 @@ describe('account test', () => {
             expect(epochs.rows[0].epoch_id).toBe(0);
             expect(epochs.rows[0].start_at).toBe(rsp.processed.block_time);
             expect(epochs.rows[0].period).toBe(24 * 60 * 60);
-            console.log("epoch0.rows[0].start_at", epochs.rows[0].start_at)
 
             await expectThrow(
                 passingtimeContract.action.newepoch({
