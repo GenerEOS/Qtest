@@ -222,19 +222,13 @@ export class Account {
     );
   }
 
-  async setContract(contractName: string) {
-    if (!Chain.config.contracts[contractName]) {
-      throw new Error('Config for contract ');
-    }
-
-    const contractConfig = Chain.config.contracts[contractName];
-
+  async setContract(contractPath: { abi: string, wasm: string }) {
     if (
-      !fs.existsSync(contractConfig.abi) ||
-      !fs.existsSync(contractConfig.wasm)
+      !fs.existsSync(contractPath.abi) ||
+      !fs.existsSync(contractPath.wasm)
     ) {
       throw new Error(
-        'can not find abi or wasm file of contract ' + contractName
+        'can not find abi or wasm file of contract ' + JSON.stringify(contractPath, null , 2)
       );
     }
     const buffer = new SerialBuffer({
@@ -242,7 +236,7 @@ export class Account {
       textDecoder: this.chain.api.textDecoder,
     });
 
-    let abiJSON = JSON.parse(fs.readFileSync(contractConfig.abi, 'utf8'));
+    let abiJSON = JSON.parse(fs.readFileSync(contractPath.abi, 'utf8'));
     const abiDefinitions = this.chain.api.abiTypes.get('abi_def');
 
     abiJSON = abiDefinitions.fields.reduce(
@@ -255,7 +249,7 @@ export class Account {
       'hex'
     );
 
-    const wasmHexString = fs.readFileSync(contractConfig.wasm).toString('hex');
+    const wasmHexString = fs.readFileSync(contractPath.wasm).toString('hex');
 
     const tx = await this.chain.api.transact(
       {
@@ -295,7 +289,7 @@ export class Account {
       generateTapos()
     );
 
-    this.contract = new Contract(this, contractConfig.wasm, abiJSON);
+    this.contract = new Contract(this, contractPath.wasm, abiJSON);
     return this.contract;
   }
 }

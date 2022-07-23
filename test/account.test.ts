@@ -6,9 +6,10 @@ import { TESTING_PUBLIC_KEY } from '../src/wallet';
 describe('account test', () => {
   let chain;
   let account;
+  let chainName = process.env.CHAIN_NAME || 'WAX';
 
   beforeAll(async () => {
-    chain = await Chain.setupChain();
+    chain = await Chain.setupChain(chainName);
     account = await chain.createAccount('testaccount1');
   }, 60000);
 
@@ -169,7 +170,10 @@ describe('account test', () => {
 
   it('set contract', async () => {
     const contractAccount = chain.accounts[1];
-    const contract = await contractAccount.setContract('testcontract');
+    const contract = await contractAccount.setContract({
+      abi: './contracts/build/testcontract.abi',
+      wasm: './contracts/build/testcontract.wasm'
+    });
     let transaction = await chain.pushAction(
       {
         account: contractAccount.name,
