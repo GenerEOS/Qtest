@@ -5,9 +5,10 @@ import { importKey, signatureProvider, createKey } from '../src/wallet';
 describe('test wallet', () => {
   let chain;
   let account;
+  let chainName = process.env.CHAIN_NAME || 'WAX';
 
   beforeAll(async () => {
-    chain = await Chain.setupChain();
+    chain = await Chain.setupChain(chainName);
     account = await chain.createAccount('testaccount1');
   }, 60000);
 

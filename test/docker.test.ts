@@ -8,7 +8,7 @@ import {
 describe('docker client test', () => {
   let port = 12345;
   it('start chain container', async () => {
-    await startChainContainer(true, port);
+    await startChainContainer(port);
 
     const containers = getContainers();
     const qTestContainer = containers.find((c) => c.name === 'qtest12345');

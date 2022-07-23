@@ -26,37 +26,23 @@ export class Chain {
   public accounts: Account[];
   public timeAdded: number;
   public port: number;
+  public systemContractEnable: boolean;
 
-  constructor(rpc: JsonRpc, api: Api, port: number, tokenSupply: Asset) {
+  constructor(rpc: JsonRpc, api: Api, port: number, tokenSymbol: string) {
     this.port = port;
     this.rpc = rpc;
     this.api = api;
     this.timeAdded = 0;
-    this.tokenSupply = tokenSupply;
-    this.coreSymbol = this.tokenSupply.symbol;
+    const tokenDecimal = this.getChainTokenDecimal(tokenSymbol);
+    this.coreSymbol = new TokenSymbol(tokenDecimal, tokenSymbol);
+    this.systemContractEnable = true;
   }
 
-  static chainInstance: number = 0;
-  static configFilePath: string = './qtest.json';
-  static config: any;
-
-  static async setupChain() {
-    if (!fs.existsSync(Chain.configFilePath)) {
-      throw new Error(
-        'chain configuration file does not exist, please create it first!.'
-      );
-    }
-    if (!Chain.config) {
-      Chain.config = JSON.parse(fs.readFileSync(Chain.configFilePath, 'utf8'));
-    }
-    Chain.config.options.enableSystemContract = true;
-
+  static async setupChain(tokenSymbol: string) {
     const port = Math.floor(Math.random() * 9900 + 100);
-    const tokenSupply = Asset.fromString(Chain.config.options.tokenSupply);
     await startChainContainer(
-      Chain.config.options.enableSystemContract,
       port,
-      tokenSupply
+      tokenSymbol
     );
 
     // const chainIp = await getChainIp(port);
@@ -69,13 +55,13 @@ export class Chain {
       textEncoder: new TextEncoder(),
     });
 
-    const newChain = new Chain(rpc, api, port, tokenSupply);
+    const newChain = new Chain(rpc, api, port, tokenSymbol);
 
+    // waiting for chain start produce block
     await newChain.waitForChainStart();
-    if (Chain.config.options.enableSystemContract) {
-      await newChain.waitForSystemContractInitialized();
-    }
-
+    // waiting for chain finish inilize system contract
+    await newChain.waitForSystemContractInitialized();
+    // initialize 10 test accounts
     await newChain.initializeTestAccounts();
 
     return newChain;
@@ -190,7 +176,7 @@ export class Chain {
       },
     ];
 
-    if (Chain.config.options.enableSystemContract) {
+    if (this.systemContractEnable) {
       // @ts-ignore
       createAccountActions = createAccountActions.concat([
         {
@@ -372,6 +358,20 @@ export class Chain {
         throw new Error('can not initilize system contract');
       }
       retryCount++;
+    }
+
+    await sleep(1000);
+  }
+
+  private getChainTokenDecimal(chainName: string): number {
+    switch(chainName) {
+      case 'WAX':
+        return 8;
+      case 'EOS':
+      case 'TLOS':
+        return 4
+      default:
+        throw new Error('can not find token decimal for chain name ' + chainName);
     }
   }
 }

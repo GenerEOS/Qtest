@@ -4,20 +4,21 @@ import { Chain } from '../src/chain';
 
 describe('chain test', () => {
   let chain;
+  let chainName = process.env.CHAIN_NAME || 'WAX';
 
   afterAll(async () => {
     await chain.clear();
   }, 10000);
 
   it('test setup chain', async () => {
-    chain = await Chain.setupChain();
+    chain = await Chain.setupChain(chainName);
     const chainInfo = await chain.rpc.get_info();
     expect(chainInfo.head_block_num).toBeGreaterThan(0);
     expect(chainInfo.last_irreversible_block_num).toBeGreaterThan(0);
 
     const testAccount1 = await chain.rpc.get_account('acc11.test');
     const testAccount10 = await chain.rpc.get_account('acc25.test');
-    if (Chain.config.options.enableSystemContract) {
+    if (chain.systemContractEnable) {
       expect(testAccount1.total_resources.net_weight).toBe(
         chain.coreSymbol.convertAssetString(10)
       );
@@ -36,7 +37,7 @@ describe('chain test', () => {
     );
     const newAccountInfo = await chain.rpc.get_account(newAccountName);
 
-    if (Chain.config.options.enableSystemContract) {
+    if (chain.systemContractEnable) {
       expect(newAccountInfo.total_resources.net_weight).toBe(
         chain.coreSymbol.convertAssetString(10)
       );
