@@ -8,7 +8,7 @@ EOS Helper gives you the ability to dockerize an EOSIO node that can run on any 
 
 ### Installation
 
-Refer a [project example](example)
+Refer to [an example project](example)
 
 ```bash
 npm install --save-dev @genereos.io/qtest
