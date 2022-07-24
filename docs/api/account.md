@@ -10,16 +10,40 @@ Accounts are created using the createAccount method of the Chain object.
 Note: The recommended method of creating a new account is to call Chain.createAccount()
 
 ## Methods
-**updateAuth(
-    permission: string,
-    parent: string,
-    threshold: number,
-    keys,
-    accounts,
-    waits = []
-  )**
+### updateAuth(permission: string, parent: string, threshold: number, keys, accounts, waits = [])
   
-  Updates the permission for an account.
+Updates the permission for an account.
+
+**Example**
+
+Add the permission testauth as a child of the active permission.  The testauth permission will have a threshold of 2 and two keys each with a weight of 1.  The permission acc11.test@eosio.code will have a weight of 2.
+```javascript
+    await account.updateAuth(
+      'testauth',
+      'active',
+      2,
+      [
+        {
+          key: 'EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b',
+          weight: 1,
+        },
+        {
+          key: 'EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6',
+          weight: 1,
+        },
+      ],
+      [
+        {
+          permission: {
+            actor: 'acc11.test',
+            permission: 'eosio.code',
+          },
+          weight: 2,
+        },
+      ]
+    );
+```
+  
   
   **getInfo()**
   
