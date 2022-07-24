@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@genereos.io/qtest": "^0.1.2"
+    "@genereos.io/qtest": "^0.1.2",
+    "jest": "^28.1.3"
   }
 }
