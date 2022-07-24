@@ -37,7 +37,7 @@ describe('account test', () => {
   }, 100000);
 
   it('load contract table data', async () => {
-    await contract.table.log.load({
+    await contract.table.log.insert({
       testscope1: [
         {
           id: 'name1',
@@ -80,7 +80,7 @@ describe('account test', () => {
   }, 100000);
 
   it('modify contract table data', async () => {
-    await contract.table.log.load({
+    await contract.table.log.insert({
       testscope3: [
         {
           id: 'namescope3',
@@ -165,7 +165,7 @@ describe('account test', () => {
   it('should create new item and add time to buy item', async () => {
     const seller = chain.accounts[2];
     const buyer = chain.accounts[3];
-    const expectedSellingTime = Math.floor(Date.now() / 1000) + 3600 * 3; // 3 hours from now
+    const expectedSellingTime = Math.floor(Date.now() / 1000) + 3600 * 3; // 3 hours ahead
     const newitemTransaction = await contract.action.newitem(
       {
         seller: seller.name,
@@ -196,7 +196,7 @@ describe('account test', () => {
       )
     ).rejects.toThrowError('Item has not been available yet');
 
-    await chain.addTime(2 * 3600); // add 2 hours, item still not available yet
+    await chain.time.increase(2 * 3600); // add 2 hours, item still not available yet
 
     expect(
       buyer.transfer(
@@ -206,7 +206,7 @@ describe('account test', () => {
       )
     ).rejects.toThrowError('Item has not been available yet');
 
-    await chain.addTime(3600);
+    await chain.time.increase(3600);
 
     const buyItemTransaction = await buyer.transfer(
       contract.account.name,

@@ -22,6 +22,24 @@
             ]
         },
         {
+            "name": "epoch_date",
+            "base": "",
+            "fields": [
+                {
+                    "name": "epoch_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "start_at",
+                    "type": "time_point"
+                },
+                {
+                    "name": "end_at",
+                    "type": "time_point"
+                }
+            ]
+        },
+        {
             "name": "newepoch",
             "base": "",
             "fields": [
@@ -34,6 +52,20 @@
                     "type": "uint32"
                 }
             ]
+        },
+        {
+            "name": "newepochdate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "epoch_id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "end_at",
+                    "type": "time_point"
+                }
+            ]
         }
     ],
     "actions": [
@@ -41,9 +73,21 @@
             "name": "newepoch",
             "type": "newepoch",
             "ricardian_contract": ""
+        },
+        {
+            "name": "newepochdate",
+            "type": "newepochdate",
+            "ricardian_contract": ""
         }
     ],
     "tables": [
+        {
+            "name": "epochdates",
+            "type": "epoch_date",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
         {
             "name": "epochs",
             "type": "epoch",

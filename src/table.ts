@@ -43,7 +43,7 @@ export class Table {
    *   }]
    * }
    */
-  async load(scopeRowsData: { [key: string]: object[] }) {
+  async insert(scopeRowsData: { [key: string]: object[] }) {
     if (!this.account.contract.action.eosinsert) {
       throw new Error('Contract does not allow to insert data');
     }

@@ -10,7 +10,7 @@ describe('account test', () => {
 
   beforeAll(async () => {
     chain = await Chain.setupChain(chainName);
-    account = await chain.createAccount('testaccount1');
+    account = await chain.system.createAccount('testaccount1');
   }, 60000);
 
   afterAll(async () => {

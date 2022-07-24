@@ -24,9 +24,9 @@ export const startChainContainer = async (
   );
 };
 
-export const manipulateChainTime = async (rpcPort: number, time: number) => {
+export const manipulateChainTime = async (rpcPort: number, timeFormat: string) => {
   const name = 'qtest' + rpcPort;
-  execute(`docker exec ${name} /app/scripts/manipulate_time.sh +${time}`);
+  execute(`docker exec ${name} /app/scripts/manipulate_time.sh "${timeFormat}"`);
 };
 
 export const getContainers = (): { name: string, id: string }[] => {

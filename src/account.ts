@@ -4,6 +4,33 @@ import { Asset } from './asset';
 import { Chain } from './chain';
 import { Contract } from './contract';
 import { generateTapos } from './utils';
+import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
+import { GetAccountResult } from 'eosjs/dist/eosjs-rpc-interfaces';
+
+export interface KeyWeight {
+  key: string,
+  weight: number
+}
+
+export interface PermissionLevel {
+  actor: string,
+  permission: number
+}
+
+export interface PermissionLevelWeight {
+  permission: PermissionLevel,
+  weight: number
+}
+
+export interface WaitWeight {
+  wait_sec: number,
+  weight: number
+}
+
+export interface ContractPath {
+  abi: string,
+  wasm: string
+}
 
 export class Account {
   public name: string;
@@ -14,14 +41,25 @@ export class Account {
     this.name = name;
   }
 
+  /**
+   * Create or update account permission
+   *
+   * @param {string} permission target permission name
+   * @param {string} parent parent permission
+   * @param {number} threshold permission threshold
+   * @param {KeyWeight[]} keys array of account keys
+   * @param {WaitWeight[]} waits array of waits
+   * @return {Promise<TransactResult>} Transaction
+   * @api public
+   */
   async updateAuth(
     permission: string,
     parent: string,
     threshold: number,
-    keys,
-    accounts,
-    waits = []
-  ) {
+    keys: KeyWeight[],
+    accounts: PermissionLevelWeight,
+    waits: WaitWeight[] = []
+  ): Promise<TransactResult> {
     return this.chain.api.transact(
       {
         actions: [
@@ -52,11 +90,23 @@ export class Account {
     );
   }
 
-  async getInfo() {
+  /**
+   * Get account infomation
+   *
+   * @return {Promise<GetAccountResult>} Account information
+   * @api public
+   */
+  async getInfo(): Promise<GetAccountResult> {
     return await this.chain.rpc.get_account(this.name);
   }
 
-  async getBalance() {
+  /**
+   * Get account balance
+   *
+   * @return {Promise<Asset>} User balance
+   * @api public
+   */
+  async getBalance(): Promise<Asset> {
     const currencyBalance = await this.chain.rpc.get_currency_balance(
       'eosio.token',
       this.name,
@@ -65,7 +115,15 @@ export class Account {
     return Asset.fromString(currencyBalance[0]);
   }
 
-  async addAuth(permission: string, parent: string) {
+  /**
+   * Add new permission, use the same keys, account as current active permission
+   *
+   * @param {string} permission target permission name
+   * @param {string} parent parent permission name
+   * @return {Promise<TransactResult>} Transaction
+   * @api public
+   */
+  async addAuth(permission: string, parent: string): Promise<TransactResult> {
     const accountInfo = await this.getInfo();
     const activePermission = accountInfo.permissions.find(
       (p) => p.perm_name === 'active'
@@ -100,7 +158,16 @@ export class Account {
     );
   }
 
-  async linkAuth(code: string, type: string, permission: string) {
+  /**
+   * Link permission
+   *
+   * @param {string} code contract name
+   * @param {string} type action name
+   * @param {string} permission permission name
+   * @return {Promise<TransactResult>} Transaction
+   * @api public
+   */
+  async linkAuth(code: string, type: string, permission: string): Promise<TransactResult> {
     return this.chain.api.transact(
       {
         actions: [
@@ -126,7 +193,14 @@ export class Account {
     );
   }
 
-  async addCode(permission: string) {
+  /**
+   * Add `eosio.code` to permission
+   *
+   * @param {string} permission permission name to add `eosio.code`
+   * @return {Promise<TransactResult>} Transaction
+   * @api public
+   */
+  async addCode(permission: string): Promise<TransactResult> {
     const accountInfo = await this.getInfo();
     const updatingPermission = accountInfo.permissions.find(
       (p) => p.perm_name === permission
@@ -196,7 +270,15 @@ export class Account {
     );
   }
 
-  async transfer(to: string, quantity: string, memo: string = '') {
+  /**
+   * Transfer token from account
+   *
+   * @param {string} to receiver
+   * @param {string} quantity Transfer amount
+   * @return {Promise<TransactResult>} Transaction
+   * @api public
+   */
+  async transfer(to: string, quantity: string, memo: string = ''): Promise<TransactResult> {
     return this.chain.api.transact(
       {
         actions: [
@@ -222,7 +304,14 @@ export class Account {
     );
   }
 
-  async setContract(contractPath: { abi: string, wasm: string }) {
+  /**
+   * Set contract to this account
+   *
+   * @param {ContractPath} contractPath path to abi and wasm file
+   * @return {Promise<Contract>} Contract instance
+   * @api public
+   */
+  async setContract(contractPath: ContractPath) {
     if (
       !fs.existsSync(contractPath.abi) ||
       !fs.existsSync(contractPath.wasm)
