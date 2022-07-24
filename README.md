@@ -61,11 +61,11 @@ const { expectAction } = require("@genereos.io/qtest");
 
 ## User documentation
 
-* [Introduction to EOS Helper](docs/tutorials/00.IntroductionToEOSFactory.md)
-* [Installing EOS Helper](docs/tutorials/01.InstallingEOSFactory.md)
-* [Using EOS Helper to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
-* [Building and Deploying EOS Smart-Contracts in EOS Helper](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
-* [Interacting with EOS Helper in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
+* [Introduction to Q-test](docs/tutorials/00.IntroductionToEOSFactory.md)
+* [Installing Q-test](docs/tutorials/01.InstallingEOSFactory.md)
+* [Using Q-test to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
+* [Building and Deploying EOS Smart-Contracts in Q-test](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
+* [Interacting with Q-test in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
 * [Inegrating with CI/CD pipeline] ()
 
 ## Q-test API
