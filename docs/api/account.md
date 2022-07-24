@@ -51,21 +51,41 @@ permissions:
      owner     1:    1 EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
         active     1:    1 EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
            testauth     2:    1 EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b, 1 EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6, 2 acc11.test@eosio.code
-```
-
+```  
   
-  
-  **getInfo()**
+  ### getInfo()
   
   A wrapper around the **get_account** RPC method.
   
-  **getBalance()**
+  ### getBalance()
   
   A wrapper around the **get_currency_balance** RPC method.
   
-  **addAuth(permission: string, parent: string)**
+  ### addAuth(permission: string, parent: string)
   
   Adds a permission to an account.  The new permission will inherit the **active** authorization.
+  
+  **Example**
+  
+  Adds a new persmission addauth1111 as a child to the testauth permission.
+  
+  ```javascript
+  await account.addAuth('addauth11111', 'testauth');
+  ```
+  
+  **Result**
+  
+  ```
+  cleos -u http://localhost:1384 get account testaccount1
+created: 2022-07-24T19:55:15.000
+permissions: 
+     owner     1:    1 EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
+        active     1:    1 EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
+           newcodeauth     1:    1 testaccount1@eosio.code
+           testauth     2:    1 EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b, 1 EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6, 2 acc11.test@eosio.code
+              addauth11111     1:    1 EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
+
+  ```
   
   **linkAuth(code: string, type: string, permission: string)**
   
