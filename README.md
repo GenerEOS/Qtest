@@ -1,8 +1,8 @@
-# Welcome to EOS Helper 
+# Welcome to Qtest 
 
-EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
+Qtest is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
 
-EOS Helper gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS.
+Qtest gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, UX.
 
 ## Overview
 
