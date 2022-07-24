@@ -1,12 +1,12 @@
 {
-  "name": "qtest-js",
-  "version": "0.1.0",
+  "name": "@genereos.io/qtest",
+  "version": "0.1.2",
   "description": "eosio testing library",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "prepare" : "npm run build",
+    "prepare": "npm run build",
     "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest"
@@ -28,5 +28,18 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/generEOS/Qtest.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/generEOS/Qtest/issues"
+  },
+  "homepage": "https://github.com/generEOS/Qtest#readme"
 }
