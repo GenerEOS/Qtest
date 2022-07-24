@@ -87,21 +87,32 @@ permissions:
 
   ```
   
-  **linkAuth(code: string, type: string, permission: string)**
+  ### linkAuth(code: string, type: string, permission: string)
   
   A wrapper around the **eosio:linkauth** contract action.
   
-  **addCode(permission: string)**
+  **Example**
+  
+  Allow addauth11111 to authorize the eosio.token:transfer action.
+  
+  ```javascript
+  const transaction = await account.linkAuth('eosio.token', 'transfer', 'addauth11111');
+  ```
+  **Result**
+  
+  The addauth1111 autority is able to authorize the eosio.token:transfer action.
+  
+  addCode(permission: string)
   
   A helper function to set the **eosio.code** permission on a given account.
   
-  **transfer(to: string, quantity: string, memo: string = '')**
+  ### transfer(to: string, quantity: string, memo: string = '')
   
   A wrapper around **eosio:token** action.  Assumes the chain has been started with system contracts installed.
   
-  **setContract(contractName: string): Contract**
+  ### setContract(contractName: string): Contract
   
   A wrapper around the **eosio:setcode** and **eosio:setabi** actions.
   
-  **Note:** The contract abi and wasm must be available and configured in **qtest.json**
+
   
