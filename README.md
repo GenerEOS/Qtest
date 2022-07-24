@@ -69,18 +69,24 @@ const { expectAction } = require("@genereos.io/qtest");
 * [Inegrating with CI/CD pipeline] ()
 
 ## Q-test API
+### Classes
 
+
+* [Asset](docs/api/asset.md)
+* [Account](docs/api/account.md)
+* [Chain](docs/api/chain.md)
+* [Contract](docs/api/contract.md)
+* [Symbol](docs/api/symbol.md)
+* [Table](docs/api/table.md)
+
+
+### Functions
 * [Assertion](docs/api/assertion.md)
-* [Asset - Class](docs/api/asset.md)
-* [Account - Class](docs/api/account.md)
-* [Chain - Class](docs/api/chain.md)
-* [Contract - Class](docs/api/contract.md)
 * [dockerClient](docs/api/dockerclient.md)
 * [serializer](docs/api/serializer.md)
-* [Symbol - Class](docs/api/symbol.md)
-* [Table - Class](docs/api/table.md)
 * [utils](docs/api/utils.md)
 * [Wallet](docs/cases/wallet.md)
+
 
 
 ## Support
