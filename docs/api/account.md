@@ -43,6 +43,16 @@ Add the permission testauth as a child of the active permission.  The testauth p
       ]
     );
 ```
+**Result**
+```
+cleos -u http://localhost:708 get account testaccount1
+created: 2022-07-24T19:46:54.000
+permissions: 
+     owner     1:    1 EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
+        active     1:    1 EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
+           testauth     2:    1 EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b, 1 EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6, 2 acc11.test@eosio.code
+```
+
   
   
   **getInfo()**
