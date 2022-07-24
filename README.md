@@ -8,7 +8,7 @@ EOS Helper gives you the ability to dockerize an EOSIO node that can run on any 
 
 ### Installation
 
-[Refer](example)
+Refer a [project example](example)
 
 ```bash
 npm install --save-dev @genereos.io/qtest
@@ -22,11 +22,12 @@ npm install --save-dev jest@^28.1.3
 Config `jest`: Create jest.config.js and add following:
 
 ```
+module.exports = {
   // transform: { "^.+\\.(ts|tsx)$": "ts-jest" },
   testEnvironment: "node",
   testTimeout: 120 * 1e3,
 };
-
+```
 ### Run
 Update test command in package.json
 
