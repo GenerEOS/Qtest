@@ -1,14 +1,14 @@
-# Welcome to EOS Helper 
+# Welcome to Q-test 
 
-EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
+Q-test is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
 
-EOS Helper gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS.
+Q-test gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, UX.
 
 ## Overview
 
 ### Installation
 
-Refer a [project example](example)
+Refer to [an example project](example)
 
 ```bash
 npm install --save-dev @genereos.io/qtest
@@ -61,14 +61,14 @@ const { expectAction } = require("@genereos.io/qtest");
 
 ## User documentation
 
-* [Introduction to EOS Helper](docs/tutorials/00.IntroductionToEOSFactory.md)
-* [Installing EOS Helper](docs/tutorials/01.InstallingEOSFactory.md)
-* [Using EOS Helper to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
-* [Building and Deploying EOS Smart-Contracts in EOS Helper](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
-* [Interacting with EOS Helper in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
+* [Introduction to Q-test](docs/tutorials/00.IntroductionToEOSFactory.md)
+* [Installing Q-test](docs/tutorials/01.InstallingEOSFactory.md)
+* [Using Q-test to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
+* [Building and Deploying EOS Smart-Contracts in Q-test](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
+* [Interacting with Q-test in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
 * [Inegrating with CI/CD pipeline] ()
 
-## EOS Helper API
+## Q-test API
 
 * [Assertion](docs/api/assertion.md)
 * [Asset - Class](docs/api/asset.md)
