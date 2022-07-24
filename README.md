@@ -2,16 +2,62 @@
 
 EOS Helper is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
 
-EOS Helper gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, PROTON, FIO and UX. It also allows for each project to simply set up CI/CD and seed table data. 
+EOS Helper gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS.
 
-## Main features
+## Overview
 
-- **Ability to init/reset table data**
-- **Ability to test accounts and permissions**
-- **Built with Javascript**
-- **Dockerize an EOSIO node that can be run on the users system automatically**
-- **Ability to test multiple EOSIO(EOS/WAX/TELOS) networks with links to public snapshot**
-- **Simplified method to setup CI/CD**
+### Installation
+
+Refer a [project example](example)
+
+```bash
+npm install --save-dev @genereos.io/qtest
+```
+
+#### Jest
+Install `jest`
+```
+npm install --save-dev jest@^28.1.3
+```
+Config `jest`: Create jest.config.js and add following:
+
+```
+module.exports = {
+  // transform: { "^.+\\.(ts|tsx)$": "ts-jest" },
+  testEnvironment: "node",
+  testTimeout: 120 * 1e3,
+};
+```
+### Run
+Update test command in package.json
+
+```
+"test": "jest"
+```
+
+Run
+
+```
+npm run test
+
+> examples@1.0.0 test
+> jest
+
+ PASS  tests/test.js (22.428 s)
+  example test
+    ✓ push action (526 ms)
+    ✓ load contract table data (233 ms)
+    ✓ modify contract table data (286 ms)
+    ✓ erase contract table data (74 ms)
+    ✓ push action to store log and then read table data (257 ms)
+    ✓ should create new item and add time to buy item (10412 ms)
+```
+
+### Usage
+```
+const { Chain } = require("@genereos.io/qtest");
+const { expectAction } = require("@genereos.io/qtest");
+```
 
 ## User documentation
 
