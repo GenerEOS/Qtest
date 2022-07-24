@@ -19,10 +19,10 @@ describe('account test', () => {
   afterAll(async () => {
     await chain.clear();
   }, 10000);
-  
+
   describe('Load table', function () {
     it('load contract table data', async () => {
-      await inittableContract.table.tablename1.load({
+      await inittableContract.table.tablename1.insert({
         testscope1: [
           {
             id: 'name1',
@@ -67,7 +67,7 @@ describe('account test', () => {
 
     it('should throw if contract does not have eosload action', async () => {
       await expectThrow(
-        inittableContract.table.tablename3.load({
+        inittableContract.table.tablename3.insert({
           testscope1: [
             {
               id: 'namescope1',
@@ -81,7 +81,7 @@ describe('account test', () => {
   });
   describe('Modify table', function () {
     it('modify contract table data', async () => {
-      await inittableContract.table.tablename2.load({
+      await inittableContract.table.tablename2.insert({
         testscope3: [
           {
             id: 'namescope3',
@@ -125,7 +125,7 @@ describe('account test', () => {
   });
   describe('Erase table', function () {
     it('erase contract table data', async () => {
-      await inittableContract.table.tablename1.load({
+      await inittableContract.table.tablename1.insert({
         testscope1: [
           {
             id: 'id1',

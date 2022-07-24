@@ -1,6 +1,7 @@
 import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
 import { PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
 import { Chain } from '../src/chain';
+import { blockTimeToMs } from '../src/utils';
 
 describe('chain test', () => {
   let chain;
@@ -30,7 +31,7 @@ describe('chain test', () => {
 
   it('create account', async () => {
     const newAccountName = 'newaccount11';
-    await chain.createAccount(
+    await chain.system.createAccount(
       newAccountName,
       chain.coreSymbol.convertAssetString(11.11),
       99998
@@ -167,24 +168,24 @@ describe('chain test', () => {
   });
 
   it('add time', async () => {
-    const currentBlockTime = await chain.blockTimeToMs(
+    const currentBlockTime = await blockTimeToMs(
       (
         await chain.getInfo()
       ).head_block_time
     );
 
-    await chain.addTime(344);
+    await chain.time.increase(344);
 
-    const blockTimeAfterAdd1 = await chain.blockTimeToMs(
+    const blockTimeAfterAdd1 = await blockTimeToMs(
       (
         await chain.getInfo()
       ).head_block_time
     );
     expect(blockTimeAfterAdd1 - currentBlockTime).toBeGreaterThan(344);
 
-    await chain.addTime(34567);
+    await chain.time.increase(34567);
 
-    const blockTimeAfterAdd2 = await chain.blockTimeToMs(
+    const blockTimeAfterAdd2 = await blockTimeToMs(
       (
         await chain.getInfo()
       ).head_block_time

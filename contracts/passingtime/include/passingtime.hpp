@@ -12,6 +12,8 @@ public:
 
   ACTION newepoch( uint64_t epoch_id, uint32_t period);
 
+  ACTION newepochdate( uint64_t epoch_id, time_point end_at);
+
 private:
 
   TABLE epoch
@@ -23,4 +25,14 @@ private:
     uint64_t primary_key() const { return epoch_id; }
   };
   typedef eosio::multi_index< "epochs"_n, epoch > epoch_t;
+
+  TABLE epoch_date
+  {
+    uint64_t epoch_id;
+    time_point start_at;
+    time_point end_at;
+
+    uint64_t primary_key() const { return epoch_id; }
+  };
+  typedef eosio::multi_index< "epochdates"_n, epoch_date > epoch_date_t;
 };
