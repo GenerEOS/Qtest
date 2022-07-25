@@ -110,9 +110,14 @@ permissions:
   
   A wrapper around **eosio:token** action.  Assumes the chain has been started with system contracts installed.
   
-  ### setContract(contractName: string): Contract
+  ### setContract(contractName: string): Contract  
   
   A wrapper around the **eosio:setcode** and **eosio:setabi** actions.
+  
+  **Example**
+  ```javascript
+async setContract(contractPath: ContractPath)
+ ```
   
 
   
