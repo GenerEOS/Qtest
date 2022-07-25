@@ -30,3 +30,18 @@ push action to chain.
 ###   pushActions(action: Action, broadcast: boolean = true, sign: boolean = true, expireSeconds: number = 120): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> 
 
 push multiple actions to the chain in a single transaction.
+
+### waitTillNextBlock(numBlocks: number = 1)
+
+Wait numblocks from the current block and returns a composite containing the startblock and the number of blocks that have elapsed.
+
+**Returns**
+```json
+   {
+      startingBlock: Block
+      elapsedBlocks: 1
+    }
+```
+### waitTillBlock(target: number)
+
+wait until chain produce `target` block number
