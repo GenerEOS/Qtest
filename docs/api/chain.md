@@ -26,3 +26,7 @@ Checks if the chain is active and producing new blocks.
 ###   pushAction(action: Action, broadcast: boolean = true, sign: boolean = true, expireSeconds: number = 120): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> 
 
 push action to chain.
+
+###   pushActions(action: Action, broadcast: boolean = true, sign: boolean = true, expireSeconds: number = 120): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> 
+
+push multiple actions to the chain in a single transaction.
