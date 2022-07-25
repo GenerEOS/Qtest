@@ -1,6 +1,10 @@
 # Asset
 The Asset class represents tokens created with the eosio.token contract
 
+## Constructor
+
+### constructor(amount: number, symbol: TokenSymbol)
+
 ## Methods
 
 ### static fromString(assetString: string): Asset
