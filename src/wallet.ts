@@ -1,4 +1,4 @@
-import { JsSignatureProvider, PrivateKey } from 'eosjs/dist/eosjs-jssig';
+import { JsSignatureProvider, PrivateKey, PublicKey } from 'eosjs/dist/eosjs-jssig';
 import { generateKeyPair } from 'eosjs/dist/eosjs-key-conversions';
 import { Chain } from './chain';
 
@@ -11,6 +11,18 @@ export const initializedChain: Chain[] = [];
 
 export const signatureProvider = new JsSignatureProvider([TESTING_KEY]);
 
+export interface KeyPair {
+  publicKey: PublicKey;
+  privateKey: PrivateKey;
+}
+
+/**
+ * Import key to signature provider
+ *
+ * @param {string} privateKey private key to import
+ * @return {Promise<void>}
+ * @api public
+ */
 export function importKey(privateKey: string) {
   const priv = PrivateKey.fromString(privateKey);
   const privElliptic = priv.toElliptic();
@@ -19,7 +31,14 @@ export function importKey(privateKey: string) {
   signatureProvider.availableKeys.push(pubStr);
 }
 
-export function createKey() {
+/**
+ * Create new key
+ *
+ * @param {string} privateKey private key to import
+ * @return {KeyPair} generated private key and public key
+ * @api public
+ */
+export function createKey(): KeyPair {
   const newKeyPair = generateKeyPair(0, { secureEnv: true });
   importKey(newKeyPair.privateKey.toString());
   return newKeyPair;
