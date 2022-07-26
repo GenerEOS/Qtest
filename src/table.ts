@@ -32,7 +32,7 @@ export class Table {
   }
 
   /**
-   * load data to contract table
+   * insert data to contract table
    *
    * @param { [ key: string] : object } scopeRowsData scope and rows data
    * @example
