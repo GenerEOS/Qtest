@@ -64,12 +64,15 @@ const { expectAction } = require("@genereos.io/qtest");
 ## Q-test API
 ### Classes
 
+**Public**
 
 * [Asset](docs/api/asset.md)
 * [Account](docs/api/account.md)
 * [Chain](docs/api/chain.md)
-* [Contract](docs/api/contract.md)
 * [Symbol](docs/api/symbol.md)
+
+**System**
+* [Contract](docs/api/contract.md)
 * [Table](docs/api/table.md)
 
 
