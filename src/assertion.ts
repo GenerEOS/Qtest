@@ -38,47 +38,28 @@ export function getAllActions(actionTraces: ActionTrace[]): {
   return actions;
 }
 
+const isContainedIn = (superObj, subObj) => {
+  return Object.keys(subObj).every((ele) => {
+    if (typeof subObj[ele] == "object") {
+      return isContainedIn(superObj[ele], subObj[ele]);
+    }
+    return subObj[ele] === superObj[ele];
+  });
+};
+
 export function expectAction(
   transaction: TransactResult,
-  expectedAction: {
-    account: string;
-    name: string;
-    data?: object;
-    authorization?: Authorization[];
-  }
+  expectedAction: {}
 ): boolean {
   const allActions = getAllActions(transaction.processed.action_traces);
+
   for (const action of allActions) {
-    if (
-      action.account === expectedAction.account &&
-      action.name === expectedAction.name
-    ) {
-      if (expectedAction.data) {
-        if (
-          JSON.stringify(expectedAction.data) !== JSON.stringify(action.data)
-        ) {
-          throw new Error(
-            `Data of action ${action.account}:${action.name} mismatch`
-          );
-        }
-      }
-
-      if (expectedAction.authorization) {
-        if (
-          JSON.stringify(expectedAction.authorization) !==
-          JSON.stringify(action.authorization)
-        ) {
-          throw new Error(
-            `Authorization of action ${action.account}:${action.name} mismatch`
-          );
-        }
-      }
-
+    if (isContainedIn(action, expectedAction)) {
       return true;
     }
   }
   throw new Error(
-    `Action ${expectedAction.account}:${expectedAction.name} not found`
+    `expectedAction: ${JSON.stringify(expectedAction)} not found`
   );
 }
 

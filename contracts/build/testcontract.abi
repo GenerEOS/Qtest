@@ -4,96 +4,12 @@
     "types": [],
     "structs": [
         {
-            "name": "eos_payload",
-            "base": "",
-            "fields": [
-                {
-                    "name": "table_name",
-                    "type": "name"
-                },
-                {
-                    "name": "scope",
-                    "type": "name"
-                },
-                {
-                    "name": "row_data",
-                    "type": "bytes"
-                }
-            ]
-        },
-        {
-            "name": "eoserase",
-            "base": "",
-            "fields": [
-                {
-                    "name": "payload",
-                    "type": "eos_payload[]"
-                }
-            ]
-        },
-        {
-            "name": "eosinsert",
-            "base": "",
-            "fields": [
-                {
-                    "name": "payload",
-                    "type": "eos_payload[]"
-                }
-            ]
-        },
-        {
-            "name": "eosmodify",
-            "base": "",
-            "fields": [
-                {
-                    "name": "payload",
-                    "type": "eos_payload[]"
-                }
-            ]
-        },
-        {
-            "name": "hello",
-            "base": "",
-            "fields": [
-                {
-                    "name": "user",
-                    "type": "name"
-                }
-            ]
-        },
-        {
-            "name": "item",
-            "base": "",
-            "fields": [
-                {
-                    "name": "seller",
-                    "type": "name"
-                },
-                {
-                    "name": "item_name",
-                    "type": "name"
-                },
-                {
-                    "name": "price",
-                    "type": "asset"
-                },
-                {
-                    "name": "selling_time",
-                    "type": "uint32"
-                },
-                {
-                    "name": "buyer",
-                    "type": "name"
-                }
-            ]
-        },
-        {
             "name": "log",
             "base": "",
             "fields": [
                 {
                     "name": "id",
-                    "type": "name"
+                    "type": "uint64"
                 },
                 {
                     "name": "value1",
@@ -101,74 +17,22 @@
                 },
                 {
                     "name": "value2",
-                    "type": "uint64"
+                    "type": "string"
                 }
             ]
         },
         {
-            "name": "logbuyitem",
+            "name": "testaction",
             "base": "",
             "fields": [
                 {
-                    "name": "seller",
-                    "type": "name"
-                },
-                {
-                    "name": "item_name",
-                    "type": "name"
-                },
-                {
-                    "name": "buyer",
+                    "name": "user",
                     "type": "name"
                 }
             ]
         },
         {
-            "name": "lognewitem",
-            "base": "",
-            "fields": [
-                {
-                    "name": "seller",
-                    "type": "name"
-                },
-                {
-                    "name": "item_name",
-                    "type": "name"
-                },
-                {
-                    "name": "price",
-                    "type": "asset"
-                },
-                {
-                    "name": "selling_time",
-                    "type": "uint32"
-                }
-            ]
-        },
-        {
-            "name": "newitem",
-            "base": "",
-            "fields": [
-                {
-                    "name": "seller",
-                    "type": "name"
-                },
-                {
-                    "name": "item_name",
-                    "type": "name"
-                },
-                {
-                    "name": "price",
-                    "type": "asset"
-                },
-                {
-                    "name": "selling_time",
-                    "type": "uint32"
-                }
-            ]
-        },
-        {
-            "name": "newlog",
+            "name": "testlog",
             "base": "",
             "fields": [
                 {
@@ -177,7 +41,7 @@
                 },
                 {
                     "name": "id",
-                    "type": "name"
+                    "type": "uint64"
                 },
                 {
                     "name": "value1",
@@ -185,12 +49,12 @@
                 },
                 {
                     "name": "value2",
-                    "type": "uint64"
+                    "type": "string"
                 }
             ]
         },
         {
-            "name": "savelog",
+            "name": "testtable",
             "base": "",
             "fields": [
                 {
@@ -198,77 +62,36 @@
                     "type": "name"
                 },
                 {
-                    "name": "id",
-                    "type": "name"
-                },
-                {
                     "name": "value1",
                     "type": "uint32"
                 },
                 {
                     "name": "value2",
-                    "type": "uint64"
+                    "type": "string"
                 }
             ]
         }
     ],
     "actions": [
         {
-            "name": "eoserase",
-            "type": "eoserase",
+            "name": "testaction",
+            "type": "testaction",
             "ricardian_contract": ""
         },
         {
-            "name": "eosinsert",
-            "type": "eosinsert",
+            "name": "testlog",
+            "type": "testlog",
             "ricardian_contract": ""
         },
         {
-            "name": "eosmodify",
-            "type": "eosmodify",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "hello",
-            "type": "hello",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "logbuyitem",
-            "type": "logbuyitem",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "lognewitem",
-            "type": "lognewitem",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "newitem",
-            "type": "newitem",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "newlog",
-            "type": "newlog",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "savelog",
-            "type": "savelog",
+            "name": "testtable",
+            "type": "testtable",
             "ricardian_contract": ""
         }
     ],
     "tables": [
         {
-            "name": "item",
-            "type": "item",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "log",
+            "name": "logs",
             "type": "log",
             "index_type": "i64",
             "key_names": [],

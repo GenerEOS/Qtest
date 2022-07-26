@@ -6,10 +6,11 @@ describe("account test", () => {
   let chain;
   let passingtimeContract;
   let chainName = process.env.CHAIN_NAME || "WAX";
+  let contractAccount;
 
   beforeAll(async () => {
     chain = await Chain.setupChain(chainName);
-    const contractAccount = chain.accounts[2];
+    contractAccount = chain.accounts[0];
     await contractAccount.addCode("active");
     passingtimeContract = await contractAccount.setContract({
       abi: "./contracts/build/passingtime.abi",
@@ -28,11 +29,11 @@ describe("account test", () => {
           epoch_id: 0,
           period: 24 * 60 * 60, // 1 day
         },
-        [{ actor: chain.accounts[2].name, permission: "active" }]
+        [{ actor: contractAccount.name, permission: "active" }]
       );
 
       let epochs = await passingtimeContract.table.epochs.get({
-        scope: chain.accounts[2].name,
+        scope: contractAccount.name,
       });
 
       expect(epochs.rows.length).toBe(1);
@@ -46,7 +47,7 @@ describe("account test", () => {
             epoch_id: 1,
             period: 60 * 60, // 1 hour
           },
-          [{ actor: chain.accounts[2].name, permission: "active" }]
+          [{ actor: contractAccount.name, permission: "active" }]
         ),
         "only start next epoch once the previous epoch has done"
       );
@@ -59,7 +60,7 @@ describe("account test", () => {
             epoch_id: 1,
             period: 60 * 60, // 1 hour
           },
-          [{ actor: chain.accounts[2].name, permission: "active" }]
+          [{ actor: contractAccount.name, permission: "active" }]
         ),
         "only start next epoch once the previous epoch has done"
       );
@@ -71,11 +72,11 @@ describe("account test", () => {
           epoch_id: 1,
           period: 60 * 60, // 1 hour
         },
-        [{ actor: chain.accounts[2].name, permission: "active" }]
+        [{ actor: contractAccount.name, permission: "active" }]
       );
 
       epochs = await passingtimeContract.table.epochs.get({
-        scope: chain.accounts[2].name,
+        scope: contractAccount.name,
       });
 
       expect(epochs.rows.length).toBe(2);
@@ -109,11 +110,11 @@ describe("account test", () => {
           epoch_id: 0,
           end_at: oneDayAhead.toISOString().slice(0, -1),
         },
-        [{ actor: chain.accounts[2].name, permission: "active" }]
+        [{ actor: contractAccount.name, permission: "active" }]
       );
 
       let epochs = await passingtimeContract.table.epochdates.get({
-        scope: chain.accounts[2].name,
+        scope: contractAccount.name,
       });
 
       expect(epochs.rows.length).toBe(1);
@@ -129,7 +130,7 @@ describe("account test", () => {
             epoch_id: 1,
             end_at: twoDaysAhead.toISOString().slice(0, -1),
           },
-          [{ actor: chain.accounts[2].name, permission: "active" }]
+          [{ actor: contractAccount.name, permission: "active" }]
         ),
         "only start next epoch once the previous epoch has done"
       );
@@ -142,7 +143,7 @@ describe("account test", () => {
             epoch_id: 1,
             end_at: twoDaysAhead.toISOString().slice(0, -1),
           },
-          [{ actor: chain.accounts[2].name, permission: "active" }]
+          [{ actor: contractAccount.name, permission: "active" }]
         ),
         "only start next epoch once the previous epoch has done"
       );
@@ -154,11 +155,11 @@ describe("account test", () => {
           epoch_id: 1,
           end_at: twoDaysAhead.toISOString().slice(0, -1),
         },
-        [{ actor: chain.accounts[2].name, permission: "active" }]
+        [{ actor: contractAccount.name, permission: "active" }]
       );
 
       epochs = await passingtimeContract.table.epochdates.get({
-        scope: chain.accounts[2].name,
+        scope: contractAccount.name,
       });
 
       expect(epochs.rows.length).toBe(2);

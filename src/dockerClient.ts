@@ -22,11 +22,7 @@ const pullDockerImage = async () => {
       process.stdout.write(
         `Pulling docker image ${dockerImageName}. This process will take few mintutes ...\n`
       );
-      try {
-        execute(`docker pull ${dockerImageName}`);
-      } catch (error) {
-        throw error;
-      }
+      execute(`docker pull ${dockerImageName}`);
     } else {
       throw e;
     }
@@ -35,7 +31,7 @@ const pullDockerImage = async () => {
 
 export const startChainContainer = async (
   rpcPort: number = 8880,
-  tokenSymbol = "WAX"
+  tokenSymbol = "EOS"
 ) => {
   const name = "qtest" + rpcPort;
   await pullDockerImage();
