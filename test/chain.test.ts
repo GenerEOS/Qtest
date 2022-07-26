@@ -1,24 +1,24 @@
-import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
-import { PushTransactionArgs } from 'eosjs/dist/eosjs-rpc-interfaces';
-import { Chain } from '../src/chain';
-import { blockTimeToMs } from '../src/utils';
+import { TransactResult } from "eosjs/dist/eosjs-api-interfaces";
+import { PushTransactionArgs } from "eosjs/dist/eosjs-rpc-interfaces";
+import { Chain } from "../src/chain";
+import { blockTimeToMs } from "../src/utils";
 
-describe('chain test', () => {
+describe("chain test", () => {
   let chain;
-  let chainName = process.env.CHAIN_NAME || 'WAX';
+  let chainName = process.env.CHAIN_NAME || "WAX";
 
   afterAll(async () => {
     await chain.clear();
   }, 10000);
 
-  it('test setup chain', async () => {
+  it("test setup chain", async () => {
     chain = await Chain.setupChain(chainName);
     const chainInfo = await chain.rpc.get_info();
     expect(chainInfo.head_block_num).toBeGreaterThan(0);
     expect(chainInfo.last_irreversible_block_num).toBeGreaterThan(0);
 
-    const testAccount1 = await chain.rpc.get_account('acc11.test');
-    const testAccount10 = await chain.rpc.get_account('acc25.test');
+    const testAccount1 = await chain.rpc.get_account("acc11.test");
+    const testAccount10 = await chain.rpc.get_account("acc25.test");
     if (chain.systemContractEnable) {
       expect(testAccount1.total_resources.net_weight).toBe(
         chain.coreSymbol.convertAssetString(10)
@@ -29,8 +29,8 @@ describe('chain test', () => {
     }
   }, 100000);
 
-  it('create account', async () => {
-    const newAccountName = 'newaccount11';
+  it("create account", async () => {
+    const newAccountName = "newaccount11";
     await chain.system.createAccount(
       newAccountName,
       chain.coreSymbol.convertAssetString(11.11),
@@ -48,7 +48,7 @@ describe('chain test', () => {
     }
 
     const newAccountBalance = await chain.rpc.get_currency_balance(
-      'eosio.token',
+      "eosio.token",
       newAccountName,
       chain.coreSymbol.symbol
     );
@@ -57,63 +57,63 @@ describe('chain test', () => {
     );
   });
 
-  it('push action', async () => {
-    const testingAccountName = 'newaccount11';
+  it("push action", async () => {
+    const testingAccountName = "newaccount11";
     // @ts-ignore
     const transaction: TransactResult = await chain.pushAction({
-      account: 'eosio.token',
-      name: 'transfer',
+      account: "eosio.token",
+      name: "transfer",
       authorization: [
         {
           actor: testingAccountName,
-          permission: 'active',
+          permission: "active",
         },
       ],
       data: {
         from: testingAccountName,
         to: chain.accounts[0].name,
         quantity: chain.coreSymbol.convertAssetString(1),
-        memo: 'test',
+        memo: "test",
       },
     });
     expect(transaction.transaction_id.length).toBe(64);
     expect(transaction.processed.block_num).toBeGreaterThan(0);
   });
 
-  it('push multiple action', async () => {
-    const testingAccountName = 'newaccount11';
+  it("push multiple action", async () => {
+    const testingAccountName = "newaccount11";
     // @ts-ignore
     const transaction: TransactResult = await chain.pushActions([
       {
-        account: 'eosio.token',
-        name: 'transfer',
+        account: "eosio.token",
+        name: "transfer",
         authorization: [
           {
             actor: testingAccountName,
-            permission: 'active',
+            permission: "active",
           },
         ],
         data: {
           from: testingAccountName,
           to: chain.accounts[0].name,
           quantity: chain.coreSymbol.convertAssetString(1),
-          memo: 'test',
+          memo: "test",
         },
       },
       {
-        account: 'eosio.token',
-        name: 'transfer',
+        account: "eosio.token",
+        name: "transfer",
         authorization: [
           {
             actor: testingAccountName,
-            permission: 'active',
+            permission: "active",
           },
         ],
         data: {
           from: testingAccountName,
           to: chain.accounts[1].name,
           quantity: chain.coreSymbol.convertAssetString(1),
-          memo: 'test',
+          memo: "test",
         },
       },
     ]);
@@ -121,41 +121,41 @@ describe('chain test', () => {
     expect(transaction.processed.block_num).toBeGreaterThan(0);
   });
 
-  it('should sign transaction only without broadcast', async () => {
-    const testingAccountName = 'newaccount11';
+  it("should sign transaction only without broadcast", async () => {
+    const testingAccountName = "newaccount11";
     // @ts-ignore
     const transaction: PushTransactionArgs = await chain.pushActions(
       [
         {
-          account: 'eosio.token',
-          name: 'transfer',
+          account: "eosio.token",
+          name: "transfer",
           authorization: [
             {
               actor: testingAccountName,
-              permission: 'active',
+              permission: "active",
             },
           ],
           data: {
             from: testingAccountName,
             to: chain.accounts[0].name,
             quantity: chain.coreSymbol.convertAssetString(1),
-            memo: 'test',
+            memo: "test",
           },
         },
         {
-          account: 'eosio.token',
-          name: 'transfer',
+          account: "eosio.token",
+          name: "transfer",
           authorization: [
             {
               actor: testingAccountName,
-              permission: 'active',
+              permission: "active",
             },
           ],
           data: {
             from: testingAccountName,
             to: chain.accounts[1].name,
             quantity: chain.coreSymbol.convertAssetString(1),
-            memo: 'test',
+            memo: "test",
           },
         },
       ],
@@ -163,11 +163,11 @@ describe('chain test', () => {
       true
     );
     expect(transaction.signatures.length).toBe(1);
-    expect(transaction.signatures[0].startsWith('SIG_K1_')).toBe(true);
+    expect(transaction.signatures[0].startsWith("SIG_K1_")).toBe(true);
     expect(transaction.serializedTransaction.length).toBeGreaterThan(0);
   });
 
-  it('add time', async () => {
+  it("add time", async () => {
     const currentBlockTime = await blockTimeToMs(
       (
         await chain.getInfo()

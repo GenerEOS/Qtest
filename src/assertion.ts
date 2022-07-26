@@ -1,7 +1,7 @@
-import { ActionTrace, TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
-import { Authorization } from 'eosjs/dist/eosjs-serialize';
-import { Account } from './account';
-import { Asset } from './asset';
+import { ActionTrace, TransactResult } from "eosjs/dist/eosjs-api-interfaces";
+import { Authorization } from "eosjs/dist/eosjs-serialize";
+import { Account } from "./account";
+import { Asset } from "./asset";
 
 export async function expectThrow(
   promise: Promise<any>,

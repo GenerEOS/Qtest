@@ -1,7 +1,7 @@
-import { Chain } from './chain';
-import { Account } from './account';
-import { signatureProvider } from './wallet';
-import { generateTapos } from './utils';
+import { Chain } from "./chain";
+import { Account } from "./account";
+import { signatureProvider } from "./wallet";
+import { generateTapos } from "./utils";
 
 export class System {
   public chain: Chain;
@@ -16,7 +16,7 @@ export class System {
    * @param {string[]} accounts array of account names
    * @param {Asset} supplyAmount Optional. Amount of token supply to each account, 100 token if it missing
    * @return {Promise<Account[]>} list of account instances
-   * 
+   *
    * @api public
    */
   async createAccounts(
@@ -37,7 +37,7 @@ export class System {
    * @param {string} account account name
    * @param {Asset} supplyAmount Optional. Amount of token supply to each account, 100 token if it missing
    * @return {Promise<Account>} account instances
-   * 
+   *
    * @api public
    */
   async createAccount(
@@ -47,16 +47,16 @@ export class System {
   ): Promise<Account> {
     let createAccountActions = [
       {
-        account: 'eosio',
-        name: 'newaccount',
+        account: "eosio",
+        name: "newaccount",
         authorization: [
           {
-            actor: 'eosio',
-            permission: 'active',
+            actor: "eosio",
+            permission: "active",
           },
         ],
         data: {
-          creator: 'eosio',
+          creator: "eosio",
           name: account,
           owner: {
             threshold: 1,
@@ -88,31 +88,31 @@ export class System {
       // @ts-ignore
       createAccountActions = createAccountActions.concat([
         {
-          account: 'eosio',
-          name: 'buyrambytes',
+          account: "eosio",
+          name: "buyrambytes",
           authorization: [
             {
-              actor: 'eosio',
-              permission: 'active',
+              actor: "eosio",
+              permission: "active",
             },
           ],
           data: {
-            payer: 'eosio',
+            payer: "eosio",
             receiver: account,
             bytes,
           },
         },
         {
-          account: 'eosio',
-          name: 'delegatebw',
+          account: "eosio",
+          name: "delegatebw",
           authorization: [
             {
-              actor: 'eosio',
-              permission: 'active',
+              actor: "eosio",
+              permission: "active",
             },
           ],
           data: {
-            from: 'eosio',
+            from: "eosio",
             receiver: account,
             stake_net_quantity: this.chain.coreSymbol.convertAssetString(10),
             stake_cpu_quantity: this.chain.coreSymbol.convertAssetString(10),
@@ -123,20 +123,20 @@ export class System {
     }
 
     createAccountActions.push({
-      account: 'eosio.token',
-      name: 'transfer',
+      account: "eosio.token",
+      name: "transfer",
       authorization: [
         {
-          actor: 'eosio',
-          permission: 'active',
+          actor: "eosio",
+          permission: "active",
         },
       ],
       data: {
         // @ts-ignore
-        from: 'eosio',
+        from: "eosio",
         to: account,
         quantity: supplyAmount,
-        memo: 'supply to test account',
+        memo: "supply to test account",
       },
     });
     await this.chain.api.transact(

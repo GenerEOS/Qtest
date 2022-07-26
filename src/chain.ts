@@ -1,24 +1,24 @@
-import fetch from 'node-fetch';
-import { Api, JsonRpc } from 'eosjs';
-import { Action } from 'eosjs/dist/eosjs-serialize';
-import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
+import fetch from "node-fetch";
+import { Api, JsonRpc } from "eosjs";
+import { Action } from "eosjs/dist/eosjs-serialize";
+import { TransactResult } from "eosjs/dist/eosjs-api-interfaces";
 import {
   ReadOnlyTransactResult,
   PushTransactionArgs,
   GetInfoResult,
-} from 'eosjs/dist/eosjs-rpc-interfaces';
-import { Account } from './account';
+} from "eosjs/dist/eosjs-rpc-interfaces";
+import { Account } from "./account";
 import {
   killExistingChainContainer,
   startChainContainer,
   getChainIp,
   manipulateChainTime,
-} from './dockerClient';
-import { sleep } from './utils';
-import { signatureProvider } from './wallet';
-import { Asset, Symbol as TokenSymbol } from './asset';
-import { Time } from './time';
-import { System } from './system';
+} from "./dockerClient";
+import { sleep } from "./utils";
+import { signatureProvider } from "./wallet";
+import { Asset, Symbol as TokenSymbol } from "./asset";
+import { Time } from "./time";
+import { System } from "./system";
 
 export class Chain {
   public coreSymbol: TokenSymbol;
@@ -43,9 +43,14 @@ export class Chain {
   }
 
   static validateChainName(chainName: string): void {
-    const validChainNames = ['WAX', 'EOS', 'TLOS'];
-    if(!validChainNames.includes(chainName)) {
-      throw new Error('Chain name is not valid: ' + chainName + '. Should be one of ' + JSON.stringify(validChainNames));
+    const validChainNames = ["WAX", "EOS", "TLOS"];
+    if (!validChainNames.includes(chainName)) {
+      throw new Error(
+        "Chain name is not valid: " +
+          chainName +
+          ". Should be one of " +
+          JSON.stringify(validChainNames)
+      );
     }
   }
 
@@ -59,10 +64,7 @@ export class Chain {
   static async setupChain(chainName: string) {
     Chain.validateChainName(chainName);
     const port = Math.floor(Math.random() * 9900 + 100);
-    await startChainContainer(
-      port,
-      chainName
-    );
+    await startChainContainer(port, chainName);
 
     // const chainIp = await getChainIp(port);
     // const rpc = new JsonRpc(`http://${chainIp}:${port}`, { fetch });
@@ -140,7 +142,7 @@ export class Chain {
    * @param {boolean} sign Optional. should sign transaction or not
    * @param {boolean} expireSeconds Optional. number of second transaction will expired
    * @return {Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs>} transaction result
-   * 
+   *
    * @api public
    */
   async pushAction(
@@ -163,7 +165,7 @@ export class Chain {
    * @param {boolean} sign Optional. should sign transaction or not
    * @param {boolean} expireSeconds Optional. number of second transaction will expired
    * @return {Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs>} transaction result
-   * 
+   *
    * @api public
    */
   async pushActions(
@@ -178,12 +180,12 @@ export class Chain {
     );
   }
 
-   /**
+  /**
    * wait til `numBlocks` pass
    *
    * @param {number} numBlocks number of block
    * @return {void}
-   * 
+   *
    * @api public
    */
   async waitTillNextBlock(numBlocks: number = 1) {
@@ -202,7 +204,7 @@ export class Chain {
    *
    * @param {number} target target block number
    * @return {void}
-   * 
+   *
    * @api public
    */
   async waitTillBlock(target: number) {
@@ -213,7 +215,6 @@ export class Chain {
     }
     return currentBlockHeight;
   }
-
 
   private async initializeTestAccounts() {
     this.accounts = await this.createTestAccounts(10);
@@ -233,9 +234,9 @@ export class Chain {
     try {
       const rammarketTables = await this.rpc.get_table_rows({
         json: true,
-        code: 'eosio',
-        table: 'rammarket',
-        scope: 'eosio',
+        code: "eosio",
+        table: "rammarket",
+        scope: "eosio",
       });
       if (rammarketTables.rows && rammarketTables.rows.length) {
         return true;
@@ -251,7 +252,7 @@ export class Chain {
     while (!(await this.isProducingBlock())) {
       await sleep(1000);
       if (retryCount === 10) {
-        throw new Error('can not get chain status');
+        throw new Error("can not get chain status");
       }
       retryCount++;
     }
@@ -263,7 +264,7 @@ export class Chain {
     while (!(await this.isSystemContractInitialized())) {
       await sleep(2000);
       if (retryCount === 15) {
-        throw new Error('can not initilize system contract');
+        throw new Error("can not initilize system contract");
       }
       retryCount++;
     }
@@ -272,14 +273,16 @@ export class Chain {
   }
 
   private getChainTokenDecimal(chainName: string): number {
-    switch(chainName) {
-      case 'WAX':
+    switch (chainName) {
+      case "WAX":
         return 8;
-      case 'EOS':
-      case 'TLOS':
-        return 4
+      case "EOS":
+      case "TLOS":
+        return 4;
       default:
-        throw new Error('can not find token decimal for chain name ' + chainName);
+        throw new Error(
+          "can not find token decimal for chain name " + chainName
+        );
     }
   }
 }
