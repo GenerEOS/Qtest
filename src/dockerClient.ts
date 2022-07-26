@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+const dockerImageName = 'genereos/qtest:v1.1.1';
 
 function execute(command, ignoreFail = false) {
   try {
@@ -13,14 +14,33 @@ function execute(command, ignoreFail = false) {
   }
 }
 
+const pullDockerImage = async () => {
+  try {
+    execute(`docker inspect --type=image ${dockerImageName}`);
+  } catch (e) {
+    if (e.toString().includes(`Error: No such image: ${dockerImageName}`)) {
+      process.stdout.write(
+        `Pulling docker image ${dockerImageName}. This process will take few mintutes ...\n`
+      );
+      try {
+        execute(`docker pull ${dockerImageName}`);
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      throw e;
+    }
+  }
+};
+
 export const startChainContainer = async (
   rpcPort: number = 8880,
   tokenSymbol = 'WAX' 
 ) => {
   const name = 'qtest' + rpcPort;
-  execute(`docker pull genereos/qtest:v1.1.1`);
+  await pullDockerImage()
   execute(
-    `docker run --name ${name} --env SYSTEM_TOKEN_SYMBOL='${tokenSymbol}' -d -p ${rpcPort}:8888 genereos/qtest:v1.1.1`
+    `docker run --name ${name} --env SYSTEM_TOKEN_SYMBOL='${tokenSymbol}' -d -p ${rpcPort}:8888 ${dockerImageName}`
   );
 };
 
