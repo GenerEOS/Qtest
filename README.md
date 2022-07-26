@@ -31,7 +31,7 @@ module.exports = {
 
 #### Docker
 
-Refer at [here](https://docs.docker.com/engine/install/)
+To install docker pls refer at [here](https://docs.docker.com/engine/install/)
 
 ### Run
 Update test command in package.json
