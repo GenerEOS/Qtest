@@ -66,14 +66,18 @@ const { expectAction } = require("@genereos.io/qtest");
 
 **Public**
 
-* [Asset](docs/api/asset.md)
 * [Account](docs/api/account.md)
 * [Chain](docs/api/chain.md)
-* [Symbol](docs/api/symbol.md)
-
-**System**
 * [Contract](docs/api/contract.md)
 * [Table](docs/api/table.md)
+* [Time](docs/api/time.md)
+* [Wallet](docs/api/wallet.md)
+
+**Core**
+
+* [Asset](docs/api/asset.md)
+* [Symbol](docs/api/symbol.md)
+* [System](docs/api/system.md)
 
 
 ### Functions
