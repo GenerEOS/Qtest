@@ -9,7 +9,7 @@
     "prepare": "npm run build",
     "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "test": "jest test/*"
+    "test": "jest .test.ts"
   },
   "dependencies": {
     "eosjs": "^22.1.0",

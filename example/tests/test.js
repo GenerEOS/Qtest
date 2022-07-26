@@ -1,18 +1,19 @@
 const { Chain } = require("@genereos.io/qtest");
-const { expectAction } = require("@genereos.io/qtest");
+const { expectAction, expectThrow, expectBalance } = require("@genereos.io/qtest");
 
-describe('example test', () => {
+describe('eosio.token test', () => {
   let chain;
   let contract;
   let chainName = process.env.CHAIN_NAME || 'WAX';
+  let contractAccount, issuer, user1, user2, user3;
 
   beforeAll(async () => {
     chain = await Chain.setupChain(chainName);
-    const contractAccount = chain.accounts[1];
+    [contractAccount, issuer, user1, user2, user3] = chain.accounts;
     await contractAccount.addCode('active');
     contract = await contractAccount.setContract({
-      abi: './build/example.abi',
-      wasm: './build/example.wasm'
+      abi: './build/eosio.token.abi',
+      wasm: './build/eosio.token.wasm'
     });
   }, 60000);
 
@@ -20,212 +21,262 @@ describe('example test', () => {
     await chain.clear();
   }, 10000);
 
-  it('push action', async () => {
-    let transaction = await contract.action.hello(
-      { user: chain.accounts[2].name },
-      [{ actor: chain.accounts[2].name, permission: 'active' }]
-    );
-    expect(transaction.processed.action_traces[0].console).toBe(
-      ' hello ' + chain.accounts[2].name
-    );
+  describe("init account table", function () {
+    it('insert account table', async () => {
+      await contract.table.accounts.insert({
+        'scope1': [
+          {
+            balance: "12345.67890 AAA",
+          },
+          {
+            balance: "12345.67890 BBB",
+          }
+        ]
+      });
 
-    await expect(
-      contract.action.hello({ user: 'daniel' }, [
-        { actor: chain.accounts[2].name, permission: 'active' },
-      ])
-    ).rejects.toThrowError('missing authority of daniel');
-  }, 100000);
+      const balances = await contract.table.accounts.get({
+        scope: 'scope1',
+      });
+      expect(balances.rows[0].balance).toContain('12345.67890 AAA');
+      expect(balances.rows[1].balance).toContain('12345.67890 BBB');
+    });
 
-  it('load contract table data', async () => {
-    await contract.table.log.load({
-      testscope1: [
+    it('modify account table', async () => {
+      await contract.table.accounts.insert({
+        'scope2': [
+          {
+            balance: "12345.67890 AAA",
+          },
+          {
+            balance: "12345.67890 BBB",
+          }
+        ]
+      });
+
+      await contract.table.accounts.modify({
+        'scope2': [
+          {
+            balance: "123.67890 AAA",
+          },
+          {
+            balance: "1234.67890 BBB",
+          }
+        ]
+      });
+      const balances = await contract.table.accounts.get({
+        scope: 'scope2',
+      });
+      expect(balances.rows[0].balance).toContain('123.67890 AAA');
+      expect(balances.rows[1].balance).toContain('1234.67890 BBB');
+    });
+
+    it('remove account table', async () => {
+      await contract.table.accounts.insert({
+        'scope3': [
+          {
+            balance: "12345.67890 AAA",
+          },
+          {
+            balance: "12345.67890 BBB",
+          }
+        ]
+      });
+
+      let balances = await contract.table.accounts.get({
+        scope: 'scope3',
+      });
+      await contract.table.accounts.erase({
+        'scope3': [
+          {
+            balance: "12345.67890 BBB",
+          }
+        ]
+      });
+      balances = await contract.table.accounts.get({
+        scope: 'scope3',
+      });
+      expect(balances.rows.length).toBe(1);
+      expect(balances.rows[0].balance).toContain('12345.67890 AAA');
+    });
+  });
+
+  describe("create token", function () {
+    it('create token test', async () => {
+      await contract.action.create(
         {
-          id: 'name1',
-          value1: 1122,
-          value2: 2211,
+          issuer: issuer.name,
+          maximum_supply: "1000.000 TKN"
         },
+        [{ actor: contractAccount.name, permission: 'active' }]
+      );
+      const stats = await contract.table.stat.get({
+        scope: "TKN",
+      });
+      const stat = stats.rows[stats.rows.length - 1];
+      expect(stat.supply).toBe("0.000 TKN");
+      expect(stat.max_supply).toBe("1000.000 TKN");
+      expect(stat.issuer).toBe(issuer.name);
+    });
+
+    it('create nagative max supply', async () => {
+      await expectThrow(contract.action.create(
         {
-          id: 'name2',
-          value1: 2233,
-          value2: 3322,
+          issuer: issuer.name,
+          maximum_supply: "-1000.000 TKN"
         },
+        [{ actor: contractAccount.name, permission: 'active' }]
+      ), "max-supply must be positive"
+      );
+    });
+
+    it('symbol already exists', async () => {
+
+      await contract.action.create(
         {
-          id: 'name3',
-          value1: 3344,
-          value2: 4433,
+          issuer: issuer.name,
+          maximum_supply: "1000.000 ABC"
         },
-      ],
-      testscope2: [
+        [{ actor: contractAccount.name, permission: 'active' }]
+      );
+
+      await expectThrow(contract.action.create(
         {
-          id: 'namescope1',
-          value1: 999,
-          value2: 6712,
+          issuer: issuer.name,
+          maximum_supply: "1234.000 ABC"
         },
-      ],
-    });
-    const logTableRowScope1 = await contract.table.log.get({
-      scope: 'testscope1',
-    });
-    expect(logTableRowScope1.rows.length).toBe(3);
-    expect(logTableRowScope1.rows[0].id).toBe('name1');
-    expect(logTableRowScope1.rows[1].value1).toBe(2233);
-    expect(logTableRowScope1.rows[2].value2).toBe(4433);
+        [{ actor: contractAccount.name, permission: 'active' }]
+      ), "token with symbol already exists"
+      );
 
-    const logTableRowScope2 = await contract.table.log.get({
-      scope: 'testscope2',
     });
-    expect(logTableRowScope2.rows.length).toBe(1);
-    expect(logTableRowScope2.rows[0].id).toBe('namescope1');
-    expect(logTableRowScope2.rows[0].value1).toBe(999);
-  }, 100000);
 
-  it('modify contract table data', async () => {
-    await contract.table.log.load({
-      testscope3: [
+    it('create maximum supply', async () => {
+
+      await contract.action.create(
         {
-          id: 'namescope3',
-          value1: 999,
-          value2: 6712,
+          issuer: issuer.name,
+          maximum_supply: "4611686018427387903 CDE"
         },
-      ],
-    });
-    await contract.table.log.modify({
-      testscope3: [
+        [{ actor: contractAccount.name, permission: 'active' }]
+      );
+
+      const stats = await contract.table.stat.get({
+        scope: "CDE",
+      });
+      const stat = stats.rows[stats.rows.length - 1];
+      expect(stat.supply).toBe("0 CDE");
+      expect(stat.max_supply).toBe("4611686018427387903 CDE");
+      expect(stat.issuer).toBe(issuer.name);
+
+      await expectThrow(contract.action.create(
         {
-          id: 'namescope3',
-          value1: 765,
-          value2: 12390,
+          issuer: issuer.name,
+          maximum_supply: "4611686018427387904 DEF"
         },
-      ],
+        [{ actor: contractAccount.name, permission: 'active' }]
+      ), "invalid supply"
+      );
     });
 
-    const logTableRowScope3 = await contract.table.log.get({
-      scope: 'testscope3',
-    });
-    expect(logTableRowScope3.rows.length).toBe(1);
-    expect(logTableRowScope3.rows[0].id).toBe('namescope3');
-    expect(logTableRowScope3.rows[0].value1).toBe(765);
-    expect(logTableRowScope3.rows[0].value2).toBe(12390);
-  }, 100000);
+    it('create maximum decimal', async () => {
 
-  it('erase contract table data', async () => {
-    await contract.table.log.erase({
-      testscope3: [
+      await contract.action.create(
         {
-          id: 'namescope3',
-          value1: 999,
-          value2: 6712,
+          issuer: issuer.name,
+          maximum_supply: "1.000000000000000000 FKM"
         },
-      ],
-      testscope2: [
+        [{ actor: contractAccount.name, permission: 'active' }]
+      );
+
+      const stats = await contract.table.stat.get({
+        scope: "FKM",
+      });
+      const stat = stats.rows[stats.rows.length - 1];
+      expect(stat.supply).toBe("0.000000000000000000 FKM");
+      expect(stat.max_supply).toBe("1.000000000000000000 FKM");
+      expect(stat.issuer).toBe(issuer.name);
+
+      await expectThrow(contract.action.create(
         {
-          id: 'namescope1',
-          value1: 999,
-          value2: 6712,
+          issuer: issuer.name,
+          maximum_supply: "1.0000000000000000000 KML"
         },
-      ],
+        [{ actor: contractAccount.name, permission: 'active' }]
+      ), "number is out of range"
+      );
     });
-    const logTableRowScope3 = await contract.table.log.get({
-      scope: 'testscope3',
-      lower_boud: 'namescope3',
-      upper_bound: 'namescope3',
+  });
+
+  describe("issue token", function () {
+    it('create token test', async () => {
+      await contract.action.create(
+        {
+          issuer: issuer.name,
+          maximum_supply: "1234.5678 MLN"
+        },
+        [{ actor: contractAccount.name, permission: 'active' }]
+      );
+      await contract.action.issue(
+        {
+          to: issuer.name,
+          quantity: "1000.5678 MLN",
+          memo: "issue"
+        },
+        [{ actor: issuer.name, permission: 'active' }]
+      );
+
+      const stats = await contract.table.stat.get({
+        scope: "MLN",
+      });
+      const stat = stats.rows[stats.rows.length - 1];
+      expect(stat.supply).toBe("1000.5678 MLN");
+      expect(stat.max_supply).toBe("1234.5678 MLN");
+      expect(stat.issuer).toBe(issuer.name);
+
+      const balances = await contract.table.accounts.get({
+        scope: issuer.name,
+      });
+      expect(balances.rows[balances.rows.length - 1].balance).toBe("1000.5678 MLN");
+
+      await expectThrow(contract.action.issue(
+        {
+          to: issuer.name,
+          quantity: "1000.1234 MLN",
+          memo: "issue"
+        },
+        [{ actor: issuer.name, permission: 'active' }]
+      ), "quantity exceeds available supply"
+      );
+
+      await expectThrow(contract.action.issue(
+        {
+          to: issuer.name,
+          quantity: "-1.5678 MLN",
+          memo: "issue"
+        },
+        [{ actor: issuer.name, permission: 'active' }]
+      ), "must issue positive quantity"
+      );
+
+      await expectThrow(contract.action.issue(
+        {
+          to: user1.name,
+          quantity: "1.5678 MLN",
+          memo: "issue"
+        },
+        [{ actor: issuer.name, permission: 'active' }]
+      ), "tokens can only be issued to issuer account"
+      );
+
+      await contract.action.issue(
+        {
+          to: issuer.name,
+          quantity: "1.5678 MLN",
+          memo: "issue"
+        },
+        [{ actor: issuer.name, permission: 'active' }]
+      );
     });
-    expect(logTableRowScope3.rows.length).toBe(0);
+  });
 
-    const logTableRowScope2 = await contract.table.log.get({
-      scope: 'testscope2',
-      lower_boud: 'namescope1',
-      upper_bound: 'namescope1',
-    });
-    expect(logTableRowScope2.rows.length).toBe(0);
-  }, 100000);
-
-  it('push action to store log and then read table data', async () => {
-    let transaction = await contract.action.savelog(
-      {
-        user: chain.accounts[2].name,
-        id: 'daniel',
-        value1: 2291,
-        value2: 98123,
-      },
-      [{ actor: chain.accounts[2].name, permission: 'active' }]
-    );
-    expect(transaction.transaction_id.length).toBe(64);
-    expect(transaction.processed.block_num).toBeGreaterThan(0);
-
-    const logTableRows = await contract.table.log.get({
-      scope: chain.accounts[2].name,
-    });
-    const savedLogItem = logTableRows.rows[0];
-    expect(savedLogItem.id).toBe('daniel');
-    expect(savedLogItem.value1).toBe(2291);
-    expect(savedLogItem.value2).toBe(98123);
-  }, 100000);
-
-  it('should create new item and add time to buy item', async () => {
-    const seller = chain.accounts[2];
-    const buyer = chain.accounts[3];
-    const expectedSellingTime = Math.floor(Date.now() / 1000) + 3600 * 3; // 3 hours from now
-    const newitemTransaction = await contract.action.newitem(
-      {
-        seller: seller.name,
-        item_name: 'testitem1111',
-        price: chain.coreSymbol.convertAssetString(12.3456),
-        selling_time: expectedSellingTime,
-      },
-      [{ actor: chain.accounts[2].name, permission: 'active' }]
-    );
-
-    expectAction(newitemTransaction, {
-      account: contract.account.name,
-      name: 'lognewitem',
-      data: {
-        seller: chain.accounts[2].name,
-        item_name: 'testitem1111',
-        price: chain.coreSymbol.convertAssetString(12.3456),
-        selling_time: expectedSellingTime,
-      },
-      authorization: [{ actor: contract.account.name, permission: 'active' }],
-    });
-
-    expect(
-      buyer.transfer(
-        contract.account.name,
-        chain.coreSymbol.convertAssetString(12.3456),
-        `${seller.name}-testitem1111`
-      )
-    ).rejects.toThrowError('Item has not been available yet');
-
-    await chain.addTime(2 * 3600); // add 2 hours, item still not available yet
-
-    expect(
-      buyer.transfer(
-        contract.account.name,
-        chain.coreSymbol.convertAssetString(12.3456),
-        `${seller.name}-testitem1111`
-      )
-    ).rejects.toThrowError('Item has not been available yet');
-
-    await chain.addTime(3600);
-
-    const buyItemTransaction = await buyer.transfer(
-      contract.account.name,
-      chain.coreSymbol.convertAssetString(12.3456),
-      `${seller.name}-testitem1111`
-    );
-    expectAction(buyItemTransaction, {
-      account: contract.account.name,
-      name: 'logbuyitem',
-      data: {
-        seller: chain.accounts[2].name,
-        item_name: 'testitem1111',
-        buyer: buyer.name,
-      },
-    });
-
-    expectAction(buyItemTransaction, {
-      account: buyer.name,
-      name: 'transfer',
-    });
-  }, 50000);
 });
