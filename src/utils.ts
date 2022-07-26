@@ -1,4 +1,4 @@
-import { uint64ToName } from 'eosjs-account-name';
+import { uint64ToName } from "eosjs-account-name";
 /**
  * Sleeps for the given milliseconds duration
  *

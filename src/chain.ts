@@ -1,22 +1,22 @@
-import fetch from 'node-fetch';
-import fs from 'fs';
-import { Api, JsonRpc } from 'eosjs';
-import { Action } from 'eosjs/dist/eosjs-serialize';
-import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
+import fetch from "node-fetch";
+import fs from "fs";
+import { Api, JsonRpc } from "eosjs";
+import { Action } from "eosjs/dist/eosjs-serialize";
+import { TransactResult } from "eosjs/dist/eosjs-api-interfaces";
 import {
   ReadOnlyTransactResult,
   PushTransactionArgs,
-} from 'eosjs/dist/eosjs-rpc-interfaces';
-import { Account } from './account';
+} from "eosjs/dist/eosjs-rpc-interfaces";
+import { Account } from "./account";
 import {
   killExistingChainContainer,
   startChainContainer,
   getChainIp,
   manipulateChainTime,
-} from './dockerClient';
-import { generateTapos, sleep } from './utils';
-import { signatureProvider } from './wallet';
-import { Asset, Symbol as TokenSymbol } from './asset';
+} from "./dockerClient";
+import { generateTapos, sleep } from "./utils";
+import { signatureProvider } from "./wallet";
+import { Asset, Symbol as TokenSymbol } from "./asset";
 
 export class Chain {
   public coreSymbol: TokenSymbol;
@@ -40,10 +40,7 @@ export class Chain {
 
   static async setupChain(tokenSymbol: string) {
     const port = Math.floor(Math.random() * 9900 + 100);
-    await startChainContainer(
-      port,
-      tokenSymbol
-    );
+    await startChainContainer(port, tokenSymbol);
 
     // const chainIp = await getChainIp(port);
     // const rpc = new JsonRpc(`http://${chainIp}:${port}`, { fetch });
@@ -93,9 +90,9 @@ export class Chain {
     try {
       const rammarketTables = await this.rpc.get_table_rows({
         json: true,
-        code: 'eosio',
-        table: 'rammarket',
-        scope: 'eosio',
+        code: "eosio",
+        table: "rammarket",
+        scope: "eosio",
       });
       if (rammarketTables.rows && rammarketTables.rows.length) {
         return true;
@@ -139,16 +136,16 @@ export class Chain {
   ): Promise<Account> {
     let createAccountActions = [
       {
-        account: 'eosio',
-        name: 'newaccount',
+        account: "eosio",
+        name: "newaccount",
         authorization: [
           {
-            actor: 'eosio',
-            permission: 'active',
+            actor: "eosio",
+            permission: "active",
           },
         ],
         data: {
-          creator: 'eosio',
+          creator: "eosio",
           name: account,
           owner: {
             threshold: 1,
@@ -180,31 +177,31 @@ export class Chain {
       // @ts-ignore
       createAccountActions = createAccountActions.concat([
         {
-          account: 'eosio',
-          name: 'buyrambytes',
+          account: "eosio",
+          name: "buyrambytes",
           authorization: [
             {
-              actor: 'eosio',
-              permission: 'active',
+              actor: "eosio",
+              permission: "active",
             },
           ],
           data: {
-            payer: 'eosio',
+            payer: "eosio",
             receiver: account,
             bytes,
           },
         },
         {
-          account: 'eosio',
-          name: 'delegatebw',
+          account: "eosio",
+          name: "delegatebw",
           authorization: [
             {
-              actor: 'eosio',
-              permission: 'active',
+              actor: "eosio",
+              permission: "active",
             },
           ],
           data: {
-            from: 'eosio',
+            from: "eosio",
             receiver: account,
             stake_net_quantity: this.coreSymbol.convertAssetString(10),
             stake_cpu_quantity: this.coreSymbol.convertAssetString(10),
@@ -215,20 +212,20 @@ export class Chain {
     }
 
     createAccountActions.push({
-      account: 'eosio.token',
-      name: 'transfer',
+      account: "eosio.token",
+      name: "transfer",
       authorization: [
         {
-          actor: 'eosio',
-          permission: 'active',
+          actor: "eosio",
+          permission: "active",
         },
       ],
       data: {
         // @ts-ignore
-        from: 'eosio',
+        from: "eosio",
         to: account,
         quantity: supplyAmount,
-        memo: 'supply to test account',
+        memo: "supply to test account",
       },
     });
     await this.api.transact(
@@ -272,9 +269,9 @@ export class Chain {
    * @return {Promise<Number>} The approximate number of milliseconds that the chain time has been increased by (not super reliable - it is usually more)
    * @api public
    */
-  async addTime(time: number, fromBlockTime: string = ''): Promise<number> {
+  async addTime(time: number, fromBlockTime: string = ""): Promise<number> {
     if (time < 0) {
-      throw new Error('adding time much be greater than zero');
+      throw new Error("adding time much be greater than zero");
     }
     const { elapsedBlocks, startingBlock } = await this.waitTillNextBlock(2); // This helps resolve any pending transactions
     const startTime = this.blockTimeToMs(startingBlock.head_block_time);
@@ -318,7 +315,7 @@ export class Chain {
     while (!(await this.isProducingBlock())) {
       await sleep(1000);
       if (retryCount === 10) {
-        throw new Error('can not get chain status');
+        throw new Error("can not get chain status");
       }
       retryCount++;
     }
@@ -355,7 +352,7 @@ export class Chain {
     while (!(await this.isSystemContractInitialized())) {
       await sleep(2000);
       if (retryCount === 15) {
-        throw new Error('can not initilize system contract');
+        throw new Error("can not initilize system contract");
       }
       retryCount++;
     }
@@ -364,14 +361,16 @@ export class Chain {
   }
 
   private getChainTokenDecimal(chainName: string): number {
-    switch(chainName) {
-      case 'WAX':
+    switch (chainName) {
+      case "WAX":
         return 8;
-      case 'EOS':
-      case 'TLOS':
-        return 4
+      case "EOS":
+      case "TLOS":
+        return 4;
       default:
-        throw new Error('can not find token decimal for chain name ' + chainName);
+        throw new Error(
+          "can not find token decimal for chain name " + chainName
+        );
     }
   }
 }

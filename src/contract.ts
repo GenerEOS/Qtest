@@ -1,8 +1,8 @@
-import fs from 'fs';
-import { Account } from './account';
-import { createAbiSerializer } from './serializer';
-import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
-import { Table } from './table';
+import fs from "fs";
+import { Account } from "./account";
+import { createAbiSerializer } from "./serializer";
+import { TransactResult } from "eosjs/dist/eosjs-api-interfaces";
+import { Table } from "./table";
 
 export class Contract {
   public wasm: string;

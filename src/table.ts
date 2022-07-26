@@ -1,6 +1,6 @@
-import { SerialBuffer } from 'eosjs/dist/eosjs-serialize';
-import { GetTableRowsResult } from 'eosjs/dist/eosjs-rpc-interfaces';
-import { Account } from './account';
+import { SerialBuffer } from "eosjs/dist/eosjs-serialize";
+import { GetTableRowsResult } from "eosjs/dist/eosjs-rpc-interfaces";
+import { Account } from "./account";
 
 export class Table {
   public name: string;
@@ -45,7 +45,7 @@ export class Table {
    */
   async load(scopeRowsData: { [key: string]: object[] }) {
     if (!this.account.contract.action.eosinsert) {
-      throw new Error('Contract does not allow to insert data');
+      throw new Error("Contract does not allow to insert data");
     }
 
     const actionData = [];
@@ -70,8 +70,8 @@ export class Table {
       },
       [
         {
-          actor: 'eosio',
-          permission: 'active',
+          actor: "eosio",
+          permission: "active",
         },
       ]
     );
@@ -91,7 +91,7 @@ export class Table {
    */
   async modify(scopeRowsData: { [key: string]: object[] }) {
     if (!this.account.contract.action.eosmodify) {
-      throw new Error('Contract does not allow to insert data');
+      throw new Error("Contract does not allow to insert data");
     }
 
     const actionData = [];
@@ -116,8 +116,8 @@ export class Table {
       },
       [
         {
-          actor: 'eosio',
-          permission: 'active',
+          actor: "eosio",
+          permission: "active",
         },
       ]
     );
@@ -137,7 +137,7 @@ export class Table {
    */
   async erase(scopeRowsData: { [key: string]: object[] }) {
     if (!this.account.contract.action.eoserase) {
-      throw new Error('Contract does not allow to insert data');
+      throw new Error("Contract does not allow to insert data");
     }
 
     const actionData = [];
@@ -162,8 +162,8 @@ export class Table {
       },
       [
         {
-          actor: 'eosio',
-          permission: 'active',
+          actor: "eosio",
+          permission: "active",
         },
       ]
     );

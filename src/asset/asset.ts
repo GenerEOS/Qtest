@@ -1,4 +1,4 @@
-import { Symbol as TokenSymbol } from './symbol';
+import { Symbol as TokenSymbol } from "./symbol";
 
 export class Asset {
   public amount: number;
@@ -10,12 +10,12 @@ export class Asset {
   }
 
   static fromString(assetString: string): Asset {
-    const assetStringSplit = assetString.split(' ');
+    const assetStringSplit = assetString.split(" ");
     const quantity = Number(assetStringSplit[0]);
     if (isNaN(quantity)) {
-      throw new Error('asset is not valid');
+      throw new Error("asset is not valid");
     }
-    const quantitySplit = assetStringSplit[0].split('.');
+    const quantitySplit = assetStringSplit[0].split(".");
     const decimal = quantitySplit[1].length;
 
     const symbol = new TokenSymbol(decimal, assetStringSplit[1]);

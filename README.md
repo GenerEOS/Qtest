@@ -39,18 +39,6 @@ Run
 
 ```
 npm run test
-
-> examples@1.0.0 test
-> jest
-
- PASS  tests/test.js (22.428 s)
-  example test
-    ✓ push action (526 ms)
-    ✓ load contract table data (233 ms)
-    ✓ modify contract table data (286 ms)
-    ✓ erase contract table data (74 ms)
-    ✓ push action to store log and then read table data (257 ms)
-    ✓ should create new item and add time to buy item (10412 ms)
 ```
 
 ### Usage
