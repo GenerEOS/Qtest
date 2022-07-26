@@ -2,7 +2,7 @@ import {
   getTypesFromAbi,
   createInitialTypes,
   getType,
-} from 'eosjs/dist/eosjs-serialize';
+} from "eosjs/dist/eosjs-serialize";
 
 export function createAbiSerializer(abi) {
   const types = getTypesFromAbi(createInitialTypes(), abi);
