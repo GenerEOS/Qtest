@@ -1,6 +1,6 @@
-import { Chain } from './chain';
-import { manipulateChainTime } from './dockerClient';
-import { blockTimeToMs, sleep } from './utils';
+import { Chain } from "./chain";
+import { manipulateChainTime } from "./dockerClient";
+import { blockTimeToMs, sleep } from "./utils";
 
 export class Time {
   public static timeAdjustDelaySecond = 5;
@@ -9,7 +9,7 @@ export class Time {
 
   constructor(chain: Chain) {
     this.chain = chain;
-    this.timeAdded = 0
+    this.timeAdded = 0;
   }
 
   /**
@@ -20,11 +20,13 @@ export class Time {
    * @return {Promise<Number>} The approximate number of milliseconds that the chain time has been increased by (not super reliable - it is usually more)
    * @api public
    */
-   async increase(time: number, fromBlockTime: string = ''): Promise<number> {
+  async increase(time: number, fromBlockTime: string = ""): Promise<number> {
     if (time < 0) {
-      throw new Error('adding time much be greater than zero');
+      throw new Error("adding time much be greater than zero");
     }
-    const { elapsedBlocks, startingBlock } = await this.chain.waitTillNextBlock(2); // This helps resolve any pending transactions
+    const { elapsedBlocks, startingBlock } = await this.chain.waitTillNextBlock(
+      2
+    ); // This helps resolve any pending transactions
     const startTime = blockTimeToMs(startingBlock.head_block_time);
     let addingTime;
     let fromBlockTimeMs = startTime;
@@ -51,7 +53,10 @@ export class Time {
           `Exceeded ${maxTries} tries to change the blockchain time. Test cannot proceed.`
         );
       }
-      await manipulateChainTime(this.chain.port, `+${this.timeAdded + addingTime}`);
+      await manipulateChainTime(
+        this.chain.port,
+        `+${this.timeAdded + addingTime}`
+      );
       tries++;
       await sleep(1000);
     } while (!(await this.chain.isProducingBlock()));
@@ -69,18 +74,24 @@ export class Time {
    * @return {Promise<Number>} Current head block time in milisecond after increase time
    * @api public
    */
-   async increaseTo(time: number): Promise<number> {
-    const currentHeadBlockTime = blockTimeToMs((await this.chain.getInfo()).head_block_time);
+  async increaseTo(time: number): Promise<number> {
+    const currentHeadBlockTime = blockTimeToMs(
+      (await this.chain.getInfo()).head_block_time
+    );
     if (time < currentHeadBlockTime) {
       throw new Error(`time must be greater than current block time`);
     }
     await this.chain.waitTillNextBlock(2); // This helps resolve any pending transactions
-    const headBlockTimeAfterResolvePendingTransaction = blockTimeToMs((await this.chain.getInfo()).head_block_time);
+    const headBlockTimeAfterResolvePendingTransaction = blockTimeToMs(
+      (await this.chain.getInfo()).head_block_time
+    );
     if (time < headBlockTimeAfterResolvePendingTransaction) {
       return headBlockTimeAfterResolvePendingTransaction;
     }
 
-    const addingTime = Math.ceil((time - headBlockTimeAfterResolvePendingTransaction)/1000);
+    const addingTime = Math.ceil(
+      (time - headBlockTimeAfterResolvePendingTransaction) / 1000
+    );
     let tries = 0;
     const maxTries = 15;
     do {
@@ -89,7 +100,10 @@ export class Time {
           `Exceeded ${maxTries} tries to change the blockchain time. Test cannot proceed.`
         );
       }
-      await manipulateChainTime(this.chain.port, `+${this.timeAdded + addingTime}`);
+      await manipulateChainTime(
+        this.chain.port,
+        `+${this.timeAdded + addingTime}`
+      );
       tries++;
       await sleep(1000);
     } while (!(await this.chain.isProducingBlock()));

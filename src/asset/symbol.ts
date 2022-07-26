@@ -8,10 +8,10 @@ export class Symbol {
   }
 
   static fromString(symbolString: string) {
-    const symbolStringSplit = symbolString.split(',');
+    const symbolStringSplit = symbolString.split(",");
     const decimal = Number(symbolStringSplit[0]);
     if (isNaN(decimal)) {
-      throw new Error('symbol string is not valid');
+      throw new Error("symbol string is not valid");
     }
     return new Symbol(Number(symbolStringSplit[0]), symbolStringSplit[1]);
   }

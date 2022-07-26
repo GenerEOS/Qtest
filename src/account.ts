@@ -1,35 +1,35 @@
-import fs from 'fs';
-import { SerialBuffer } from 'eosjs/dist/eosjs-serialize';
-import { Asset } from './asset';
-import { Chain } from './chain';
-import { Contract } from './contract';
-import { generateTapos } from './utils';
-import { TransactResult } from 'eosjs/dist/eosjs-api-interfaces';
-import { GetAccountResult } from 'eosjs/dist/eosjs-rpc-interfaces';
+import fs from "fs";
+import { SerialBuffer } from "eosjs/dist/eosjs-serialize";
+import { Asset } from "./asset";
+import { Chain } from "./chain";
+import { Contract } from "./contract";
+import { generateTapos } from "./utils";
+import { TransactResult } from "eosjs/dist/eosjs-api-interfaces";
+import { GetAccountResult } from "eosjs/dist/eosjs-rpc-interfaces";
 
 export interface KeyWeight {
-  key: string,
-  weight: number
+  key: string;
+  weight: number;
 }
 
 export interface PermissionLevel {
-  actor: string,
-  permission: number
+  actor: string;
+  permission: number;
 }
 
 export interface PermissionLevelWeight {
-  permission: PermissionLevel,
-  weight: number
+  permission: PermissionLevel;
+  weight: number;
 }
 
 export interface WaitWeight {
-  wait_sec: number,
-  weight: number
+  wait_sec: number;
+  weight: number;
 }
 
 export interface ContractPath {
-  abi: string,
-  wasm: string
+  abi: string;
+  wasm: string;
 }
 
 export class Account {
@@ -64,12 +64,12 @@ export class Account {
       {
         actions: [
           {
-            account: 'eosio',
-            name: 'updateauth',
+            account: "eosio",
+            name: "updateauth",
             authorization: [
               {
                 actor: this.name,
-                permission: 'owner',
+                permission: "owner",
               },
             ],
             data: {
@@ -108,7 +108,7 @@ export class Account {
    */
   async getBalance(): Promise<Asset> {
     const currencyBalance = await this.chain.rpc.get_currency_balance(
-      'eosio.token',
+      "eosio.token",
       this.name,
       this.chain.coreSymbol.symbol
     );
@@ -126,18 +126,18 @@ export class Account {
   async addAuth(permission: string, parent: string): Promise<TransactResult> {
     const accountInfo = await this.getInfo();
     const activePermission = accountInfo.permissions.find(
-      (p) => p.perm_name === 'active'
+      (p) => p.perm_name === "active"
     );
     return this.chain.api.transact(
       {
         actions: [
           {
-            account: 'eosio',
-            name: 'updateauth',
+            account: "eosio",
+            name: "updateauth",
             authorization: [
               {
                 actor: this.name,
-                permission: 'owner',
+                permission: "owner",
               },
             ],
             data: {
@@ -167,17 +167,21 @@ export class Account {
    * @return {Promise<TransactResult>} Transaction
    * @api public
    */
-  async linkAuth(code: string, type: string, permission: string): Promise<TransactResult> {
+  async linkAuth(
+    code: string,
+    type: string,
+    permission: string
+  ): Promise<TransactResult> {
     return this.chain.api.transact(
       {
         actions: [
           {
-            account: 'eosio',
-            name: 'linkauth',
+            account: "eosio",
+            name: "linkauth",
             authorization: [
               {
                 actor: this.name,
-                permission: 'owner',
+                permission: "owner",
               },
             ],
             data: {
@@ -210,10 +214,10 @@ export class Account {
       const codePermission = updatingPermission.required_auth.accounts.find(
         (a) =>
           a.permission.actor === this.name &&
-          a.permission.permission === 'eosio.code'
+          a.permission.permission === "eosio.code"
       );
       if (codePermission) {
-        throw new Error('Already set code for this account');
+        throw new Error("Already set code for this account");
       }
       accountPermission = accountPermission.concat(
         updatingPermission.required_auth.accounts
@@ -221,7 +225,7 @@ export class Account {
       accountPermission.push({
         permission: {
           actor: this.name,
-          permission: 'eosio.code',
+          permission: "eosio.code",
         },
         weight: updatingPermission.required_auth.threshold,
       });
@@ -229,7 +233,7 @@ export class Account {
       accountPermission.push({
         permission: {
           actor: this.name,
-          permission: 'eosio.code',
+          permission: "eosio.code",
         },
         weight: 1,
       });
@@ -238,18 +242,18 @@ export class Account {
       {
         actions: [
           {
-            account: 'eosio',
-            name: 'updateauth',
+            account: "eosio",
+            name: "updateauth",
             authorization: [
               {
                 actor: this.name,
-                permission: 'owner',
+                permission: "owner",
               },
             ],
             data: {
               account: this.name,
               permission,
-              parent: updatingPermission ? updatingPermission.parent : 'active',
+              parent: updatingPermission ? updatingPermission.parent : "active",
               auth: {
                 threshold: updatingPermission
                   ? updatingPermission.required_auth.threshold
@@ -278,17 +282,21 @@ export class Account {
    * @return {Promise<TransactResult>} Transaction
    * @api public
    */
-  async transfer(to: string, quantity: string, memo: string = ''): Promise<TransactResult> {
+  async transfer(
+    to: string,
+    quantity: string,
+    memo: string = ""
+  ): Promise<TransactResult> {
     return this.chain.api.transact(
       {
         actions: [
           {
-            account: 'eosio.token',
-            name: 'transfer',
+            account: "eosio.token",
+            name: "transfer",
             authorization: [
               {
                 actor: this.name,
-                permission: 'active',
+                permission: "active",
               },
             ],
             data: {
@@ -312,12 +320,10 @@ export class Account {
    * @api public
    */
   async setContract(contractPath: ContractPath) {
-    if (
-      !fs.existsSync(contractPath.abi) ||
-      !fs.existsSync(contractPath.wasm)
-    ) {
+    if (!fs.existsSync(contractPath.abi) || !fs.existsSync(contractPath.wasm)) {
       throw new Error(
-        'can not find abi or wasm file of contract ' + JSON.stringify(contractPath, null , 2)
+        "can not find abi or wasm file of contract " +
+          JSON.stringify(contractPath, null, 2)
       );
     }
     const buffer = new SerialBuffer({
@@ -325,8 +331,8 @@ export class Account {
       textDecoder: this.chain.api.textDecoder,
     });
 
-    let abiJSON = JSON.parse(fs.readFileSync(contractPath.abi, 'utf8'));
-    const abiDefinitions = this.chain.api.abiTypes.get('abi_def');
+    let abiJSON = JSON.parse(fs.readFileSync(contractPath.abi, "utf8"));
+    const abiDefinitions = this.chain.api.abiTypes.get("abi_def");
 
     abiJSON = abiDefinitions.fields.reduce(
       (acc, { name: fieldName }) =>
@@ -335,21 +341,21 @@ export class Account {
     );
     abiDefinitions.serialize(buffer, abiJSON);
     const serializedAbiHexString = Buffer.from(buffer.asUint8Array()).toString(
-      'hex'
+      "hex"
     );
 
-    const wasmHexString = fs.readFileSync(contractPath.wasm).toString('hex');
+    const wasmHexString = fs.readFileSync(contractPath.wasm).toString("hex");
 
     const tx = await this.chain.api.transact(
       {
         actions: [
           {
-            account: 'eosio',
-            name: 'setcode',
+            account: "eosio",
+            name: "setcode",
             authorization: [
               {
                 actor: this.name,
-                permission: 'active',
+                permission: "active",
               },
             ],
             data: {
@@ -360,12 +366,12 @@ export class Account {
             },
           },
           {
-            account: 'eosio',
-            name: 'setabi',
+            account: "eosio",
+            name: "setabi",
             authorization: [
               {
                 actor: this.name,
-                permission: 'active',
+                permission: "active",
               },
             ],
             data: {
