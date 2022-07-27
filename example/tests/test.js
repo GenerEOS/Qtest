@@ -1,5 +1,5 @@
-const { Chain } = require("@genereos.io/qtest");
-const { expectAction, expectThrow, expectBalance } = require("@genereos.io/qtest");
+const { Chain } = require("qtest-js");
+const { expectAction, expectThrow, expectBalance } = require("qtest-js");
 
 describe('eosio.token test', () => {
   let chain;

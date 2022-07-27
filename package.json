@@ -1,6 +1,6 @@
 {
-  "name": "@genereos.io/qtest",
-  "version": "0.2.0",
+  "name": "qtest-js",
+  "version": "0.2.2",
   "description": "eosio testing library",
   "main": "dist/index.js",
   "license": "MIT",

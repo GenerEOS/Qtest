@@ -11,7 +11,7 @@ Q-test gives you the ability to dockerize an EOSIO node that can run on any syst
 Refer to [an example project](example)
 
 ```bash
-npm install --save-dev @genereos.io/qtest
+npm install --save-dev qtest-js
 ```
 
 #### Jest
@@ -48,8 +48,8 @@ npm run test
 
 ### Usage
 ```
-const { Chain } = require("@genereos.io/qtest");
-const { expectAction } = require("@genereos.io/qtest");
+const { Chain } = require("qtest-js");
+const { expectAction } = require("qtest-js");
 ```
 
 ## User documentation
