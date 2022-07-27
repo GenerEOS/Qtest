@@ -1,8 +1,8 @@
 #!/bin/bash
 
 curl -f --request POST \
-  --url https://stg2-chain.thh.io/v1/chain/get_block_info \
-  --data '{"block_num":"1"}'
+  --url http://127.0.0.1:8888/v1/chain/get_account \
+  --data '{"account_name":"qtest"}'
 
 if [[ $? -eq 0 ]]
 then
