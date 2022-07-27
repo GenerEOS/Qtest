@@ -1,18 +1,39 @@
 # Account
-The Account class models EOSIO accounts and is the primary entity used to interact with the blockchain. A contract can be deployed on an account and used to send transactions and read table data.
+The Account class models Antelope accounts and is the primary entity used to interact with the blockchain. A contract can be deployed on an account and used to send transactions and read table data.
 
 Accounts are created using the createAccount method of the Chain object.
-(Note: This is very similar to Hydra)
+
+## Properties
+
+### name: string
+Account name
+### chain: Chain
+Reference to the Chain instance this account belongs to
+### contract: Contract
+The contract installed on the account if it exists
+
 
 ## Constructor
-**constructor(chain: Chain, name: string): Account**
+### constructor(chain: Chain, name: string): Account
+**parameters**
+1. chain - chain: Instance of the Chain class
+2. name - string: Name of the new antelope account
 
-Note: The recommended method of creating a new account is to call Chain.createAccount()
+**Note:** The recommended method of creating a new account is to call Chain.createAccount()
 
 ## Methods
 ### updateAuth(permission: string, parent: string, threshold: number, keys, accounts, waits = [])
-  
 Updates the permission for an account.
+
+  
+**parameters**
+1. permission - string: permission name
+2. parent - string: parent permission name
+3. threshold - number: number of weights required
+4. keys - keys: list of public keys and weights
+5. accounts: list of accounts and weights
+6. waits: list of time weights and waits
+
 
 **Example**
 

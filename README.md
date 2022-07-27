@@ -1,17 +1,25 @@
-# Welcome to Q-test 
+# Welcome to Qtest 
 
-Q-test is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
+Qtest is an open-source Javascript-based [Antelope](https://antelope.io/) smart-contract testing framework, created by [GenerEOS](https://genereos.io) with funding from the [EOS Network Foundation](https://eosnetwork.com/).
 
-Q-test gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, UX.
+Qtest gives you the ability to dockerize a Leap node. This allows a developer to host it on any system that supports [Docker](https://docs.docker.com). Using Qtest, developers can simplify testing of smart contracts and automate things like table seeding, account creation, and other initialisation tasks that are required before running complex test scenarios. Qtest already can be used to streamline testing for multiple Antelope based chains including EOS, WAX, and TELOS, with the ability to add additional chain support easily.
 
-## Overview
+#### Noteworthy Features
+
+- Ability to run tests in parallel
+- Supports the snapshot for EOS/WAX/TLOS with lastest system contracts out of the box
+- Supports testing on ARM/AMD architectures
+- Ability to insert/modify/erase data for each table
+- Update the chain time to fast-forward the chain and allow testing future states
+
+## Quick start
 
 ### Installation
 
 Refer to [an example project](example)
 
 ```bash
-npm install --save-dev @genereos.io/qtest
+npm install --save-dev qtest-js
 ```
 
 #### Jest
@@ -19,7 +27,7 @@ Install `jest`
 ```
 npm install --save-dev jest@^28.1.3
 ```
-Config `jest`: Create jest.config.js and add following:
+Config `jest`: Create jest.config.js and add the following:
 
 ```
 module.exports = {
@@ -31,7 +39,7 @@ module.exports = {
 
 #### Docker
 
-To install docker pls refer at [here](https://docs.docker.com/engine/install/)
+To install docker please refer [here](https://docs.docker.com/engine/install/)
 
 ### Run
 Update test command in package.json
@@ -48,20 +56,15 @@ npm run test
 
 ### Usage
 ```
-const { Chain } = require("@genereos.io/qtest");
-const { expectAction } = require("@genereos.io/qtest");
+const { Chain } = require("qtest-js");
+const { expectAction } = require("qtest-js");
 ```
+**Api** and **JsonRpc** from **eosjs** are available through the **[Chain](docs/api/chain.md)** class 
 
-## User documentation
 
-* [Introduction to Q-test](docs/tutorials/00.IntroductionToEOSFactory.md)
-* [Installing Q-test](docs/tutorials/01.InstallingEOSFactory.md)
-* [Using Q-test to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
-* [Building and Deploying EOS Smart-Contracts in Q-test](docs/tutorials/03.BuildingAndDeployingEOSContractsInEOSFactory.md)
-* [Interacting with Q-test in a smart contract project](docs/tutorials/04.WorkingWithEOSContractsUsingEOSFactoryInVSC.md)
-* [Inegrating with CI/CD pipeline] ()
+* [Using Qtest to write contract tests](docs/tutorial/usage.md)
 
-## Q-test API
+## Qtest API
 ### Classes
 
 **Public**
@@ -71,9 +74,8 @@ const { expectAction } = require("@genereos.io/qtest");
 * [Contract](docs/api/contract.md)
 * [Table](docs/api/table.md)
 * [Time](docs/api/time.md)
-* [Wallet](docs/api/wallet.md)
 
-**Core**
+**Internal**
 
 * [Asset](docs/api/asset.md)
 * [Symbol](docs/api/symbol.md)
@@ -81,13 +83,11 @@ const { expectAction } = require("@genereos.io/qtest");
 
 
 ### Functions
+
+**Public**
+
 * [Assertion](docs/api/assertion.md)
-* [dockerClient](docs/api/dockerclient.md)
-* [serializer](docs/api/serializer.md)
-* [utils](docs/api/utils.md)
-* [Wallet](docs/cases/wallet.md)
-
-
+* [Wallet](docs/api/wallet.md)
 
 ## Support
 

@@ -1,6 +1,12 @@
 # Asset
 The Asset class represents tokens created with the eosio.token contract
 
+## Properties
+### amount: number
+The amount of a given Asset (token)
+### symbol: TokenSymbol
+the symbol of the token.  Defines the code and precision of the token
+
 ## Constructor
 
 ### constructor(amount: number, symbol: TokenSymbol)

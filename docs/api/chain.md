@@ -2,6 +2,24 @@
 
 The Blockchain object keeps the state of all accounts and contracts.
 
+## Properties
+### coreSymbol: Symbol
+Core symbol of the chain object (EOS, TLOS, WAX ...)
+### tokenSupply: Asset
+Token supply of **coreSymbol**
+### api
+Reference to eosjs api interface
+### rpc
+Reference to eosjs rpc interface
+### accounts: Account[]
+List of accounts created
+### timeAdded: number
+Amount of time skipped
+### port: number
+Local port number the RPC api is bound to
+
+
+
 ## Methods
 ### static async setupChain(chainName: string): Promise&lt;Chain&gt;
 Setup new testing chain, setup chain docker instance, initialize api client, create 10 test accounts
@@ -13,7 +31,7 @@ Clear chain after test, remove chain docker instance, relase docker port
 
 ### getInfo(): Promise&lt;GetInfoResult&gt;
   
-A wrapper around the **get_info** RPC call.
+A wrapper around the **get_info** RPC call. 
 
 ### headBlockNum(): Promise&lt;number&gt;
 
