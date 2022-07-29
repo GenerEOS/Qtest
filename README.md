@@ -1,8 +1,8 @@
-# Welcome to Q-test 
+# Welcome to Qtest 
 
-Q-test is a Javascript-based [EOS](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
+Qtest is an open-source Javascript-based [EOSIO](https://eosnetwork.com/) smart-contract testing framework, created by [GenerEOS](https://genereos.io).
 
-Q-test gives you the ability to dockerize an EOSIO node that can run on any system. This allows the ability for the user to host it on their system easily and automated with the ability to test for multiple EOSIO based chains i.e. EOS, WAX, TELOS, UX.
+Qtest gives you the ability to dockerize an EOSIO node. This allows a developer to host it on their system that supports [Docker](https://docs.docker.com). Using Qtest, developers can simplify testing of smart contracts and automate things like table seeding, account creation, and other initialisation tasks that are required before running complex test scenarios. Qtest already can be used to streamline testing for multiple EOSIO based chains including EOS, WAX, TELOS, and UX, with the ability to add additional chain support easily.
 
 ## Overview
 
@@ -54,11 +54,11 @@ const { expectAction } = require("qtest-js");
 
 ## User documentation
 
-* [Installing Q-test](docs/tutorials/01.InstallingEOSFactory.md)
-* [Using Q-test to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
+* [Installing Qtest](docs/tutorials/01.InstallingEOSFactory.md)
+* [Using Qtest to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
 * [Inegrating with CI/CD pipeline] ()
 
-## Q-test API
+## Qtest API
 ### Classes
 
 **Public**
