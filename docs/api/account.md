@@ -2,7 +2,7 @@
 The Account class models EOSIO accounts and is the primary entity used to interact with the blockchain. A contract can be deployed on an account and used to send transactions and read table data.
 
 Accounts are created using the createAccount method of the Chain object.
-(Note: This is very similar to Hydra)
+
 
 ## Constructor
 **constructor(chain: Chain, name: string): Account**
