@@ -1,4 +1,4 @@
-# Assertion
+# Wallet
 
 A helper functions for wallet management
 
