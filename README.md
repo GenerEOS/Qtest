@@ -68,7 +68,6 @@ const { expectAction } = require("qtest-js");
 * [Contract](docs/api/contract.md)
 * [Table](docs/api/table.md)
 * [Time](docs/api/time.md)
-* [Wallet](docs/api/wallet.md)
 
 **Core**
 
