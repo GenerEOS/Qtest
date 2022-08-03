@@ -20,7 +20,7 @@ Qtest gives you the ability to dockerize an EOSIO node. This allows a developer 
 * [Table](docs/api/table.md)
 * [Time](docs/api/time.md)
 
-**Core**
+**Internal**
 
 * [Asset](docs/api/asset.md)
 * [Symbol](docs/api/symbol.md)
@@ -34,7 +34,7 @@ Qtest gives you the ability to dockerize an EOSIO node. This allows a developer 
 * [Assertion](docs/api/assertion.md)
 * [Wallet](docs/api/wallet.md)
 
-**Core**
+**Internal**
 * [dockerClient](docs/api/dockerclient.md)
 * [serializer](docs/api/serializer.md)
 * [utils](docs/api/utils.md)
