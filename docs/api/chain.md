@@ -13,7 +13,7 @@ Clear chain after test, remove chain docker instance, relase docker port
 
 ### getInfo(): Promise&lt;GetInfoResult&gt;
   
-A wrapper around the **get_info** RPC call.
+A wrapper around the **get_info** RPC call. 
 
 ### headBlockNum(): Promise&lt;number&gt;
 
