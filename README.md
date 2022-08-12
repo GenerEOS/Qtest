@@ -87,11 +87,6 @@ const { expectAction } = require("qtest-js");
 * [Assertion](docs/api/assertion.md)
 * [Wallet](docs/api/wallet.md)
 
-**Internal**
-* [dockerClient](docs/api/dockerclient.md)
-* [serializer](docs/api/serializer.md)
-* [utils](docs/api/utils.md)
-
 ## Support
 
 For issues not covered in the documentation, please jump into our channel and we will do our best to help you out [GenerEOS](https://t.me/generEOS) channel on Telegram.
