@@ -1,16 +1,16 @@
 # Wallet
 
-A helper functions for wallet management
+A helper functions for wallet management.
 
 ## Functions
 
 ### importKey(privateKey: string)
 
-Import key to wallet
+Import a public key to the wallet.
 
 ### createKey(): KeyPair
 
-Create new key
+Create new public/private key pair.
 
 ## Types
 
