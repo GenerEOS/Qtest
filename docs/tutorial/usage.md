@@ -39,8 +39,19 @@ let transaction = await contract.action.testaction(
 
 ## Tables
 
+Before you can use the Qtest table seeding functions you will need to perform the following to configure the Qtest contract utility.
+
+- download [qtest.hpp](../../macro/qtest.hpp)
+- copy qtest.hpp to your contract include file
+- add the following line to contract header file
+  ```
+  #include "qtest.hpp"`
+  ```
+
+
+
+### Inserting data
 ```
-// Insert data
  await contract.table.testtable.insert({
         scope1: [
           {
@@ -62,8 +73,9 @@ let transaction = await contract.action.testaction(
           },
         ],
       });
- 
- // modify data
+```
+### Updating data
+```
  await contract.table.testtable.modify({
         scope2: [
           {
@@ -73,8 +85,9 @@ let transaction = await contract.action.testaction(
           },
         ],
       });
-
-// erase data
+```
+### Deleting data
+```
 await inittableContract.table.tablename1.erase({
         scope2: [
           {
