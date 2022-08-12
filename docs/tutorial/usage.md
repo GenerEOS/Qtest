@@ -7,7 +7,7 @@ Refer to the example project and automated tests for examples on usage
 * [Example](../../example/tests/test.js)
 * [Tests](../../test)
 
-## Chain configuration
+## Chain
 ```
 // Setup a chain with EOS snaphot
 // 10 test accounts are automtically created
