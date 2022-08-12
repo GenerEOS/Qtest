@@ -7,7 +7,7 @@ Qtest gives you the ability to dockerize an EOSIO node. This allows a developer 
 ## Overview 
 
 * [Installing Qtest](docs/tutorial/installation.md)
-* [Using Qtest to write contract tests](docs/tutorials/02.InteractingWithEOSContractsInEOSFactory.md)
+* [Using Qtest to write contract tests](docs/tutorial/usage.md)
 
 ## Qtest API
 ### Classes
