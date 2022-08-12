@@ -98,3 +98,25 @@ await inittableContract.table.tablename1.erase({
         ],
       });
 ```
+## Time
+
+The Qtest libraries provides a mechanism to skip forward in time.  Moving backward in time is not possible.  Block number is not affected by this action.
+
+### Increment time
+
+```
+// skip ahead 2 hours
+await chain.time.increase(2 * 60 * 60);
+```
+
+### Skip to time
+
+```
+// Create Date 1 month in future
+const oneMonthAhead = new Date(
+      currentBlockTimeMilliSecond + 30 * 24 * 60 * 60 * 1000
+);
+
+// Set chain date
+await chain.time.increaseTo(oneMonthAhead.getTime());
+```
