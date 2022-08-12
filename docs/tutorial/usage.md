@@ -37,3 +37,51 @@ let transaction = await contract.action.testaction(
       );
 ```
 
+## Tables
+
+```
+// Insert data
+ await contract.table.testtable.insert({
+        scope1: [
+          {
+            user: "name1",
+            value1: 1122,
+            value2: "test1",
+          },
+          {
+            user: "name2",
+            value1: 2233,
+            value2: "test2",
+          },
+        ],
+        scope2: [
+          {
+            user: "name3",
+            value1: 999,
+            value2: "test3",
+          },
+        ],
+      });
+ 
+ // modify data
+ await contract.table.testtable.modify({
+        scope2: [
+          {
+            user: "name3",
+            value1: 999,
+            value2: "new value",
+          },
+        ],
+      });
+
+// erase data
+await inittableContract.table.tablename1.erase({
+        scope2: [
+          {
+            user: "name3",
+            value1: 999,
+            value2: "new value",
+          },
+        ],
+      });
+```
