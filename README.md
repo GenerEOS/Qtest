@@ -4,13 +4,13 @@ Qtest is an open-source Javascript-based [EOSIO](https://eosnetwork.com/) smart-
 
 Qtest gives you the ability to dockerize an EOSIO node. This allows a developer to host it on their system that supports [Docker](https://docs.docker.com). Using Qtest, developers can simplify testing of smart contracts and automate things like table seeding, account creation, and other initialisation tasks that are required before running complex test scenarios. Qtest already can be used to streamline testing for multiple EOSIO based chains including EOS, WAX, and TELOS, with the ability to add additional chain support easily.
 
-#### Features
+#### Noteworthy Features
 
 - Ability to run tests in parallel
-- Supports the snapshot for EOS/WAX/TLOS with lastest system SM. 
+- Supports the snapshot for EOS/WAX/TLOS with lastest system SM out of the box
 - Supports testing on ARM/AMD architectures
-- Ability to insert/modify/erase data for each table.
-- Update the chain to a specific time
+- Ability to insert/modify/erase data for each table
+- Update the chain time to fast-forward the chain and allow testing future states
 
 ## Quick start
 
@@ -27,7 +27,7 @@ Install `jest`
 ```
 npm install --save-dev jest@^28.1.3
 ```
-Config `jest`: Create jest.config.js and add following:
+Config `jest`: Create jest.config.js and add the following:
 
 ```
 module.exports = {
@@ -39,7 +39,7 @@ module.exports = {
 
 #### Docker
 
-To install docker pls refer at [here](https://docs.docker.com/engine/install/)
+To install docker please refer [here](https://docs.docker.com/engine/install/)
 
 ### Run
 Update test command in package.json
