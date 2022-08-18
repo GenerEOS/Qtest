@@ -1,6 +1,6 @@
 # Symbol
 
-The Symbol class represents an eosio tokens symbol code (ex. "EOS") and it's precision.  The symbol class will rarely need to be used directly.
+The Symbol class represents an Antelope tokens symbol code (ex. "EOS") and it's precision.  The symbol class will rarely need to be used directly.
 
 ## Constructor
 ### constructor(decimal: number, symbol: string): Symbol
