@@ -2,7 +2,7 @@
 
 Qtest is an open-source Javascript-based [Antelope](https://antelope.io/) smart-contract testing framework, created by [GenerEOS](https://genereos.io) with funding from the [EOS Network Foundation](https://eosnetwork.com/).
 
-Qtest gives you the ability to dockerize an EOSIO node. This allows a developer to host it on any system that supports [Docker](https://docs.docker.com). Using Qtest, developers can simplify testing of smart contracts and automate things like table seeding, account creation, and other initialisation tasks that are required before running complex test scenarios. Qtest already can be used to streamline testing for multiple EOSIO based chains including EOS, WAX, and TELOS, with the ability to add additional chain support easily.
+Qtest gives you the ability to dockerize a Leap node. This allows a developer to host it on any system that supports [Docker](https://docs.docker.com). Using Qtest, developers can simplify testing of smart contracts and automate things like table seeding, account creation, and other initialisation tasks that are required before running complex test scenarios. Qtest already can be used to streamline testing for multiple Antelope based chains including EOS, WAX, and TELOS, with the ability to add additional chain support easily.
 
 #### Noteworthy Features
 
