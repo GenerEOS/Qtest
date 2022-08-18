@@ -1,3 +1,3 @@
 # Contract
 
-The Contract object models an eosio contract.
+The Contract object models an Antelope contract.
