@@ -1,3 +1,3 @@
 # Table
 
-The Table models and eosio table.
+The Table models an Antelope table.
