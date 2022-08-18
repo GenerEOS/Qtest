@@ -1,6 +1,6 @@
 # Assertion
 
-A library of test of helper functions specific to EOSIO smart contracts
+A library of test of helper functions specific to Antelope smart contracts
 
 ## Functions
 
