@@ -59,6 +59,8 @@ npm run test
 const { Chain } = require("qtest-js");
 const { expectAction } = require("qtest-js");
 ```
+**Api** and **JsonRpc** from **eosjs** are available through the **[Chain](docs/api/chain.md)** class 
+
 
 * [Using Qtest to write contract tests](docs/tutorial/usage.md)
 
