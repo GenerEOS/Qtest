@@ -5,13 +5,24 @@ Accounts are created using the createAccount method of the Chain object.
 
 
 ## Constructor
-**constructor(chain: Chain, name: string): Account**
+### constructor(chain: Chain, name: string): Account
+**parameters**
+1. chain - chain: Instance of the Chain class
+2. name - string: Name of the new antelope account
 
-Note: The recommended method of creating a new account is to call Chain.createAccount()
+**Note:** The recommended method of creating a new account is to call Chain.createAccount()
 
 ## Methods
 ### updateAuth(permission: string, parent: string, threshold: number, keys, accounts, waits = [])
   
+**parameters**
+1. permission - string
+2. parent - string
+3. threshold - number
+4. keys - keys
+5. accounts - 
+6. waits
+
 Updates the permission for an account.
 
 **Example**
