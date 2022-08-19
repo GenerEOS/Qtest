@@ -7,7 +7,7 @@ Qtest gives you the ability to dockerize a Leap node. This allows a developer to
 #### Noteworthy Features
 
 - Ability to run tests in parallel
-- Supports the snapshot for EOS/WAX/TLOS with lastest system SM out of the box
+- Supports the snapshot for EOS/WAX/TLOS with lastest system contracts out of the box
 - Supports testing on ARM/AMD architectures
 - Ability to insert/modify/erase data for each table
 - Update the chain time to fast-forward the chain and allow testing future states
