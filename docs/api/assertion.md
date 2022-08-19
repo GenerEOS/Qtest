@@ -46,13 +46,10 @@ boolean: true if **transaction** contains **expectedTransaction**
 
 
 ### async function expectBalance(account: Account, expectedBalance: Asset)
-Checks that **account** balance **expectedBalance**
+Checks that **account** balance is equal to **expectedBalance**
 
 **Parameters**
-1. transaction: TransactResult - Transaction result of an executed transaction
-2. expectedAction: {account: string; name: string; data?: object; authorization?: Authorization[];} - The action expected to included in TransactResult
+1. account: Account - Account to query balance of
+2. expectedBalance: Asset - The exepcted balance of **account**
 
-**Returns**
-
-boolean: true if **transaction** contains **expectedTransaction**
 
