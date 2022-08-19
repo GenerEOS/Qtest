@@ -3,6 +3,15 @@ The Account class models Antelope accounts and is the primary entity used to int
 
 Accounts are created using the createAccount method of the Chain object.
 
+## Properties
+
+### name: string
+Account name
+### chain: Chain
+Reference to the Chain instance this account belongs to
+### contract: Contract
+The contract installed on the account if it exists
+
 
 ## Constructor
 ### constructor(chain: Chain, name: string): Account
