@@ -14,16 +14,17 @@ Accounts are created using the createAccount method of the Chain object.
 
 ## Methods
 ### updateAuth(permission: string, parent: string, threshold: number, keys, accounts, waits = [])
+Updates the permission for an account.
+
   
 **parameters**
-1. permission - string
-2. parent - string
-3. threshold - number
-4. keys - keys
-5. accounts - 
-6. waits
+1. permission - string: permission name
+2. parent - string: parent permission name
+3. threshold - number: number of weights required
+4. keys - keys: list of public keys and weights
+5. accounts: list of accounts and weights
+6. waits: list of time weights and waits
 
-Updates the permission for an account.
 
 **Example**
 
