@@ -2,6 +2,10 @@
 
 The System class provides methods to assist with account creation.  The system class will almost always be used indirectly via the Chain class.
 
+## Properties
+### chain: Chain
+Reference to the Chain instance
+
 ## Constructor
 
 ### constructor(rpc: JsonRpc, api: Api, port: number, tokenSymbol: string)
