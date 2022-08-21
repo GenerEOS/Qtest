@@ -22,7 +22,17 @@ Local port number the RPC api is bound to
 
 ## Methods
 ### static async setupChain(chainName: string): Promise&lt;Chain&gt;
-Setup new testing chain, setup chain docker instance, initialize api client, create 10 test accounts
+Setup new testing chain, setup chain docker instance, initialize api client, creates the following 10 test accounts:
+- acc11.test
+- acc12.test
+- acc13.test
+- acc14.test
+- acc15.test
+- acc21.test
+- acc22.test
+- acc23.test
+- acc24.test
+- acc25.test
 
 Valid chainName values: WAX, EOS and TLOS
 

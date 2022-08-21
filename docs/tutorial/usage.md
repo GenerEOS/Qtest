@@ -20,6 +20,17 @@ const account2 = chain.accounts[2];
 // create account
 let newAccount = await chain.system.createAccount("newaccount");
 ```
+The following test accounts are created automatically:
+- acc11.test
+- acc12.test
+- acc13.test
+- acc14.test
+- acc15.test
+- acc21.test
+- acc22.test
+- acc23.test
+- acc24.test
+- acc25.test
 
 ## Contracts
 
