@@ -62,8 +62,9 @@ module.exports = {
   // A set of global variables that need to be available in all test environments
   globals: {
     'ts-jest': {
-      tsConfig: path.join(__dirname, './tsconfig.json'),
+      tsconfig: path.join(__dirname, './tsconfig.json'),
       isolatedModules: true,
+      diagnostics: true,
     },
   },
 
@@ -172,13 +173,13 @@ module.exports = {
   // timers: "fake",
 
   // A map from regular expressions to paths to transformers
-  transform: {
-    "^.+\\.js$": "babel-jest",
-    // "^.+\\.(t|j)s?$": "ts-jest"
-  },
+  // transform: {
+  //   "^.+\\.js$": "babel-jest",
+  //   // "^.+\\.(t|j)s?$": "ts-jest"
+  // },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  transformIgnorePatterns: [`./node_modules/*`],
+  // transformIgnorePatterns: [`./node_modules/*`],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

@@ -1,142 +1,229 @@
-import { expectBalance } from '../src/assertion';
-import { Chain } from '../src/chain';
-import { generateTapos } from '../src/utils';
+import { expectBalance } from "../src/assertion";
+import { Chain } from "../src/chain";
+import { generateTapos } from "../src/utils";
+import { TESTING_PUBLIC_KEY } from "../src/wallet";
 
-describe('account test', () => { 
+describe("account test", () => {
   let chain;
   let account;
+  let chainName = process.env.CHAIN_NAME || "WAX";
 
   beforeAll(async () => {
-    chain = await Chain.setupChain();
-    account = await chain.createAccount('testaccount1');
+    chain = await Chain.setupChain(chainName);
+    account = await chain.system.createAccount("testaccount1");
   }, 60000);
 
   afterAll(async () => {
     await chain.clear();
   }, 10000);
 
-  it ('test update auth', async () => {
-    await account.updateAuth('testauth', 'active', 2, 
-    [{
-      key: 'EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b',
-      weight: 1
-    },{
-      key: 'EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6',
-      weight: 1
-    }],
-    [{
-      permission: {
-        actor: 'acc11.test',
-        permission: 'eosio.code'
-      },
-      weight: 2
-    }]);
-    const accountInfo = await chain.rpc.get_account(account.name);
-    expect(accountInfo.permissions[2].perm_name).toBe('testauth');
-    expect(accountInfo.permissions[2].required_auth.threshold).toBe(2);
-    expect(accountInfo.permissions[2].required_auth.keys[0].key).toBe('EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b');
-    expect(accountInfo.permissions[2].required_auth.keys[0].weight).toBe(1);
-    expect(accountInfo.permissions[2].required_auth.keys[1].key).toBe('EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6');
-    expect(accountInfo.permissions[2].required_auth.keys[1].weight).toBe(1);
-    expect(accountInfo.permissions[2].required_auth.accounts[0].permission.actor).toBe('acc11.test');
-    expect(accountInfo.permissions[2].required_auth.accounts[0].permission.permission).toBe('eosio.code');
-    expect(accountInfo.permissions[2].required_auth.accounts[0].weight).toBe(2);
-  }, 100000);
+  describe("default 10 test accounts", function () {
+    it("should created 10 test accounts", async () => {
+      for (let i = 0; i < 10; i++) {
+        let testAccount = chain.accounts[i];
+        expect(testAccount).toHaveProperty("name");
+      }
 
-  it ('test add auth', async () => {
-    await account.addAuth('addauth11111', 'testauth');
-    const accountInfo = await chain.rpc.get_account(account.name);
-    const activePermission = accountInfo.permissions.find(p => p.perm_name === 'addauth11111');
-    expect(activePermission.perm_name).toBe('addauth11111');
-    expect(activePermission.required_auth.threshold).toBe(1);
-    expect(activePermission.required_auth.keys[0].key).toBe('EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV');
-    expect(activePermission.required_auth.keys[0].weight).toBe(1);
-    expect(activePermission.required_auth.accounts).toEqual([]);
-  }, 100000);
+      for (let i = 10; i < 20; i++) {
+        let testAccount = chain.accounts[i];
+        expect(testAccount).toBeUndefined;
+      }
+    });
+  });
+  describe("account functions", function () {
+    it("test update auth", async () => {
+      await account.updateAuth(
+        "testauth",
+        "active",
+        2,
+        [
+          {
+            key: "EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b",
+            weight: 1,
+          },
+          {
+            key: "EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6",
+            weight: 1,
+          },
+        ],
+        [
+          {
+            permission: {
+              actor: "acc11.test",
+              permission: "eosio.code",
+            },
+            weight: 2,
+          },
+        ]
+      );
+      const accountInfo = await chain.rpc.get_account(account.name);
+      expect(accountInfo.permissions[2].perm_name).toBe("testauth");
+      expect(accountInfo.permissions[2].required_auth.threshold).toBe(2);
+      expect(accountInfo.permissions[2].required_auth.keys[0].key).toBe(
+        "EOS7Gk5QTRcKsK5grAuZkLyPTSw5AcQpCz2VDWGi5DPBvfZAG7H9b"
+      );
+      expect(accountInfo.permissions[2].required_auth.keys[0].weight).toBe(1);
+      expect(accountInfo.permissions[2].required_auth.keys[1].key).toBe(
+        "EOS8cFt6PzBL79kp9vPwWoX8V6cjwgShbfUsyisiZ1M8QaFgZtep6"
+      );
+      expect(accountInfo.permissions[2].required_auth.keys[1].weight).toBe(1);
+      expect(
+        accountInfo.permissions[2].required_auth.accounts[0].permission.actor
+      ).toBe("acc11.test");
+      expect(
+        accountInfo.permissions[2].required_auth.accounts[0].permission
+          .permission
+      ).toBe("eosio.code");
+      expect(accountInfo.permissions[2].required_auth.accounts[0].weight).toBe(
+        2
+      );
+    }, 100000);
 
-  it ('test add code', async () => {
-    await account.addCode('newcodeauth'); // add code for not exist permission
-    let accountInfo = await chain.rpc.get_account(account.name);
-    const newlyAddedPermission = accountInfo.permissions.find(p => p.perm_name === 'newcodeauth');
+    it("test add auth", async () => {
+      await account.addAuth("addauth11111", "testauth");
+      const accountInfo = await chain.rpc.get_account(account.name);
+      const activePermission = accountInfo.permissions.find(
+        (p) => p.perm_name === "addauth11111"
+      );
+      expect(activePermission.perm_name).toBe("addauth11111");
+      expect(activePermission.required_auth.threshold).toBe(1);
+      expect(activePermission.required_auth.keys[0].key).toBe(
+        TESTING_PUBLIC_KEY
+      );
+      expect(activePermission.required_auth.keys[0].weight).toBe(1);
+      expect(activePermission.required_auth.accounts).toEqual([]);
+    }, 100000);
 
-    expect(newlyAddedPermission.perm_name).toBe('newcodeauth');
-    expect(newlyAddedPermission.required_auth.threshold).toBe(1);
-    expect(newlyAddedPermission.required_auth.accounts[0].permission.actor).toBe(account.name);
-    expect(newlyAddedPermission.required_auth.accounts[0].permission.permission).toBe('eosio.code');
-    expect(newlyAddedPermission.required_auth.accounts[0].weight).toEqual(1);
+    it("test add code", async () => {
+      await account.addCode("newcodeauth"); // add code for not exist permission
+      let accountInfo = await chain.rpc.get_account(account.name);
+      const newlyAddedPermission = accountInfo.permissions.find(
+        (p) => p.perm_name === "newcodeauth"
+      );
 
-    await chain.accounts[0].addCode('active'); // add code for active permssion
-    accountInfo = await chain.rpc.get_account(chain.accounts[0].name);
-    const activePermission = accountInfo.permissions.find(p => p.perm_name === 'active');
-    expect(activePermission.perm_name).toBe('active');
-    expect(activePermission.required_auth.threshold).toBe(1);
-    expect(activePermission.required_auth.keys[0].key).toBe('EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV');
-    expect(activePermission.required_auth.keys[0].weight).toBe(1);
-    expect(activePermission.required_auth.accounts[0].permission.actor).toBe(chain.accounts[0].name);
-    expect(activePermission.required_auth.accounts[0].permission.permission).toBe('eosio.code');
-    expect(activePermission.required_auth.accounts[0].weight).toEqual(1);
+      expect(newlyAddedPermission.perm_name).toBe("newcodeauth");
+      expect(newlyAddedPermission.required_auth.threshold).toBe(1);
+      expect(
+        newlyAddedPermission.required_auth.accounts[0].permission.actor
+      ).toBe(account.name);
+      expect(
+        newlyAddedPermission.required_auth.accounts[0].permission.permission
+      ).toBe("eosio.code");
+      expect(newlyAddedPermission.required_auth.accounts[0].weight).toEqual(1);
 
-    await expect(chain.accounts[0].addCode('active')).rejects.toThrowError('Already set code for this account') // add code for active permssion again
-  }, 100000);
+      await chain.accounts[0].addCode("active"); // add code for active permssion
+      accountInfo = await chain.rpc.get_account(chain.accounts[0].name);
+      const activePermission = accountInfo.permissions.find(
+        (p) => p.perm_name === "active"
+      );
+      expect(activePermission.perm_name).toBe("active");
+      expect(activePermission.required_auth.threshold).toBe(1);
+      expect(activePermission.required_auth.keys[0].key).toBe(
+        TESTING_PUBLIC_KEY
+      );
+      expect(activePermission.required_auth.keys[0].weight).toBe(1);
+      expect(activePermission.required_auth.accounts[0].permission.actor).toBe(
+        chain.accounts[0].name
+      );
+      expect(
+        activePermission.required_auth.accounts[0].permission.permission
+      ).toBe("eosio.code");
+      expect(activePermission.required_auth.accounts[0].weight).toEqual(1);
 
-  it ('test link auth', async () => {
-    const transaction = await account.linkAuth('eosio.token', 'transfer', 'addauth11111');
+      await expect(chain.accounts[0].addCode("active")).rejects.toThrowError(
+        "Already set code for this account"
+      ); // add code for active permssion again
+    }, 100000);
 
-    expect(transaction.processed.action_traces[0].act.account).toBe('eosio');
-    expect(transaction.processed.action_traces[0].act.name).toBe('linkauth');
-    
-    const transferTransaction = await chain.api.transact({ // should able to transfer with addauth11111 permission
-      actions: [
+    it("test link auth", async () => {
+      const transaction = await account.linkAuth(
+        "eosio.token",
+        "transfer",
+        "addauth11111"
+      );
+
+      expect(transaction.processed.action_traces[0].act.account).toBe("eosio");
+      expect(transaction.processed.action_traces[0].act.name).toBe("linkauth");
+
+      const transferTransaction = await chain.api.transact(
         {
-          account: 'eosio.token',
-          name: 'transfer',
+          // should able to transfer with addauth11111 permission
+          actions: [
+            {
+              account: "eosio.token",
+              name: "transfer",
+              authorization: [
+                {
+                  actor: account.name,
+                  permission: "addauth11111",
+                },
+              ],
+              data: {
+                from: account.name,
+                to: "acc11.test",
+                quantity: chain.coreSymbol.convertAssetString(0.1),
+                memo: "test",
+              },
+            },
+          ],
+        },
+        generateTapos()
+      );
+
+      expect(transferTransaction.processed.action_traces[0].act.account).toBe(
+        "eosio.token"
+      );
+      expect(transferTransaction.processed.action_traces[0].act.name).toBe(
+        "transfer"
+      );
+    }, 100000);
+
+    it("test transfer core token", async () => {
+      const senderBalanceBefore = await account.getBalance();
+      const transaction = await account.transfer(
+        "acc11.test",
+        chain.coreSymbol.convertAssetString(1),
+        "abc test"
+      );
+      expect(transaction.processed.block_num).toBeGreaterThan(0);
+      await expectBalance(account, senderBalanceBefore.sub(1));
+    }, 100000);
+
+    it("set contract", async () => {
+      const contractAccount = chain.accounts[1];
+      const contract = await contractAccount.setContract({
+        abi: "./contracts/build/testcontract.abi",
+        wasm: "./contracts/build/testcontract.wasm",
+      });
+      let transaction = await chain.pushAction(
+        {
+          account: contractAccount.name,
+          name: "testaction",
           authorization: [
             {
-              actor: account.name,
-              permission: 'addauth11111',
+              actor: contractAccount.name,
+              permission: "active",
             },
           ],
           data: {
-            from: account.name,
-            to: 'acc11.test',
-            quantity: chain.coreSymbol.convertAssetString(0.1),
-            memo: 'test'
+            user: contractAccount.name,
           },
-        }
-      ],
-    },
-      generateTapos()
-    );
+        },
+        true,
+        true,
+        366
+      );
+      // @ts-ignore
+      expect(transaction.processed.action_traces[0].console).toBe(
+        " hello " + contractAccount.name
+      );
 
-    expect(transferTransaction.processed.action_traces[0].act.account).toBe('eosio.token');
-    expect(transferTransaction.processed.action_traces[0].act.name).toBe('transfer');
-  }, 100000);
-
-  it ('test transfer core token', async () => {
-    const senderBalanceBefore = await account.getBalance();
-    const transaction = await account.transfer('acc11.test', chain.coreSymbol.convertAssetString(1), 'abc test');
-    expect(transaction.processed.block_num).toBeGreaterThan(0);
-    await expectBalance(account, senderBalanceBefore.sub(1));
-  }, 100000);
-
-  it ('set contract', async () => {
-    const contractAccount = chain.accounts[1];
-    const contract = await contractAccount.setContract('testcontract');
-    let transaction = await chain.pushAction({
-      account: contractAccount.name,
-      name: 'hello',
-      authorization: [{
-        actor: contractAccount.name,
-        permission: 'active'
-      }],
-      data: {
-        user: contractAccount.name
-      }
-    }, true, true, 366);
-    // @ts-ignore
-    expect(transaction.processed.action_traces[0].console).toBe(' hello ' + contractAccount.name);
-
-    transaction = await contract.action.hello({ user: contractAccount.name }); // push action with contract instance
-    expect(transaction.processed.action_traces[0].console).toBe(' hello ' + contractAccount.name);
-  }, 100000);
+      transaction = await contract.action.testaction({
+        user: contractAccount.name,
+      }); // push action with contract instance
+      expect(transaction.processed.action_traces[0].console).toBe(
+        " hello " + contractAccount.name
+      );
+    }, 100000);
+  });
 });

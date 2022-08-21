@@ -7,6 +7,14 @@ if [ ! -d $DATADIR ]; then
   mkdir -p $DATADIR;
 fi
 
+ARCH=`uname -m`
+
+if [ "${ARCH}" = "x86_64" ]; then
+   EOSVM=eos-vm-jit
+else
+   EOSVM=eos-vm
+fi
+
 nodeos \
 --signature-provider $EOSIO_PUB_KEY=KEY:$EOSIO_PRV_KEY \
 --plugin eosio::net_plugin \
@@ -36,5 +44,6 @@ nodeos \
 --http-max-response-time-ms=8000 \
 --chain-state-db-size-mb 8192 \
 --chain-state-db-guard-size-mb 1024 \
+--wasm-runtime=$EOSVM \
 >> $DATADIR"/nodeos.log" 2>&1 & \
 echo $! > $DATADIR"/eosd.pid"

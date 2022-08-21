@@ -1,0 +1,15 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "an example to use qtest",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "qtest-js": "^0.1.3",
+    "jest": "^28.1.3"
+  }
+}

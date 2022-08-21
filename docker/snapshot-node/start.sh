@@ -7,6 +7,14 @@ if [ ! -d $DATADIR ]; then
   mkdir -p $DATADIR;
 fi
 
+ARCH=`uname -m`
+
+if [ "${ARCH}" = "x86_64" ]; then
+   EOSVM=eos-vm-jit
+else
+   EOSVM=eos-vm
+fi
+
 nodeos \
 --genesis-json $DATADIR"/../../genesis.json" \
 --signature-provider $EOSIO_PUB_KEY=KEY:$EOSIO_PRV_KEY \
@@ -30,12 +38,14 @@ nodeos \
 --http-validate-host=false \
 --verbose-http-errors \
 --enable-stale-production \
+--cpu-effort-percent 100 \
 --trace-history \
 --chain-state-history \
 --max-transaction-time=2000 \
---abi-serializer-max-time-ms=60000 \
---http-max-response-time-ms=8000 \
+--abi-serializer-max-time-ms=100000 \
+--http-max-response-time-ms=500 \
 --chain-state-db-size-mb 8192 \
 --chain-state-db-guard-size-mb 1024 \
+--wasm-runtime=$EOSVM \
 >> $DATADIR"/nodeos.log" 2>&1 & \
 echo $! > $DATADIR"/eosd.pid"
