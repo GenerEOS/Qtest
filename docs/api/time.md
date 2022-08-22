@@ -6,7 +6,7 @@ The Time class allows the manipulation of blocktime.  These functions only add t
 ### chain: Chain
 Reference to the chain instance
 ### timeAdded: number
-Record of time added to chain
+The total number of seconds that have been skipped in the chain
 
 ## Constructor
 **constructor(chain: Chain): Time**
@@ -18,4 +18,4 @@ Incrementally increase time of chain.
 
 ### async increaseTo(time: number): Promise&lt;number&gt;
 
-Increase time of chain to specific time point. T
+Increase time of chain to specific time point T
