@@ -22,6 +22,9 @@ const pullDockerImage = async () => {
       process.stdout.write(
         `Pulling docker image ${dockerImageName}. This process will take few mintutes ...\n`
       );
+      process.stdout.write(
+        `\x1b[93mWarning: your tests might be failed for the first time while downloading an image because of the test timeout\x1b[39m\n`
+      );
       execute(`docker pull ${dockerImageName}`);
     } else {
       throw e;
