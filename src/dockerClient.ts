@@ -70,7 +70,7 @@ export const checkContainerHealthStatus = async (rpcPort: number): Promise<boole
   const name = "qtest" + rpcPort;
   const rawResult = execute(`docker inspect --format='{{json .State.Health}}' ${name}`);
   const jsonResult = JSON.parse(rawResult);
-  if(jsonResult?.Status === 'healthy'){
+  if(jsonResult.Status === 'healthy'){
     return true;
   }else{
     return false;
