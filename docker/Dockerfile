@@ -2,8 +2,7 @@ FROM ubuntu:20.04
 WORKDIR /app
 
 # # Install prerequisites
-RUN apt-get update \
-    && apt-get update --fix-missing
+RUN apt-get update 
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 RUN apt-get -y install zip unzip libncurses5 wget git build-essential cmake curl libboost-all-dev libcurl4-openssl-dev libgmp-dev libssl-dev libusb-1.0.0-dev libzstd-dev time pkg-config llvm-11-dev
 
@@ -25,7 +24,7 @@ ENV EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS
 
 EXPOSE 8888
 
-HEALTHCHECK --start-period=2s --interval=2s --timeout=2s --retries=5\
+HEALTHCHECK --start-period=100ms --interval=500ms --timeout=500ms --retries=20\
   CMD ./scripts/health_check.sh || exit 1
 
 ENTRYPOINT ["./entrypoint.sh"]

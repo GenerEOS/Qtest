@@ -58,12 +58,12 @@ cleos push action eosio activate '["4e7bf348da00a945489b2a681749eb56f5de00b90001
 cleos push action eosio activate '["4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2"]' -p eosio@active
 # WTMSIG_BLOCK_SIGNATURES
 cleos push action eosio activate '["299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707"]' -p eosio@active
-sleep 3
+sleep 1
 
 # Deploy system contracts
 until cleos set contract eosio contracts/eos eosio.system.wasm eosio.system.abi
 do
-  sleep 1s
+  sleep 0.5s
 done
 
 # Designate eosio.msig as privileged account
@@ -71,6 +71,3 @@ cleos push action eosio setpriv '["eosio.msig", 1]' -p eosio@active
 
 # Init system contract
 cleos push action eosio init '[0, "4,EOS"]' -p eosio@active
-
-# Complete setup
-cleos system newaccount eosio qtest ${EOSIO_PUB_KEY} ${EOSIO_PUB_KEY}  --buy-ram-kbytes 8 --stake-net "0.0000 EOS"  --stake-cpu "0.0000 EOS"
