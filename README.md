@@ -57,7 +57,7 @@ npm run test
 ### Usage
 ```
 const { Chain } = require("qtest-js");
-const { expectAction } = require("qtest-js");
+const { expectAction, expectThrow, expectBalance } = require("qtest-js");
 ```
 **Api** and **JsonRpc** from **eosjs** are available through the **[Chain](docs/api/chain.md)** class 
 
