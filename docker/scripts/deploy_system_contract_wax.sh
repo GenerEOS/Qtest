@@ -46,13 +46,10 @@ cleos push action eosio activate '["4a90c00d55454dc5b059055ca213579c6ea856967712
 cleos push action eosio activate '["1a99a59d87e06e09ec5b028a9cbb7749b4a5ad8819004365d02dc4379a8b7241"]' -p eosio@active
 # RAM_RESTRICTIONS
 cleos push action eosio activate '["4e7bf348da00a945489b2a681749eb56f5de00b900014e137ddae39f48f69d67"]' -p eosio@active
-sleep 3
+sleep 1
 
 # Designate eosio.msig as privileged account
 cleos push action eosio setpriv '["eosio.msig", 1]' -p eosio@active
 
 # Init system contract
 cleos push action eosio init '[0, "8,WAX"]' -p eosio@active
-
-# Complete setup
-cleos system newaccount eosio qtest ${EOSIO_PUB_KEY} ${EOSIO_PUB_KEY}  --buy-ram-kbytes 8 --stake-net "0.00000000 WAX"  --stake-cpu "0.00000000 WAX"

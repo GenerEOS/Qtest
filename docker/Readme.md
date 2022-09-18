@@ -2,13 +2,32 @@
 
 ```
 $ make build_snapshots
+
 $ make create_snapshots
+
 # wait until all snapshots are created with following logs:
+$ docker logs qsnapshot
 {
-   "head_block_id" : "00000012970061bb6b3aeac9d36303e9832b7363c8f7ae5db7fc0c90735cb37c",
-   "head_block_num" : 18,
-   "head_block_time" : "2022-07-14T01:58:07.000",
-   "snapshot_name" : "/app/snapshot-node/./logs/TLOS/data/snapshots/snapshot-00000012970061bb6b3aeac9d36303e9832b7363c8f7ae5db7fc0c90735cb37c.bin",
+   "head_block_id" : "000000108afb765fa579df87aef399987315b3c3f11dd44a2a98f14869e674af",
+   "head_block_num" : 16,
+   "head_block_time" : "2022-09-18T07:52:34.000",
+   "snapshot_name" : "/app/snapshot-node/./logs/EOS/data/snapshots/snapshot-000000108afb765fa579df87aef399987315b3c3f11dd44a2a98f14869e674af.bin",
+   "version" : 5
+}
+...
+{
+   "head_block_id" : "0000000d7b70ad64ac368b01f5ccfaa97481ac610877bbe9307a09e52a75e451",
+   "head_block_num" : 13,
+   "head_block_time" : "2022-09-18T07:52:42.000",
+   "snapshot_name" : "/app/snapshot-node/./logs/WAX/data/snapshots/snapshot-0000000d7b70ad64ac368b01f5ccfaa97481ac610877bbe9307a09e52a75e451.bin",
+   "version" : 5
+}
+...
+{
+   "head_block_id" : "0000000d30b1c9f92065e95037619b4ddbb20f7c9143c7863e46a7d0f3f5a103",
+   "head_block_num" : 13,
+   "head_block_time" : "2022-09-18T07:52:50.000",
+   "snapshot_name" : "/app/snapshot-node/./logs/TLOS/data/snapshots/snapshot-0000000d30b1c9f92065e95037619b4ddbb20f7c9143c7863e46a7d0f3f5a103.bin",
    "version" : 5
 }
 $ make copy_snapshots
@@ -34,7 +53,6 @@ docker run --name qtest  --env SYSTEM_TOKEN_SYMBOL="WAX" -d -p 8888:8888 qtest:l
 ```
 
 ## Time manipulation:
-
 ```
 $ docker exec qtest cleos get info
 {
