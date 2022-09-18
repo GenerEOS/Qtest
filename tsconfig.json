@@ -21,7 +21,8 @@
     "typeRoots": [
       "node_modules/@types",
       "./src/types"
-    ]
+    ],
+    "declaration": true
   },
   "ts-node": {
     // these options are overrides used only by ts-node
