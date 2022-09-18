@@ -13,6 +13,7 @@ import {
   startChainContainer,
   getChainIp,
   manipulateChainTime,
+  checkContainerHealthStatus,
 } from "./dockerClient";
 import { sleep } from "./utils";
 import { signatureProvider } from "./wallet";
@@ -66,8 +67,6 @@ export class Chain {
     const port = Math.floor(Math.random() * 9900 + 100);
     await startChainContainer(port, chainName);
 
-    // const chainIp = await getChainIp(port);
-    // const rpc = new JsonRpc(`http://${chainIp}:${port}`, { fetch });
     const rpc = new JsonRpc(`http://127.0.0.1:${port}`, { fetch });
     const api = new Api({
       rpc,
@@ -77,11 +76,8 @@ export class Chain {
     });
 
     const newChain = new Chain(rpc, api, port, chainName);
-
     // waiting for chain start produce block
     await newChain.waitForChainStart();
-    // waiting for chain finish inilize system contract
-    await newChain.waitForSystemContractInitialized();
     // initialize 10 test accounts
     await newChain.initializeTestAccounts();
 
@@ -118,6 +114,23 @@ export class Chain {
     return +(await this.getInfo()).head_block_num;
   }
 
+    /**
+   * check node status
+   *
+   * @return {Promise<boolean>} true if node is started
+   * @api public
+   */
+  async isNodeStartUp(): Promise<boolean> {
+      try {
+        await this.getInfo();
+        return true;
+      } catch (e) {
+        await sleep(100);
+        return false;
+      }
+    }
+
+    
   /**
    * check chain produce block
    *
@@ -127,7 +140,7 @@ export class Chain {
   async isProducingBlock(): Promise<boolean> {
     try {
       const currentHeadBlock = await this.headBlockNum();
-      await sleep(600);
+      await sleep(500);
       return Number(await this.headBlockNum()) - Number(currentHeadBlock) > 0;
     } catch (e) {
       return false;
@@ -230,46 +243,23 @@ export class Chain {
     return this.system.createAccounts(testAccountNames);
   }
 
-  private async isSystemContractInitialized(): Promise<boolean> {
-    try {
-      const rammarketTables = await this.rpc.get_table_rows({
-        json: true,
-        code: "eosio",
-        table: "rammarket",
-        scope: "eosio",
-      });
-      if (rammarketTables.rows && rammarketTables.rows.length) {
-        return true;
-      }
-      return false;
-    } catch (e) {
-      return false;
-    }
-  }
-
   private async waitForChainStart() {
     let retryCount = 0;
+    while (!(await checkContainerHealthStatus(this.port))) {
+      await sleep(100);
+      if (retryCount === 100) {
+        throw new Error("Docker container is not healthy");
+      }
+      retryCount++;
+    }
+
+    retryCount = 0;
     while (!(await this.isProducingBlock())) {
-      await sleep(1000);
-      if (retryCount === 10) {
-        throw new Error("can not get chain status");
+      if (retryCount === 20) {
+        throw new Error("Cannot get chain status");
       }
       retryCount++;
     }
-    await sleep(1000);
-  }
-
-  private async waitForSystemContractInitialized() {
-    let retryCount = 0;
-    while (!(await this.isSystemContractInitialized())) {
-      await sleep(2000);
-      if (retryCount === 15) {
-        throw new Error("can not initilize system contract");
-      }
-      retryCount++;
-    }
-
-    await sleep(1000);
   }
 
   private getChainTokenDecimal(chainName: string): number {

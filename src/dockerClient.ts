@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-const dockerImageName = "genereos/qtest:v1.1.1";
+const dockerImageName = "genereos/qtest:v1.1.4";
 
 function execute(command, ignoreFail = false) {
   try {
@@ -23,7 +23,7 @@ const pullDockerImage = async () => {
         `Pulling docker image ${dockerImageName}. This process will take few mintutes ...\n`
       );
       process.stdout.write(
-        `\x1b[93mWarning: your tests might be failed for the first time while downloading an image because of the test timeout\x1b[39m\n`
+        `\x1b[93mWarning: Your tests might be failed for the first time while downloading the ${dockerImageName} because of the test timeout\x1b[39m\n`
       );
       execute(`docker pull ${dockerImageName}`);
     } else {
@@ -64,6 +64,17 @@ export const getContainers = (): { name: string; id: string }[] => {
       id: lineSplit[1],
     };
   });
+};
+
+export const checkContainerHealthStatus = async (rpcPort: number): Promise<boolean> => {
+  const name = "qtest" + rpcPort;
+  const rawResult = execute(`docker inspect --format='{{json .State.Health}}' ${name}`);
+  const jsonResult = JSON.parse(rawResult);
+  if(jsonResult?.Status === 'healthy'){
+    return true;
+  }else{
+    return false;
+  }
 };
 
 export const killExistingChainContainer = async (
