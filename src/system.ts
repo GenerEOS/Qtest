@@ -23,12 +23,9 @@ export class System {
     accounts: string[],
     supplyAmount = this.chain.coreSymbol.convertAssetString(100)
   ): Promise<Account[]> {
-    const accountInstances: Account[] = [];
-    for (const account of accounts) {
-      accountInstances.push(await this.createAccount(account, supplyAmount));
-    }
 
-    return accountInstances;
+    const requests = accounts.map(account => this.createAccount(account, supplyAmount));
+    return Promise.all(requests);
   }
 
   /**

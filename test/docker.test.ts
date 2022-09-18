@@ -3,7 +3,9 @@ import {
   getContainers,
   killExistingChainContainer,
   getChainIp,
+  checkContainerHealthStatus
 } from "../src/dockerClient";
+import { sleep } from "../src/utils";
 
 describe("docker client test", () => {
   let port = 12345;
@@ -14,7 +16,10 @@ describe("docker client test", () => {
     const qTestContainer = containers.find((c) => c.name === "qtest12345");
     // @ts-ignore
     expect(qTestContainer.name).toBe("qtest12345");
-  });
+    expect(await checkContainerHealthStatus(port)).toBe(false);
+    await sleep(4000);
+    expect(await checkContainerHealthStatus(port)).toBe(true);
+  }, 20000);
 
   it("get chain ip", async () => {
     const ip = await getChainIp(port);
