@@ -48,10 +48,9 @@ describe("account test", () => {
     }, 100000);
 
     it("should not load non existing account", async () => {
-      await expect(
-        chain.system.fromAccount("eosio123"),
-      ).rejects.toThrowError("unknown key");
+      await expect(chain.system.fromAccount("eosio123")).rejects.toThrowError(
+        "unknown key"
+      );
     }, 100000);
-
   });
 });

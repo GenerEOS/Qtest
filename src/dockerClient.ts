@@ -66,13 +66,17 @@ export const getContainers = (): { name: string; id: string }[] => {
   });
 };
 
-export const checkContainerHealthStatus = async (rpcPort: number): Promise<boolean> => {
+export const checkContainerHealthStatus = async (
+  rpcPort: number
+): Promise<boolean> => {
   const name = "qtest" + rpcPort;
-  const rawResult = execute(`docker inspect --format='{{json .State.Health}}' ${name}`);
+  const rawResult = execute(
+    `docker inspect --format='{{json .State.Health}}' ${name}`
+  );
   const jsonResult = JSON.parse(rawResult);
-  if(jsonResult.Status === 'healthy'){
+  if (jsonResult.Status === "healthy") {
     return true;
-  }else{
+  } else {
     return false;
   }
 };
