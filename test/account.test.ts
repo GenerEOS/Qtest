@@ -1,5 +1,7 @@
+import { Account } from "../src/account";
 import { expectBalance } from "../src/assertion";
 import { Chain } from "../src/chain";
+import { Contract } from "../src/contract";
 import { generateTapos } from "../src/utils";
 import { TESTING_PUBLIC_KEY } from "../src/wallet";
 
@@ -17,19 +19,6 @@ describe("account test", () => {
     await chain.clear();
   }, 10000);
 
-  describe("default 10 test accounts", function () {
-    it("should created 10 test accounts", async () => {
-      for (let i = 0; i < 10; i++) {
-        let testAccount = chain.accounts[i];
-        expect(testAccount).toHaveProperty("name");
-      }
-
-      for (let i = 10; i < 20; i++) {
-        let testAccount = chain.accounts[i];
-        expect(testAccount).toBeUndefined;
-      }
-    });
-  });
   describe("account functions", function () {
     it("test update auth", async () => {
       await account.updateAuth(
@@ -224,6 +213,31 @@ describe("account test", () => {
       expect(transaction.processed.action_traces[0].console).toBe(
         " hello " + contractAccount.name
       );
+    }, 100000);
+  });
+
+  describe("load contract", function () {
+    it("test load the existing contract", async () => {
+      const eosioAccount = new Account(chain, "eosio");
+      expect(await eosioAccount.loadContract()).toBeCalled;
+      expect(eosioAccount.contract).toBeInstanceOf(Contract);
+      expect(await eosioAccount.contract.table.global.get({
+        scope: eosioAccount.name
+      })).toBeCalled
+    }, 100000);
+
+    it("should not load contract for non existing account", async () => {
+      const test123Account = new Account(chain, "test123");
+      await expect(
+        test123Account.loadContract(),
+      ).rejects.toThrowError("unknown key (eosio::chain::name): test123");
+    }, 100000);
+
+    it("should not load contract for an account which does not have contract", async () => {
+      const test1234Account = await chain.system.createAccount("test1234");
+      await expect(
+        test1234Account.loadContract(),
+      ).rejects.toThrowError("Account test1234 contract_code does not exist");
     }, 100000);
   });
 });

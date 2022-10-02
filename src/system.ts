@@ -144,4 +144,19 @@ export class System {
     );
     return new Account(this.chain, account);
   }
+
+
+   async fromAccount( accountName: string ): Promise<Account> {
+     try{
+      await this.chain.rpc.get_account(accountName);
+      const account =  new Account(this.chain, accountName);
+      const {code_hash} = await this.chain.rpc.get_code_hash(accountName);
+      if(code_hash !== "0000000000000000000000000000000000000000000000000000000000000000"){
+        await account.loadContract();
+      }
+      return account;
+      } catch (e) {
+        throw e;
+     }
+  }
 }

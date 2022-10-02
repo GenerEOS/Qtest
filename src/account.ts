@@ -323,7 +323,7 @@ export class Account {
     if (!fs.existsSync(contractPath.abi) || !fs.existsSync(contractPath.wasm)) {
       throw new Error(
         "can not find abi or wasm file of contract " +
-          JSON.stringify(contractPath, null, 2)
+        JSON.stringify(contractPath, null, 2)
       );
     }
     const buffer = new SerialBuffer({
@@ -343,7 +343,6 @@ export class Account {
     const serializedAbiHexString = Buffer.from(buffer.asUint8Array()).toString(
       "hex"
     );
-
     const wasmHexString = fs.readFileSync(contractPath.wasm).toString("hex");
 
     const tx = await this.chain.api.transact(
@@ -384,7 +383,25 @@ export class Account {
       generateTapos()
     );
 
-    this.contract = new Contract(this, contractPath.wasm, abiJSON);
+    this.contract = new Contract(this, wasmHexString, abiJSON);
+    return this.contract;
+  }
+
+  /**
+  * from an existing contract to this account
+  *
+  * @return {Promise<Contract>} Contract instance
+  * @api public
+  */
+  async loadContract() {
+    const getCodeResult = await this.chain.rpc.get_code(this.name);
+    if (getCodeResult.code_hash === "0000000000000000000000000000000000000000000000000000000000000000") {
+      throw new Error(`Account ${this.name} contract_code does not exist`);
+    }
+    if (!getCodeResult.abi) {
+      throw new Error(`Account ${this.name} contract_abi does not exist`);
+    }
+    this.contract = new Contract(this, Buffer.from(getCodeResult.wasm).toString('hex'), getCodeResult.abi);
     return this.contract;
   }
 }
