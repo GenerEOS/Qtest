@@ -3,7 +3,7 @@ import {
   getContainers,
   killExistingChainContainer,
   getChainIp,
-  checkContainerHealthStatus
+  checkContainerHealthStatus,
 } from "../src/dockerClient";
 import { sleep } from "../src/utils";
 

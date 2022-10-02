@@ -114,23 +114,22 @@ export class Chain {
     return +(await this.getInfo()).head_block_num;
   }
 
-    /**
+  /**
    * check node status
    *
    * @return {Promise<boolean>} true if node is started
    * @api public
    */
   async isNodeStartUp(): Promise<boolean> {
-      try {
-        await this.getInfo();
-        return true;
-      } catch (e) {
-        await sleep(100);
-        return false;
-      }
+    try {
+      await this.getInfo();
+      return true;
+    } catch (e) {
+      await sleep(100);
+      return false;
     }
+  }
 
-    
   /**
    * check chain produce block
    *

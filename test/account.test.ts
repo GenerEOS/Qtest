@@ -221,23 +221,25 @@ describe("account test", () => {
       const eosioAccount = new Account(chain, "eosio");
       expect(await eosioAccount.loadContract()).toBeCalled;
       expect(eosioAccount.contract).toBeInstanceOf(Contract);
-      expect(await eosioAccount.contract.table.global.get({
-        scope: eosioAccount.name
-      })).toBeCalled
+      expect(
+        await eosioAccount.contract.table.global.get({
+          scope: eosioAccount.name,
+        })
+      ).toBeCalled;
     }, 100000);
 
     it("should not load contract for non existing account", async () => {
       const test123Account = new Account(chain, "test123");
-      await expect(
-        test123Account.loadContract(),
-      ).rejects.toThrowError("unknown key (eosio::chain::name): test123");
+      await expect(test123Account.loadContract()).rejects.toThrowError(
+        "unknown key (eosio::chain::name): test123"
+      );
     }, 100000);
 
     it("should not load contract for an account which does not have contract", async () => {
       const test1234Account = await chain.system.createAccount("test1234");
-      await expect(
-        test1234Account.loadContract(),
-      ).rejects.toThrowError("Account test1234 contract_code does not exist");
+      await expect(test1234Account.loadContract()).rejects.toThrowError(
+        "Account test1234 contract_code does not exist"
+      );
     }, 100000);
   });
 });
