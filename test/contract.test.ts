@@ -75,17 +75,18 @@ describe("account test", () => {
         scope: user1.name,
       });
       const savedLogItem = logTableRows.rows[logTableRows.rows.length - 1];
-      expectAction(transaction, {
-        account: contract.account.name,
-        name: "testlog",
-        data: {
+      expectAction(
+        transaction,
+        contract.account.name,
+        "testlog",
+        {
           user: user1.name,
           id: savedLogItem.id,
           value1: 123,
           value2: "456789",
         },
-        authorization: [{ actor: contract.account.name, permission: "active" }],
-      });
+        [{ actor: contract.account.name, permission: "active" }]
+      );
     }, 100000);
 
     it("inline action check the transaction contains with action", async () => {
@@ -102,14 +103,12 @@ describe("account test", () => {
         scope: user1.name,
       });
       const savedLogItem = logTableRows.rows[logTableRows.rows.length - 1];
-      expectAction(transaction, {
-        data: {
-          user: user1.name,
-          id: savedLogItem.id,
-          value1: 234,
-          value2: "456789",
-        },
-      });
+      await expectAction(transaction, contract.account.name, "testlog");
+      await expect(
+        expectAction(transaction, contract.account.name, "testlog", {
+          data: "fake",
+        })
+      ).rejects.toThrowError("Expected: ");
     }, 100000);
   });
 });

@@ -31,6 +31,66 @@ export class Table {
     });
   }
 
+  async getRows(option: {
+    scope: string;
+    lower_bound?: any;
+    upper_bound?: any;
+    index_position?: number;
+    key_type?: string;
+    limit?: number;
+    reverse?: boolean;
+    show_payer?: boolean;
+  }): Promise<any[]> {
+    const result: GetTableRowsResult =
+      await this.account.chain.rpc.get_table_rows({
+        json: true,
+        code: this.account.name,
+        table: this.name,
+        ...option,
+      });
+    return result.rows;
+  }
+
+  async getFirstRow(option: {
+    scope: string;
+    lower_bound?: any;
+    upper_bound?: any;
+    index_position?: number;
+    key_type?: string;
+    show_payer?: boolean;
+  }): Promise<any> {
+    const result: GetTableRowsResult =
+      await this.account.chain.rpc.get_table_rows({
+        json: true,
+        code: this.account.name,
+        table: this.name,
+        limit: 1,
+        reverse: false,
+        ...option,
+      });
+    return result.rows.length > 0 ? result.rows[0] : {};
+  }
+
+  async getLastRow(option: {
+    scope: string;
+    lower_bound?: any;
+    upper_bound?: any;
+    index_position?: number;
+    key_type?: string;
+    show_payer?: boolean;
+  }): Promise<any> {
+    const result: GetTableRowsResult =
+      await this.account.chain.rpc.get_table_rows({
+        json: true,
+        code: this.account.name,
+        table: this.name,
+        limit: 1,
+        reverse: true,
+        ...option,
+      });
+    return result.rows.length > 0 ? result.rows[0] : {};
+  }
+
   /**
    * insert data to contract table
    *

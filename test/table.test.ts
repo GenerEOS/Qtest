@@ -189,4 +189,47 @@ describe("account test", () => {
       );
     });
   });
+
+  describe("READ table", function () {
+    it("read rows  from contract table data", async () => {
+      await inittableContract.table.tablename1.insert({
+        testscope5: [
+          {
+            id: "name1",
+            value1: 1122,
+            value2: 2211,
+          },
+          {
+            id: "name2",
+            value1: 2233,
+            value2: 3322,
+          },
+          {
+            id: "name3",
+            value1: 3344,
+            value2: 4433,
+          },
+        ],
+      });
+
+      const firstRow = await inittableContract.table.tablename1.getFirstRow({
+        scope: "testscope5",
+      });
+      expect(firstRow.id).toBe("name1");
+      expect(firstRow.value1).toBe(1122);
+      expect(firstRow.value2).toBe(2211);
+
+      const lastRow = await inittableContract.table.tablename1.getLastRow({
+        scope: "testscope5",
+      });
+      expect(lastRow.id).toBe("name3");
+      expect(lastRow.value1).toBe(3344);
+      expect(lastRow.value2).toBe(4433);
+
+      const rows = await inittableContract.table.tablename1.getRows({
+        scope: "testscope5",
+      });
+      expect(rows.length).toBe(3);
+    });
+  });
 });

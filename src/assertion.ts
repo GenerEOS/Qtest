@@ -20,7 +20,7 @@ export async function expectThrow(
 }
 
 export function getAllActions(actionTraces: ActionTrace[]): {
-  account: string;
+  receiver: string;
   name: string;
   data?: object;
   authorization?: Authorization[];
@@ -28,7 +28,7 @@ export function getAllActions(actionTraces: ActionTrace[]): {
   let actions = [];
   for (const a of actionTraces) {
     actions.push({
-      account: a.receiver,
+      receiver: a.receiver,
       name: a.act.name,
       data: a.act.data,
       authorization: a.act.authorization,
@@ -38,28 +38,39 @@ export function getAllActions(actionTraces: ActionTrace[]): {
   return actions;
 }
 
-const isContainedIn = (superObj, subObj) => {
-  return Object.keys(subObj).every((ele) => {
-    if (typeof subObj[ele] == "object") {
-      return isContainedIn(superObj[ele], subObj[ele]);
-    }
-    return subObj[ele] === superObj[ele];
-  });
-};
-
-export function expectAction(
+export async function expectAction(
   transaction: TransactResult,
-  expectedAction: {}
+  code: string,
+  actionName: string,
+  data?: object,
+  authorization?: Authorization[]
 ): boolean {
-  const allActions = getAllActions(transaction.processed.action_traces);
+  const expectedAction = {
+    receiver: code,
+    name: actionName,
+    data,
+    authorization,
+  };
+  const traces = getAllActions(transaction.processed.action_traces);
 
-  for (const action of allActions) {
-    if (isContainedIn(action, expectedAction)) {
-      return true;
+  for (const action of traces) {
+    if (action.receiver === code && action.name === actionName) {
+      if (!(data || authorization)) {
+        return true;
+      } else if (data) {
+        if (JSON.stringify(action.data) === JSON.stringify(data)) return true;
+      } else if (authorization) {
+        if (
+          JSON.stringify(action.authorization) === JSON.stringify(authorization)
+        )
+          return true;
+      }
     }
   }
   throw new Error(
-    `expectedAction: ${JSON.stringify(expectedAction)} not found`
+    `Expected: ${JSON.stringify(expectedAction)} \nReceived: ${JSON.stringify(
+      traces
+    )}`
   );
 }
 
