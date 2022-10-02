@@ -44,7 +44,7 @@ export async function expectAction(
   actionName: string,
   data?: object,
   authorization?: Authorization[]
-): boolean {
+): Promise<boolean> {
   const expectedAction = {
     receiver: code,
     name: actionName,

@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "qtest-js": "^0.3.5",
+    "qtest-js": "^0.4.0",
     "jest": "^28.1.3"
   }
 }

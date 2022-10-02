@@ -34,11 +34,11 @@ describe('eosio.token test', () => {
         ]
       });
 
-      const balances = await contract.table.accounts.get({
+      const rows = await contract.table.accounts.getRows({
         scope: 'scope1',
       });
-      expect(balances.rows[0].balance).toContain('12345.67890 AAA');
-      expect(balances.rows[1].balance).toContain('12345.67890 BBB');
+      expect(rows[0].balance).toContain('12345.67890 AAA');
+      expect(rows[1].balance).toContain('12345.67890 BBB');
     });
 
     it('modify account table', async () => {
