@@ -37,6 +37,15 @@
     "type": "git",
     "url": "git+https://github.com/generEOS/Qtest.git"
   },
+  "keywords": [
+    "testing",
+    "unit-test",
+    "eosio",
+    "wax",
+    "telos",
+    "antelope",
+    "leap"
+  ],
   "author": "",
   "bugs": {
     "url": "https://github.com/generEOS/Qtest/issues"
