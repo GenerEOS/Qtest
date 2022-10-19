@@ -38,6 +38,7 @@
     "url": "git+https://github.com/generEOS/Qtest.git"
   },
   "keywords": [
+    "qtest",
     "testing",
     "unit-test",
     "eosio",
