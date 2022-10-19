@@ -11,7 +11,7 @@ export function sleep(milliseconds) {
 
 export function generateTapos() {
   return {
-    blocksBehind: 3,
+    blocksBehind: 1,
     // avoid duplicate transaction
     expireSeconds: 300 + Math.floor(Math.random() * 3300),
   };
