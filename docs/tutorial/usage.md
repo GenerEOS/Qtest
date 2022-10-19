@@ -56,8 +56,20 @@ Before you can use the Qtest table seeding functions you will need to perform th
 - copy qtest.hpp to your contract include file
 - add the following line to contract header file
   ```
-  #include "qtest.hpp"`
+  #include "qtest.hpp"
+  ...
+  CONTRACT inittable : public contract
+  { 
+  ...
+      public:
+    //Format: ((table_name)(struct_name)(multi_index_typedef))
+    EOS_LOAD_TABLE_ACTION(
+        ((tablename1)(table1)(table1_t))
+        ((tablename2)(table2)(table2_t))
+    )
+  };
   ```
+
 
 
 
