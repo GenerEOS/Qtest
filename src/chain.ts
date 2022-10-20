@@ -161,11 +161,12 @@ export class Chain {
     action: Action,
     broadcast: boolean = true,
     sign: boolean = true,
-    expireSeconds: number = 120
+    expireSeconds: number = 120,
+    blocksBehind:  number = 1,
   ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
     return this.api.transact(
       { actions: [action] },
-      { broadcast, sign, expireSeconds, blocksBehind: 3 }
+      { broadcast, sign, expireSeconds, blocksBehind }
     );
   }
 
@@ -184,11 +185,12 @@ export class Chain {
     actions: Action[],
     broadcast: boolean = true,
     sign: boolean = true,
-    expireSeconds: number = 120
+    expireSeconds: number = 120,
+    blocksBehind:  number = 1,
   ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
     return this.api.transact(
       { actions },
-      { broadcast, sign, expireSeconds, blocksBehind: 3 }
+      { broadcast, sign, expireSeconds, blocksBehind}
     );
   }
 
