@@ -119,24 +119,25 @@ export class System {
         },
       ]);
     }
-
-    createAccountActions.push({
-      account: "eosio.token",
-      name: "transfer",
-      authorization: [
-        {
-          actor: "eosio",
-          permission: "active",
+    if (supplyAmount !== this.chain.coreSymbol.convertAssetString(0)) {
+      createAccountActions.push({
+        account: "eosio.token",
+        name: "transfer",
+        authorization: [
+          {
+            actor: "eosio",
+            permission: "active",
+          },
+        ],
+        data: {
+          // @ts-ignore
+          from: "eosio",
+          to: account,
+          quantity: supplyAmount,
+          memo: "supply to test account",
         },
-      ],
-      data: {
-        // @ts-ignore
-        from: "eosio",
-        to: account,
-        quantity: supplyAmount,
-        memo: "supply to test account",
-      },
-    });
+      });
+    }
     await this.chain.api.transact(
       {
         actions: createAccountActions,
