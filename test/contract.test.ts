@@ -97,9 +97,14 @@ describe("account test", () => {
         [{ actor: user1.name, permission: "active" }]
       );
 
-      await expectAction(transaction, contract.account.name, "testlog",{user:"acc12.test"});
+      await expectAction(transaction, contract.account.name, "testlog", {
+        user: "acc12.test",
+      });
       await expect(
-        expectAction(transaction, contract.account.name, "testlog",{user: "acc12.test", value1: 235})
+        expectAction(transaction, contract.account.name, "testlog", {
+          user: "acc12.test",
+          value1: 235,
+        })
       ).rejects.toThrowError("Expected: ");
 
       await expect(

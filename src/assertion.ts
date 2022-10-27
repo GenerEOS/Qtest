@@ -38,27 +38,27 @@ export function getAllActions(actionTraces: ActionTrace[]): {
   return actions;
 }
 
-function isContainedIn(superObj: object, subObj: object){
+function isContainedIn(superObj: object, subObj: object) {
   return Object.keys(subObj).every((ele) => {
     if (typeof subObj[ele] == "object") {
       return isContainedIn(superObj[ele], subObj[ele]);
     }
     return subObj[ele] === superObj[ele];
   });
-};
+}
 
-  /**
-   * Assert Action
-   *
-   * @param {TransactResult} transaction the transaction result
-   * @param {string} code contract account
-   * @param {string} actionName action name
-   * @param {object} data Optional. the data fields that contain in action data
-   * @param {Authorization[]} authorization Optional. authorizarion
-   * @return {Promise<boolean>} result
-   *
-   * @api public
-   */
+/**
+ * Assert Action
+ *
+ * @param {TransactResult} transaction the transaction result
+ * @param {string} code contract account
+ * @param {string} actionName action name
+ * @param {object} data Optional. the data fields that contain in action data
+ * @param {Authorization[]} authorization Optional. authorizarion
+ * @return {Promise<boolean>} result
+ *
+ * @api public
+ */
 export async function expectAction(
   transaction: TransactResult,
   code: string,
@@ -79,7 +79,7 @@ export async function expectAction(
       if (!(data || authorization)) {
         return true;
       } else if (data) {
-        if(isContainedIn(action.data, data))  return true;
+        if (isContainedIn(action.data, data)) return true;
       } else if (authorization) {
         if (
           JSON.stringify(action.authorization) === JSON.stringify(authorization)
