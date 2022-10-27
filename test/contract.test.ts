@@ -1,11 +1,11 @@
-import { Chain } from "../src/chain";
+import { Chain, Contract, Account } from "../src";
 import { expectAction, expectThrow, expectBalance } from "../src/assertion";
 
 describe("account test", () => {
-  let chain;
-  let contract;
+  let chain: Chain;
+  let contract: Contract;
   let chainName = process.env.CHAIN_NAME || "WAX";
-  let contractAccount, user1, user2, user3;
+  let contractAccount, user1, user2, user3: Account;
 
   beforeAll(async () => {
     chain = await Chain.setupChain(chainName);
@@ -51,12 +51,11 @@ describe("account test", () => {
         [{ actor: user1.name, permission: "active" }]
       );
 
-      const logTableRows = await contract.table.logs.get({
+      const lastRow = await contract.table.logs.getLastRow({
         scope: user1.name,
       });
-      const savedLogItem = logTableRows.rows[logTableRows.rows.length - 1];
-      expect(savedLogItem.value1).toBe(2291);
-      expect(savedLogItem.value2).toBe("98123");
+      expect(lastRow.value1).toBe(2291);
+      expect(lastRow.value2).toBe("98123");
     }, 100000);
   });
 
@@ -71,17 +70,16 @@ describe("account test", () => {
         [{ actor: user1.name, permission: "active" }]
       );
 
-      const logTableRows = await contract.table.logs.get({
+      const lastRow = await contract.table.logs.getLastRow({
         scope: user1.name,
       });
-      const savedLogItem = logTableRows.rows[logTableRows.rows.length - 1];
       expectAction(
         transaction,
         contract.account.name,
         "testlog",
         {
           user: user1.name,
-          id: savedLogItem.id,
+          id: lastRow.id,
           value1: 123,
           value2: "456789",
         },
@@ -99,10 +97,6 @@ describe("account test", () => {
         [{ actor: user1.name, permission: "active" }]
       );
 
-      const logTableRows = await contract.table.logs.get({
-        scope: user1.name,
-      });
-      const savedLogItem = logTableRows.rows[logTableRows.rows.length - 1];
       await expectAction(transaction, contract.account.name, "testlog");
       await expect(
         expectAction(transaction, contract.account.name, "testlog", {

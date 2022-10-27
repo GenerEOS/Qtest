@@ -6,8 +6,8 @@ import { generateTapos } from "../src/utils";
 import { TESTING_PUBLIC_KEY } from "../src/wallet";
 
 describe("account test", () => {
-  let chain;
-  let account;
+  let chain: Chain;
+  let account: Account;
   let chainName = process.env.CHAIN_NAME || "WAX";
 
   beforeAll(async () => {
@@ -200,7 +200,10 @@ describe("account test", () => {
         },
         true,
         true,
-        366
+        {
+          blocksBehind: 1,
+          expireSeconds: 366,
+        }
       );
       // @ts-ignore
       expect(transaction.processed.action_traces[0].console).toBe(

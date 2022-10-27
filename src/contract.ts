@@ -34,7 +34,6 @@ export class Contract {
           authorization,
           data,
         };
-
         // @ts-ignore
         return this.account.chain.pushAction(action) as TransactResult;
       };

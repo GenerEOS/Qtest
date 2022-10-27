@@ -6,8 +6,8 @@ import { generateTapos } from "../src/utils";
 import { TESTING_PUBLIC_KEY } from "../src/wallet";
 
 describe("account test", () => {
-  let chain;
-  let account;
+  let chain: Chain;
+  let account: Account;
   let chainName = process.env.CHAIN_NAME || "WAX";
 
   beforeAll(async () => {

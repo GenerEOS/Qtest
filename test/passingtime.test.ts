@@ -1,12 +1,12 @@
-import { Chain } from "../src/index";
+import { Chain, Account } from "../src/index";
 import { expectAction, expectThrow } from "../src/assertion";
 import { blockTimeToMs } from "../src/utils";
 
 describe("account test", () => {
-  let chain;
+  let chain: Chain;
   let passingtimeContract;
   let chainName = process.env.CHAIN_NAME || "WAX";
-  let contractAccount;
+  let contractAccount: Account;
 
   beforeAll(async () => {
     chain = await Chain.setupChain(chainName);

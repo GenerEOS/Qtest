@@ -165,10 +165,11 @@ export class Chain {
     sign: boolean = true,
     tapos: Object = {}
   ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
-    tapos = JSON.stringify(tapos) === JSON.stringify({}) ? generateTapos(): tapos;
+    tapos =
+      JSON.stringify(tapos) === JSON.stringify({}) ? generateTapos() : tapos;
     return this.api.transact(
       { actions: [action] },
-      { broadcast, sign, ...tapos}
+      { broadcast, sign, ...tapos }
     );
   }
 
@@ -189,11 +190,9 @@ export class Chain {
     sign: boolean = true,
     tapos: Object = {}
   ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
-    tapos = JSON.stringify(tapos) === JSON.stringify({}) ? generateTapos(): tapos;
-    return this.api.transact(
-      { actions },
-      { broadcast, sign, ...tapos }
-    );
+    tapos =
+      JSON.stringify(tapos) === JSON.stringify({}) ? generateTapos() : tapos;
+    return this.api.transact({ actions }, { broadcast, sign, ...tapos });
   }
 
   /**

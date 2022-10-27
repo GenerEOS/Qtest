@@ -4,7 +4,7 @@ import { Chain } from "../src/chain";
 import { blockTimeToMs } from "../src/utils";
 
 describe("chain test", () => {
-  let chain;
+  let chain: Chain;
   let chainName = process.env.CHAIN_NAME || "WAX";
 
   afterAll(async () => {

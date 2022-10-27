@@ -1,9 +1,9 @@
-import { Chain } from "../src/index";
+import { Chain, Contract } from "../src/index";
 import { expectAction, expectThrow } from "../src/assertion";
 
 describe("account test", () => {
-  let chain;
-  let inittableContract;
+  let chain: Chain;
+  let inittableContract: Contract;
   let chainName = process.env.CHAIN_NAME || "WAX";
 
   beforeAll(async () => {
