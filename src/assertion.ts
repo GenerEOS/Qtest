@@ -55,7 +55,7 @@ function isContainedIn(superObj: object, subObj: object){
    * @param {string} actionName action name
    * @param {object} data Optional. the data fields that contain in action data
    * @param {Authorization[]} authorization Optional. authorizarion
-   * @return {Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs>} transaction result
+   * @return {Promise<boolean>} result
    *
    * @api public
    */
