@@ -20,6 +20,7 @@ import { signatureProvider } from "./wallet";
 import { Asset, Symbol as TokenSymbol } from "./asset";
 import { Time } from "./time";
 import { System } from "./system";
+import { generateTapos } from "./utils";
 
 export class Chain {
   public coreSymbol: TokenSymbol;
@@ -152,21 +153,22 @@ export class Chain {
    * @param {Action} action detail of action to push
    * @param {boolean} broadcast Optional. Should broadcast this transaction to blockchain or not
    * @param {boolean} sign Optional. should sign transaction or not
-   * @param {boolean} expireSeconds Optional. number of second transaction will expired
+   * @param {Object} tapos Optional. {blocksBehind: reference block number, expireSeconds: number of second transaction will expired}
    * @return {Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs>} transaction result
    *
    * @api public
    */
+
   async pushAction(
     action: Action,
     broadcast: boolean = true,
     sign: boolean = true,
-    expireSeconds: number = 120,
-    blocksBehind: number = 1
+    tapos: Object = {}
   ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
+    tapos = JSON.stringify(tapos) === JSON.stringify({}) ? generateTapos(): tapos;
     return this.api.transact(
       { actions: [action] },
-      { broadcast, sign, expireSeconds, blocksBehind }
+      { broadcast, sign, ...tapos}
     );
   }
 
@@ -176,7 +178,7 @@ export class Chain {
    * @param {Action[]} actions detail of actions to push
    * @param {boolean} broadcast Optional. Should broadcast this transaction to blockchain or not
    * @param {boolean} sign Optional. should sign transaction or not
-   * @param {boolean} expireSeconds Optional. number of second transaction will expired
+   * @param {Object} tapos Optional. {blocksBehind: reference block number, expireSeconds: number of second transaction will expired}
    * @return {Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs>} transaction result
    *
    * @api public
@@ -185,12 +187,12 @@ export class Chain {
     actions: Action[],
     broadcast: boolean = true,
     sign: boolean = true,
-    expireSeconds: number = 120,
-    blocksBehind: number = 1
+    tapos: Object = {}
   ): Promise<TransactResult | ReadOnlyTransactResult | PushTransactionArgs> {
+    tapos = JSON.stringify(tapos) === JSON.stringify({}) ? generateTapos(): tapos;
     return this.api.transact(
       { actions },
-      { broadcast, sign, expireSeconds, blocksBehind }
+      { broadcast, sign, ...tapos }
     );
   }
 
