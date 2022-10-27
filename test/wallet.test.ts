@@ -1,10 +1,10 @@
-import { Chain } from "../src/chain";
+import { Chain, Account } from "../src";
 import { generateTapos } from "../src/utils";
 import { importKey, signatureProvider, createKey } from "../src/wallet";
 
 describe("test wallet", () => {
-  let chain;
-  let account;
+  let chain: Chain;
+  let account: Account;
   let chainName = process.env.CHAIN_NAME || "WAX";
 
   beforeAll(async () => {

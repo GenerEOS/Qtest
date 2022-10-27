@@ -1,11 +1,11 @@
 import { expectBalance } from "../src/assertion";
-import { Chain } from "../src/chain";
+import { Chain, Account } from "../src";
 import { generateTapos } from "../src/utils";
 import { TESTING_PUBLIC_KEY } from "../src/wallet";
 
 describe("setup chain  test", () => {
-  let chain;
-  let account;
+  let chain: Chain;
+  let account: Account;
   let chainName = process.env.CHAIN_NAME || "WAX";
 
   afterAll(async () => {
