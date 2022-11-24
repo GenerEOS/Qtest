@@ -27,12 +27,14 @@ nodeos \
 --plugin eosio::http_plugin \
 --plugin eosio::history_api_plugin \
 --plugin eosio::history_plugin \
+--plugin eosio::state_history_plugin \
 --data-dir $DATADIR"/data" \
 --blocks-dir $DATADIR"/blocks" \
 --config-dir $DATADIR"/config" \
 --producer-name $BPACCOUNT \
 --http-server-address 0.0.0.0:8888 \
 --p2p-listen-endpoint 0.0.0.0:9010 \
+--state-history-endpoint=0.0.0.0:8080 \
 --access-control-allow-origin=* \
 --contracts-console \
 --http-validate-host=false \
@@ -41,6 +43,7 @@ nodeos \
 --trace-history \
 --chain-state-history \
 --max-transaction-time=2000 \
+--disable-replay-opts \
 --abi-serializer-max-time-ms=60000 \
 --http-max-response-time-ms=8000 \
 --chain-state-db-size-mb 8192 \

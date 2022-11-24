@@ -23,6 +23,7 @@ ENV EOSIO_PUB_KEY=EOS5dUsCQCAyHVjnqr6BFqVEE7w8XksnkRtz22wd9eFrSq4NHoKEH
 ENV EOSIO_PRV_KEY=5JKxAqBoQuAYSh6YMcjxcougPpt1pi9L4PyJHwEQuZgYYgkWpjS
 
 EXPOSE 8888
+EXPOSE 8080
 
 HEALTHCHECK --start-period=100ms --interval=500ms --timeout=500ms --retries=20\
   CMD ./scripts/health_check.sh || exit 1
