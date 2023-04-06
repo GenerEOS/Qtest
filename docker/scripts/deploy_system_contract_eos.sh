@@ -31,9 +31,9 @@ cleos set contract eosio contracts/eos eosio.system_1.7.x.wasm eosio.system_1.7.
 # ACTION_RETURN_VALUE
 cleos push action eosio activate '["c3a6138c5061cf291310887c0b5c71fcaffeab90d5deb50d3b9e687cead45071"]' -p eosio@active
 # CONFIGURABLE_WASM_LIMITS2
-cleos push action eosio activate '["29a255f3e311c053847e027d352c06c77dfa9648fd8fd5dc8f629e3efffc2109"]' -p eosio@active
+cleos push action eosio activate '["d528b9f6e9693f45ed277af93474fd473ce7d831dae2180cca35d907bd10cb40"]' -p eosio@active
 # BLOCKCHAIN_PARAMETERS
-cleos push action eosio activate '["8e466518f3e16a679ffa80d2e810e4097e89b0495ed70c112375a1f525093f33"]' -p eosio@active
+cleos push action eosio activate '["5443fcf88330c586bc0e5f3dee10e7f63c76c00249c87fe4fbf7f38c082006b4"]' -p eosio@active
 # GET_SENDER
 cleos push action eosio activate '["f0af56d2c5a48d60a4a5b5c903edfb7db3a736a94ed589d0b797df33ff9d3e1d"]' -p eosio@active
 # FORWARD_SETCODE
@@ -58,6 +58,11 @@ cleos push action eosio activate '["4e7bf348da00a945489b2a681749eb56f5de00b90001
 cleos push action eosio activate '["4fca8bd82bbd181e714e283f83e1b45d95ca5af40fb89ad3977b653c448f78c2"]' -p eosio@active
 # WTMSIG_BLOCK_SIGNATURES
 cleos push action eosio activate '["299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707"]' -p eosio@active
+# GET_CODE_HASH
+cleos push action eosio activate '["bcd2a26394b36614fd4894241d3c451ab0f6fd110958c3423073621a70826e99"]' -p eosio@active
+# CRYPTO_PRIMITIVES
+cleos push action eosio activate '["6bcb40a24e49c26d0a60513b6aeb8551d264e4717f306b81a37a5afb3b47cedc"]' -p eosio@active
+
 sleep 1
 
 # Deploy system contracts

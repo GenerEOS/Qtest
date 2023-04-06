@@ -1,5 +1,5 @@
 {
-  "version": "eosio::abi/1.1",
+  "version": "eosio::abi/1.2",
   "types": [],
   "structs": [{
       "name": "action",
@@ -155,6 +155,9 @@
         },{
           "name": "packed_transaction",
           "type": "bytes"
+        },{
+          "name": "earliest_exec_time",
+          "type": "time_point?$"
         }
       ]
     },{
@@ -230,27 +233,27 @@
   "actions": [{
       "name": "approve",
       "type": "approve",
-      "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Approve Proposed Transaction\nsummary: '{{nowrap level.actor}} approves the {{nowrap proposal_name}} proposal'\nicon: https://github.com/Telos-Foundation/images/raw/master/ricardian_assets/eosio.contracts/icons/multisig.png#4fb41d3cf02d0dd2d35a29308e93c2d826ec770d6bb520db668f530764be7153\n---\n\n{{level.actor}} approves the {{proposal_name}} proposal proposed by {{proposer}} with the {{level.permission}} permission of {{level.actor}}."
+      "ricardian_contract": ""
     },{
       "name": "cancel",
       "type": "cancel",
-      "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Cancel Proposed Transaction\nsummary: '{{nowrap canceler}} cancels the {{nowrap proposal_name}} proposal'\nicon: https://github.com/Telos-Foundation/images/raw/master/ricardian_assets/eosio.contracts/icons/multisig.png#4fb41d3cf02d0dd2d35a29308e93c2d826ec770d6bb520db668f530764be7153\n---\n\n{{canceler}} cancels the {{proposal_name}} proposal submitted by {{proposer}}."
+      "ricardian_contract": ""
     },{
       "name": "exec",
       "type": "exec",
-      "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Execute Proposed Transaction\nsummary: '{{nowrap executer}} executes the {{nowrap proposal_name}} proposal'\nicon: https://github.com/Telos-Foundation/images/raw/master/ricardian_assets/eosio.contracts/icons/multisig.png#4fb41d3cf02d0dd2d35a29308e93c2d826ec770d6bb520db668f530764be7153\n---\n\n{{executer}} executes the {{proposal_name}} proposal submitted by {{proposer}} if the minimum required approvals for the proposal have been secured."
+      "ricardian_contract": ""
     },{
       "name": "invalidate",
       "type": "invalidate",
-      "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Invalidate All Approvals\nsummary: '{{nowrap account}} invalidates approvals on outstanding proposals'\nicon: https://github.com/Telos-Foundation/images/raw/master/ricardian_assets/eosio.contracts/icons/multisig.png#4fb41d3cf02d0dd2d35a29308e93c2d826ec770d6bb520db668f530764be7153\n---\n\n{{account}} invalidates all approvals on proposals which have not yet executed."
+      "ricardian_contract": ""
     },{
       "name": "propose",
       "type": "propose",
-      "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Propose Transaction\nsummary: '{{nowrap proposer}} creates the {{nowrap proposal_name}}'\nicon: https://github.com/Telos-Foundation/images/raw/master/ricardian_assets/eosio.contracts/icons/multisig.png#4fb41d3cf02d0dd2d35a29308e93c2d826ec770d6bb520db668f530764be7153\n---\n\n{{proposer}} creates the {{proposal_name}} proposal for the following transaction:\n{{to_json trx}}\n\nThe proposal requests approvals from the following accounts at the specified permission levels:\n{{#each requested}}\n   + {{this.permission}} permission of {{this.actor}}\n{{/each}}\n\nIf the proposed transaction is not executed prior to {{trx.expiration}}, the proposal will automatically expire."
+      "ricardian_contract": ""
     },{
       "name": "unapprove",
       "type": "unapprove",
-      "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Unapprove Proposed Transaction\nsummary: '{{nowrap level.actor}} revokes the approval previously provided to {{nowrap proposal_name}} proposal'\nicon: https://github.com/Telos-Foundation/images/raw/master/ricardian_assets/eosio.contracts/icons/multisig.png#4fb41d3cf02d0dd2d35a29308e93c2d826ec770d6bb520db668f530764be7153\n---\n\n{{level.actor}} revokes the approval previously provided at their {{level.permission}} permission level from the {{proposal_name}} proposal proposed by {{proposer}}."
+      "ricardian_contract": ""
     }
   ],
   "tables": [{
@@ -283,6 +286,5 @@
   "error_messages": [],
   "abi_extensions": [],
   "variants": [],
-  "action_results": [],
-  "kv_tables": {}
+  "action_results": []
 }
