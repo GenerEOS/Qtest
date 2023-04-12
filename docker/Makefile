@@ -39,10 +39,10 @@ copy_snapshots:
 	./copy_snapshot.sh
 
 build:
-	# docker build -f Dockerfile -t genereos/qtest:v1.1.4 . --platform linux/amd64
-	# docker build -f Dockerfile -t genereos/qtest:arm64-v1.1.4 . --platform linux/arm64
+	# docker build -f Dockerfile -t genereos/qtest:v1.2.0 . --platform linux/amd64
+	# docker build -f Dockerfile -t genereos/qtest:arm64-v1.2.0 . --platform linux/arm64
 	# docker buildx create --use
-	docker buildx build -f Dockerfile -t genereos/qtest:v1.1.4 --platform linux/amd64,linux/arm64 . --push
+	docker buildx build -f Dockerfile -t genereos/qtest:v1.2.0 --platform linux/amd64,linux/arm64 . --push
 	
 start: stop
 	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="TLOS" -d -p 8888:8888 genereos/qtest:v1.1.4

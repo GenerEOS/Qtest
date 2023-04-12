@@ -97,4 +97,8 @@ For issues not covered in the documentation, please jump into our channel and we
 
 This code is provided as is, under [MIT Licence](LICENCE).
 
+## Todo
+
+- Support ARM binaries for leap version
+
 

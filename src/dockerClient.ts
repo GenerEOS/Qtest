@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-const dockerImageName = "genereos/qtest:v1.1.4";
+const dockerImageName = "genereos/qtest:v1.2.0";
 
 function execute(command, ignoreFail = false) {
   try {
