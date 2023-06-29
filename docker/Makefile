@@ -1,7 +1,7 @@
 WAX_CLEOS=cleos -u https://wax.greymass.com
 EOS_CLEOS=cleos -u https://eos.greymass.com
 TELOS_CLEOS=cleos -u https://mainnet.telos.net
-
+IMAGE_VERSION=v1.2.1
 ARCH=`uname -m`
 
 get_wax: 
@@ -39,14 +39,16 @@ copy_snapshots:
 	./copy_snapshot.sh
 
 build:
-	# docker build -f Dockerfile -t genereos/qtest:v1.2.0 . --platform linux/amd64
-	# docker build -f Dockerfile -t genereos/qtest:arm64-v1.2.0 . --platform linux/arm64
-	# docker buildx create --use
-	docker buildx build -f Dockerfile -t genereos/qtest:v1.2.0 --platform linux/amd64,linux/arm64 . --push
-	
+	docker build -f Dockerfile -t songmai108/qtest:$(IMAGE_VERSION) . --platform linux/amd64
+
 start: stop
-	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="TLOS" -d -p 8888:8888 genereos/qtest:v1.1.4
+	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="TLOS" -d -p 8888:8888 songmai108/qtest:$(IMAGE_VERSION)
 
 stop:
 	docker container rm qtest -f
 	docker container rm qsnapshot -f
+
+push-docker:
+	docker push songmai108/qtest:$(IMAGE_VERSION)
+	docker tag songmai108/qtest:$(IMAGE_VERSION) songmai108/qtest:latest
+	docker push songmai108/qtest:latest
