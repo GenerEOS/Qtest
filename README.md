@@ -12,7 +12,7 @@ Qtest gives you the ability to dockerize a Leap node. This allows a developer to
 - Ability to insert/modify/erase data for each table
 - Update the chain time to fast-forward the chain and allow testing future states
 
-* Note: Testing on ARM architecture is unsupported in Qtest-v0.6.0 and later versions, as leap-v3.1.4 lacks binary build files for ARM architecture. If you intend to test on an ARM computer, kindly utilize Qtest-v0.5.0 instead.
+Note: Testing on ARM architecture is unsupported in Qtest-v0.6.0 and later versions, as leap-v3.1.4 lacks binary build files for ARM architecture. If you intend to test on an ARM computer, kindly utilize Qtest-v0.5.0 instead.
 ## Quick start
 
 ### Installation
