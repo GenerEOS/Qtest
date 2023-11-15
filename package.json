@@ -1,6 +1,6 @@
 {
   "name": "qtest-js",
-  "version": "0.6.1",
+  "version": "1.0.0",
   "description": "eosio testing library",
   "main": "dist/index.js",
   "license": "MIT",

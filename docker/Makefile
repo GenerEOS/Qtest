@@ -1,7 +1,7 @@
 WAX_CLEOS=cleos -u https://wax.greymass.com
 EOS_CLEOS=cleos -u https://eos.greymass.com
 TELOS_CLEOS=cleos -u https://mainnet.telos.net
-IMAGE_VERSION=v1.2.1
+IMAGE_VERSION=v4.0.4
 ARCH=`uname -m`
 
 get_wax: 
@@ -39,7 +39,9 @@ copy_snapshots:
 	./copy_snapshot.sh
 
 build:
-	docker build -f Dockerfile -t songmai108/qtest:$(IMAGE_VERSION) . --platform linux/amd64
+	# docker build -f Dockerfile -t songmai108/qtest:$(IMAGE_VERSION) . --platform linux/amd64
+	# docker build -f Dockerfile -t songmai108/qtest:$(IMAGE_VERSION) . --platform linux/arm64
+	docker buildx build -f Dockerfile -t songmai108/qtest:$(IMAGE_VERSION) --platform linux/amd64,linux/arm64 . --push
 
 start: stop
 	docker run --name qtest --env SYSTEM_TOKEN_SYMBOL="TLOS" -d -p 8888:8888 songmai108/qtest:$(IMAGE_VERSION)
