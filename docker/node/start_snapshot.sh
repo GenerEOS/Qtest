@@ -9,13 +9,17 @@ fi
 
 ARCH=`uname -m`
 
+NODEOS='/usr/local/bin/nodeos'
 if [ "${ARCH}" = "x86_64" ]; then
    EOSVM=eos-vm-jit
+   if [ "$SYSTEM_TOKEN_SYMBOL" = "WAX" ]; then
+      NODEOS='/usr/local/bin/wax/nodeos'
+   fi
 else
    EOSVM=eos-vm
 fi
 
-nodeos \
+$NODEOS \
 --snapshot $DATADIR"/data/snapshots/snapshot.bin" \
 --signature-provider $EOSIO_PUB_KEY=KEY:$EOSIO_PRV_KEY \
 --plugin eosio::net_plugin \
