@@ -13,7 +13,7 @@ COPY ./entrypoint.sh /app/
 RUN ./scripts/bootstrap_env.sh
 
 # Install libfaketime for time manipulation
-RUN git clone https://github.com/wolfcw/libfaketime.git && cd libfaketime && make install
+RUN git clone https://github.com/wolfcw/libfaketime.git && cd libfaketime && git checkout 7e9d69b98fe47e57769563548ede9c911d4ba941 && make install
 RUN rm -rf libfaketime
 
 RUN cd /app  && chmod +x *.sh
